@@ -28,60 +28,68 @@ format:
 
 ### What is Flora e Funga do Brasil?
 
-Flora e Funga do Brasil (FFB) is the taxonomic checklist that documents Brazil's plant, algal, and fungal diversity — the richest in the world. Maintained by the Rio de Janeiro Botanical Garden and curated collaboratively by hundreds of taxonomists, it records accepted names, synonyms, taxonomic classification, geographic distribution, endemism, life form, habitat, and vegetation type for every documented species.
+Flora e Funga do Brasil (FFB) is the taxonomic checklist that documents Brazil's plant, algal, and fungal diversity — the richest in the world. Maintained by the Rio de Janeiro Botanical Garden and curated collaboratively by hundreds of taxonomists and mycologists, it records accepted names, synonyms, taxonomic classification, geographic distribution, endemism, nutritional/ecological mode, and substrate/host information for every documented fungal species.
 
-### What can I use floraR for?
+### What can I use fungaR for?
 
-The `floraR` package lets researchers and taxonomists download, parse, filter, and explore the [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/) checklist directly from R. You can browse the checklist by taxonomic, geographic, or trait-based criteria, resolve your own species name lists against it (with fuzzy matching for typos), explore the taxonomic hierarchy, and curate new records for contribution back to FFB.
+The `fungaR` package lets researchers and taxonomists download, parse, filter, and explore the fungal portion of the [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/) checklist directly from R. You can browse the checklist by taxonomic, geographic, or trait-based criteria, resolve your own species name lists against it (with fuzzy matching for typos), explore the taxonomic hierarchy, and cross-check MycoBank and Brazilian occurrence repositories to curate new species and state records for contribution back to FFB.
 
-### Do I need a list of species names to use floraR?
+### Do I need a list of species names to use fungaR?
 
-No. `flora_records()` lets you browse and filter the FFB checklist directly (e.g. all accepted species in a family, or all endemics in a given state) without providing any input names. If you already have your own species list — from a herbarium, field survey, or collaborator — `flora_search()` and `flora_match()` resolve those names against the checklist instead, with exact matching first and fuzzy (Levenshtein-distance) matching as a fallback for typos.
+No. `funga_records()` lets you browse and filter the FFB fungal checklist directly (e.g. all accepted species in a family, or all endemics in a given state) without providing any input names. If you already have your own species list — from a fungarium, field survey, or collaborator — `funga_search()` and `funga_match()` resolve those names against the checklist instead, with exact matching first and fuzzy (Levenshtein-distance) matching as a fallback for typos.
 
-### Does floraR require an internet connection?
+### Does fungaR require an internet connection?
 
-Only the first time you query a given dataset version. `flora_download()` and `flora_parse()` fetch and cache the versioned Darwin Core Archive locally, and every other function reuses that cache automatically, so repeated queries and offline analysis work without a new download.
+Only the first time you query a given dataset version, or MycoBank's bulk name list. `funga_download()`/`funga_parse()` and `funga_mycobank_gap()` fetch and cache their respective datasets locally, and every other function reuses that cache automatically, so repeated queries and offline analysis work without a new download.
 
-### How do I install floraR?
+### How do I install fungaR?
 
 Visit the [Get Started guide](/get-started/index.qmd) for installation instructions from GitHub.
 
-### Is floraR free to use?
+### Is fungaR free to use?
 
-Yes. `floraR` is open source, licensed under the [MIT License](https://opensource.org/license/mit/).
+Yes. `fungaR` is open source, licensed under the [MIT License](https://opensource.org/license/mit/).
 
 ### Is this website available in Portuguese?
 
 Yes. Every page has an EN/PT toggle in the navigation bar. Once you switch languages, the choice is remembered for the rest of your visit — you won't need to switch again as you navigate between pages.
 
-### What output can floraR generate?
+### What output can fungaR generate?
 
-`floraR` returns tidy data frames (and, for `flora_parse()`, a structured list of DwC-A tables) ready for downstream analysis. `flora_records()` and `flora_get_children_taxa()` can also save results directly to CSV, and `flora_build_matrix()` produces a taxon-by-character trait matrix for comparative or phylogenetic analyses.
+`fungaR` returns tidy data frames (and, for `funga_parse()`, a structured list of DwC-A tables) ready for downstream analysis. `funga_records()` can save results directly to CSV, while `funga_mycobank_gap()` and `funga_distribution_gap()` produce structured `.xlsx` spreadsheets — including each MycoBank name's original URL — designed for a taxonomist's manual review.
 
-### Who is the developer of floraR?
+### Why does FFB use "Division" instead of "Class" for fungi, and no family-rank record?
+
+FFB classifies fungi by Division (phylum-equivalent, e.g. Ascomycota, Basidiomycota) rather than Class, and does not register a standalone taxon record at family rank for Fungi — family is stored only as a classification column on genus/species records. `funga_get_children_taxa()` handles this automatically: `rank = "family"` still works, matched directly on that column instead of walking a family-rank row that does not exist.
+
+### What does the `habitat` field mean for fungi in `funga_records()`?
+
+For fungi, FFB's `habitat` field records the substrate/host the specimen was collected on (e.g. `"Planta viva - raiz"`, `"Tronco em decomposição"`, `"Solo"`, `"Outro fungo"`) rather than a plant growth habitat, since FFB does not publish a separate named host-taxon field. Use it to browse the checklist by substrate/host type.
+
+### Who is the developer of fungaR?
 
 Development is led by [JBRJ](https://www.gov.br/jbrj/pt-br), with financial support from [CNPq](https://www.gov.br/cnpq/pt-br) and [FINEP](http://www.finep.gov.br). Main developer:
 
 - Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab))
 
-View the code and contribute on GitHub: [https://github.com/DBOSlab/floraR](https://github.com/DBOSlab/floraR)
+View the code and contribute on GitHub: [https://github.com/DBOSlab/fungaR](https://github.com/DBOSlab/fungaR)
 
-### Why the name floraR?
+### Why the name fungaR?
 
-The name pairs "Flora" — for Flora e Funga do Brasil, the checklist it interfaces with — with the R programming language, reflecting the package's goal of making the national checklist directly and reproducibly accessible from R.
+The name pairs "Funga" — for Flora e Funga do Brasil's fungal component, the checklist it interfaces with — with the R programming language, reflecting the package's goal of making the national fungal checklist directly and reproducibly accessible from R.
 
 ### Where can I report bugs or request features?
 
-Submit issues on GitHub: [floraR Issues](https://github.com/DBOSlab/floraR/issues).
+Submit issues on GitHub: [fungaR Issues](https://github.com/DBOSlab/fungaR/issues).
 
-### Where can I ask questions and discuss floraR?
+### Where can I ask questions and discuss fungaR?
 
-Join our community via [GitHub Discussions](https://github.com/DBOSlab/floraR/discussions) to ask questions, suggest ideas, or help others.
+Join our community via [GitHub Discussions](https://github.com/DBOSlab/fungaR/discussions) to ask questions, suggest ideas, or help others.
 
-### How does floraR relate to Flora e Funga do Brasil?
+### How does fungaR relate to Flora e Funga do Brasil?
 
-The `floraR` package is a programmatic interface to the Flora e Funga do Brasil IPT data portal: it downloads, parses, and queries the same checklist data published on the platform, and also helps taxonomic experts prepare new names and records for contribution back to it.
+The `fungaR` package is a programmatic interface to the fungal side of the Flora e Funga do Brasil IPT data portal: it downloads, parses, and queries the same checklist data published on the platform, and also helps taxonomic experts prepare new fungal names and records for contribution back to it.
 
-### Can I contribute new names or records to Flora e Funga do Brasil?
+### Can I contribute new fungal names or records to Flora e Funga do Brasil?
 
-Yes. `floraR` includes `flora_get_descriptions()` and `flora_build_matrix()` specifically to help taxonomic experts assemble and curate new records — pulling controlled-field and free-text descriptions from existing FFB taxon pages and turning them into a comparable trait matrix. To submit new names or corrections to the platform itself, see the contribution guidelines at [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) or contact the FFB coordination team at **floraefungadobrasil\@jbrj.gov.br**.
+Yes. `fungaR` includes `funga_mycobank_gap()` and `funga_distribution_gap()` specifically to help taxonomic experts find candidates worth submitting — cross-checking MycoBank's global name database and Brazilian occurrence repositories (GBIF, speciesLink, REFLORA) against the current FFB checklist to flag species and state records that are plausibly Brazilian but still missing. To submit new names or corrections to the platform itself, see the contribution guidelines at [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) or contact the FFB coordination team at **floraefungadobrasil\@jbrj.gov.br**.

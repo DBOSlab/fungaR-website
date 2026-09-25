@@ -28,27 +28,27 @@ format:
 
 ## Install the package
 
-You can install the latest development version of `floraR` package from [GitHub](https://github.com/DBOSlab/floraR) as follows:
+You can install the latest development version of `fungaR` package from [GitHub](https://github.com/DBOSlab/fungaR) as follows:
 
 ```{r}
 #| eval: false
 
-if (!requireNamespace("BiocManager", quietly = TRUE)) 
-install.packages("BiocManager") 
+if (!requireNamespace("BiocManager", quietly = TRUE))
+install.packages("BiocManager")
 
-# Install the development version of floraR from GitHub, 
-# together with its required dependencies 
-BiocManager::install("DBOSlab/floraR", dependencies = TRUE)
+# Install the development version of fungaR from GitHub,
+# together with its required dependencies
+BiocManager::install("DBOSlab/fungaR", dependencies = TRUE)
 ```
 
 :::{.callout-caution}
-`floraR` requires R (>= 4.1.0). If you already have a recent R installation, you can skip straight to the install step above.
+`fungaR` requires R (>= 4.1.0). If you already have a recent R installation, you can skip straight to the install step above.
 :::
 
 ```{r}
 #| eval: false
 
-library(floraR)
+library(fungaR)
 ```
 
 ## Quick Start
@@ -58,9 +58,9 @@ Once installed, a good first step is to check which Flora e Funga do Brasil data
 ```{r}
 #| eval: false
 
-flora_version()
+funga_version()
 ```
 
-Most functions — including `flora_records()`, `flora_search()`, and `flora_get_children_taxa()` — download and parse the FFB dataset automatically the first time you call them, and reuse the same local cache on subsequent calls, so you rarely need to call `flora_download()`/`flora_parse()` yourself unless you want to inspect the raw data directly.
+Most functions — including `funga_records()`, `funga_search()`, and `funga_get_children_taxa()` — download and parse the FFB dataset automatically the first time you call them, and reuse the same local cache on subsequent calls, so you rarely need to call `funga_download()`/`funga_parse()` yourself unless you want to inspect the raw data directly. Note that FFB publishes plants and fungi together in one combined release; `funga_parse()` is what subsets everything down to the Fungi kingdom.
 
-From there, browse the [How-To Articles](/articles/index.qmd) to learn how to download and parse checklist data, filter records by taxonomic or geographic criteria, resolve your own species names against the checklist, explore the taxonomic hierarchy, and curate new records.
+From there, browse the [How-To Articles](/articles/index.qmd) to learn how to download and parse checklist data, filter records by taxonomic or geographic criteria, resolve your own species names against the checklist, explore the taxonomic hierarchy, and find species and state records missing from FFB.

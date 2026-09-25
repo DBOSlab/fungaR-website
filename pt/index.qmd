@@ -30,7 +30,7 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
   if (nrow(latest_row) == 0) latest_row <- ffb_versions[1, ]
   n_versions     <- nrow(ffb_versions)
   latest_version <- latest_row$Version[1]
-  latest_records <- format(as.numeric(latest_row$Records[1]), big.mark = ",")
+  latest_records <- format(as.numeric(gsub(",", "", latest_row$Records[1])), big.mark = ",")
   latest_date    <- latest_row$Published_on[1]
 } else {
   n_versions     <- NA

@@ -43,6 +43,8 @@ REFLORA specimen data (used only if the refloraR package is installed).
 | save | Logical. If `TRUE` (default), the result is saved to disk as an `.xlsx` spreadsheet. |
 | dir | Character. Directory where the spreadsheet is saved when `save = TRUE`. Defaults to `"funga_distribution_gap"`. |
 | filename | Character. Name of the `.xlsx` file (without extension) to save. Defaults to `"funga_distribution_gap_<taxon>"`. |
+| html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report (`<dir>/<filename>.html`) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, and the individual occurrence records (not aggregated) found in the new-state-record candidate states - each linking out to the specific record in its source database (GBIF occurrence page or REFLORA specimen page) - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
+| open_report | Logical. If `TRUE` (default in interactive sessions), opens the rendered HTML report in the default browser. |
 
 ### Value
 

@@ -3,67 +3,88 @@ title: "Filter and retrieve checklist records"
 format: html
 ---
 
-Here we present a practical guide to the `flora_records()` function of the `floraR` package. Unlike `flora_search()` and `flora_match()`, which resolve a list of names *you already have* against the checklist, `flora_records()` browses and filters the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) checklist directly — no input name list required.
+Here we present a practical guide to the `funga_records()` function of the `fungaR` package. Unlike `funga_search()` and `funga_match()`, which resolve a list of names *you already have* against the checklist, `funga_records()` browses and filters the fungal side of the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) checklist directly — no input name list required.
 
 ## Function Overview
 
-`flora_records()` downloads and parses the FFB dataset automatically (like `flora_search()`, reusing the local cache on repeated calls), then applies whichever combination of taxonomic, geographic, and trait-based filters you request. All filters are combined with a logical AND, and the result always has one row per matching taxon.
+`funga_records()` downloads and parses the FFB dataset automatically (like `funga_search()`, reusing the local cache on repeated calls), then applies whichever combination of taxonomic, geographic, and trait-based filters you request. All filters are combined with a logical AND, and the result always has one row per matching taxon — appended with that taxon's distribution and species-profile information (see Output columns below).
 
 ## Arguments
 
 | Argument | Description |
 |---|---|
-| `taxon` | Character vector. One or more family, genus, or species names to filter by (e.g. `c("Fabaceae", "Luetzelburgia", "Inga edulis")`). |
-| `taxonRank` | Character vector. Taxonomic rank(s) to keep (e.g. `"ESPECIE"`, `"VARIEDADE"`, `"SUBESPECIE"`). |
+| `taxon` | Character vector. One or more family, genus, or species names to filter by (e.g. `c("Hymenochaetaceae", "Trichoderma", "Xylaria hypoxylon")`). |
+| `taxonRank` | Character vector. Taxonomic rank(s) to keep (e.g. `"ESPECIE"`, `"VARIEDADE"`, `"SUBESPECIE"`, `"FORMA"`, `"GENERO"`, `"ORDEM"`, `"DIVISAO"` — fungi are classified by Division/phylum rather than Class). |
 | `taxonomicStatus` | Character vector. FFB taxonomic status: `"NOME_ACEITO"` (accepted), `"SINONIMO"` (synonym), or `"NOME_DUVIDOSO"` (doubtful). |
 | `state` | Character vector. Brazilian state(s), full name or acronym, diacritics-insensitive (e.g. `"Bahia"` or `"BA"`). |
 | `phytogeographicDomain` | Character vector. Phytogeographic domain(s) (e.g. `"Caatinga"`, `"Mata Atlantica"`). |
 | `endemism` | Logical. `TRUE` keeps only Brazilian endemics; `FALSE` keeps only non-endemics. |
-| `lifeForm`, `habitat`, `vegetationType` | Character vectors. Life form (e.g. `"Arbusto"`), habitat (e.g. `"Terricola"`) and vegetation type (e.g. `"Cerrado (lato sensu)"`). |
+| `lifeForm`, `habitat`, `vegetationType` | Character vectors. Nutritional/ecological mode (e.g. `"Saprobio"`, `"Liquenizado"`), substrate/host (e.g. `"Tronco em decomposicao"`, `"Solo"`, `"Outro fungo"` — this is what `habitat` means for fungi, since FFB has no separate named host-taxon field) and vegetation type (e.g. `"Cerrado (lato sensu)"`). |
 | `version` | Character. FFB dataset version to use. Defaults to `"latest"`. |
-| `rm_flora_database` | Logical. If `TRUE`, deletes the downloaded database after the search. Default `FALSE` keeps it cached for faster repeated queries. |
+| `rm_funga_database` | Logical. If `TRUE`, deletes the downloaded database after the search. Default `FALSE` keeps it cached for faster repeated queries. |
 | `verbose` | Logical. If `TRUE` (default), prints progress messages. |
 | `save` | Logical. If `TRUE`, writes the filtered records to a CSV file. |
 | `dir`, `filename` | Where and under what name to save the CSV when `save = TRUE`. |
 
+## Output columns
+
+Beyond the taxon table columns (`taxonName`, `family`, `genus`, `taxonRank`, `taxonomicStatus`, ...), every result also carries the matching taxon's distribution and species-profile information:
+
+| Column | Source | Notes |
+|---|---|---|
+| `state` | distribution table | Brazilian state(s) with occurrence records |
+| `phytogeographicDomain` | distribution table | Phytogeographic domain(s) |
+| `endemism` | distribution table | Endemism status as recorded by FFB |
+| `lifeForm` | species profile table | Nutritional/ecological mode(s) |
+| `habitat` | species profile table | Substrate/host record(s) |
+| `vegetationType` | species profile table | Vegetation type(s) |
+
+A single taxon can have several distribution or species-profile records (e.g. occurring in multiple states, or recorded on multiple substrates). Rather than multiplying rows, `funga_records()` concatenates all distinct values for each of these columns with `" | "`, so the result always keeps exactly one row per taxon.
+
 ## Browse a whole family
 
 ```r
-library(floraR)
+library(fungaR)
 
-fabaceae <- flora_records(taxon = "Fabaceae",
-                          taxonomicStatus = "NOME_ACEITO")
+hymeno <- funga_records(taxon = "Hymenochaetaceae",
+                        taxonomicStatus = "NOME_ACEITO")
 ```
 
 ## Filter by state and endemism
 
 ```r
-bahia_endemics <- flora_records(state = "Bahia",
+bahia_endemics <- funga_records(state = "Bahia",
                                 endemism = TRUE,
                                 taxonomicStatus = "NOME_ACEITO")
 ```
 
-## Filter by phytogeographic domain and life form
+## Filter by phytogeographic domain and nutritional mode
 
 ```r
-caatinga_shrubs <- flora_records(phytogeographicDomain = "Caatinga",
-                                 lifeForm = "Arbusto")
+caatinga_lichens <- funga_records(phytogeographicDomain = "Caatinga",
+                                  lifeForm = "Liquenizado")
+```
+
+## Filter by substrate/host
+
+```r
+root_associates <- funga_records(habitat = "Planta viva - raiz")
 ```
 
 ## Save the result to a CSV file
 
 ```r
-flora_records(taxon = "Luetzelburgia",
+funga_records(taxon = "Trichoderma",
              save = TRUE,
-             dir = "flora_records",
-             filename = "luetzelburgia_records")
+             dir = "funga_records",
+             filename = "trichoderma_records")
 ```
 
 ## Additional Tips
 
 - `taxon` is matched against the `family`, `genus` and `taxonName` columns automatically — a family name ending in `"aceae"`, a single-word genus, or a multi-word species name are all detected and matched appropriately.
-- Combine multiple filters freely: they are always ANDed together, so `flora_records(taxon = "Fabaceae", state = "Bahia", endemism = TRUE)` returns Fabaceae species endemic to Bahia.
-- If you already have your own species list to resolve rather than browse the checklist by criteria, use [`flora_search()` or `flora_match()`](/articles/resolve_species_names.qmd) instead.
+- Combine multiple filters freely: they are always ANDed together, so `funga_records(taxon = "Hymenochaetaceae", state = "Bahia", endemism = TRUE)` returns Hymenochaetaceae species endemic to Bahia.
+- If you already have your own species list to resolve rather than browse the checklist by criteria, use [`funga_search()` or `funga_match()`](/articles/resolve_species_names.qmd) instead.
 
 ## See Also
 

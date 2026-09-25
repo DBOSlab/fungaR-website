@@ -1,15 +1,17 @@
 /*-- scss:defaults --*/
 
-// Unified site accent color - a deep botanical teal, distinct from
-// jabotR's sage green (#81ae7a) and refloraR's neutral spacelab palette,
-// while still reading as part of the same "leafy" JBRJ family of sites.
-$primary: #1f7a6c;
-$navbar-bg: #1f7a6c;
+// Unified site accent: a warm golden-yellow (matching the fungaR hex
+// sticker) paired with a deep forest green for secondary elements -
+// distinct from floraR's teal, jabotR's sage green, and refloraR's
+// neutral spacelab palette, while still reading as part of the same
+// JBRJ family of sites.
+$primary: #B5791E;
+$navbar-bg: #B5791E;
 $navbar-light-color: white;
 $navbar-light-hover-color: white;
-$link-color: #1f7a6c;
-$btn-primary-bg: #1f7a6c;
-$sidebar-bg: #eef7f5;
+$link-color: #8A5A15;
+$btn-primary-bg: #B5791E;
+$sidebar-bg: #EEF6EC;
 
 // The Cosmo theme sets defaults for hover. Clear the defaults to allow
 // our coloring system to handle this
@@ -87,9 +89,10 @@ $navbar-light-hover-color:      null;
   font-weight: 100;
 }
 
-// --- floraR-specific: live FFB stats strip on the homepage -----------------
+// --- fungaR-specific: live FFB stats strip on the homepage -----------------
 // A distinct hero element (in place of refloraR's photo carousel or
-// jabotR's version-history block): a row of live-computed summary counts.
+// jabotR's version-history block): a row of live-computed summary counts,
+// styled in the site's green accent to complement the golden-yellow navbar.
 
 .stat-strip {
   display: flex;
@@ -100,8 +103,8 @@ $navbar-light-hover-color:      null;
 }
 
 .stat-card {
-  background: #eef7f5;
-  border: 1px solid rgba(31, 122, 108, 0.25);
+  background: #EEF6EC;
+  border: 1px solid rgba(47, 109, 59, 0.25);
   border-radius: 10px;
   padding: 18px 26px;
   min-width: 150px;
@@ -111,14 +114,14 @@ $navbar-light-hover-color:      null;
 
 .stat-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(31, 122, 108, 0.18);
+  box-shadow: 0 6px 16px rgba(47, 109, 59, 0.18);
 }
 
 .stat-card .stat-number {
   display: block;
   font-size: 1.9rem;
   font-weight: 700;
-  color: #1f7a6c;
+  color: #2F6D3B;
   line-height: 1.15;
 }
 

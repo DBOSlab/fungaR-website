@@ -39,7 +39,7 @@ returned, they do not multiply rows).
 
 | Argument | Description |
 |---|---|
-| taxon | Character vector. One or more family, genus, or species names to filter by (e.g. `c("Fabaceae", "Luetzelburgia", "Inga edulis")`). `NULL` (default) does not filter by taxon. |
+| taxon | Character vector. One or more family, genus, or species names to filter by (e.g. `c("Hymenochaetaceae", "Trichoderma", "Xylaria hypoxylon")`). `NULL` (default) does not filter by taxon. |
 | taxonRank | Character vector. Taxonomic rank(s) to keep (e.g. `"ESPECIE"`, `"VARIEDADE"`, `"SUBESPECIE"`, `"FORMA"`, `"GENERO"`, `"ORDEM"`, `"DIVISAO"` - fungi are classified in FFB by Division/phylum rather than Class). `NULL` (default) keeps all ranks. |
 | taxonomicStatus | Character vector. FFB taxonomic status to keep: `"NOME_ACEITO"` (accepted), `"SINONIMO"` (synonym), or `"NOME_DUVIDOSO"` (doubtful). `NULL` (default) keeps all statuses. |
 | state | Character vector. Brazilian state(s) - full name or acronym, diacritics-insensitive (e.g. `"Bahia"` or `"BA"`) - to filter by occurrence, based on the FFB distribution table. `NULL` (default) does not filter by state. |
@@ -56,15 +56,23 @@ returned, they do not multiply rows).
 ### Value
 
 A `data.frame` of FFB taxon records matching the requested
-  filters, with one row per taxon. If `save = TRUE`, the result is also
-  written to `<dir>/<filename>.csv`.
+  filters, with one row per taxon, appended with the corresponding
+  distribution and species-profile information for that taxon:
+  `state`, `phytogeographicDomain`, `endemism`,
+  `lifeForm`, `habitat`, and `vegetationType`. Since a
+  single taxon can have several distribution/species-profile records
+  (e.g. occurring in multiple states, or recorded on multiple
+  substrates), each of these columns concatenates all distinct values
+  for that taxon with `" | "` rather than multiplying rows. If
+  `save = TRUE`, the result is also written to
+  `<dir>/<filename>.csv`.
 
 ### Examples
 
 ```r
-# All accepted species in Xylariaceae (downloads + parses automatically, caches result)
-xylariaceae <- funga_records(taxon = "Xylariaceae",
-                             taxonomicStatus = "NOME_ACEITO")
+# All accepted species in Hymenochaetaceae (downloads + parses automatically, caches result)
+hymeno <- funga_records(taxon = "Hymenochaetaceae",
+                        taxonomicStatus = "NOME_ACEITO")
 
 # Accepted species endemic to Bahia
 bahia_endemics <- funga_records(state = "Bahia",

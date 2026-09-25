@@ -1,6 +1,6 @@
 /*-- scss:defaults --*/
 
-$primary-accent: #2fa08c;
+$primary-accent: #F3C245;
 $link-color: $primary-accent;
 
 // Base document colors
@@ -10,9 +10,9 @@ $body-color: white;
 $light: #525252;
 
 // Navigation element colors
-$navbar-bg: #17332f;
-$sidebar-bg: #17332f;
-$footer-bg: #17332f;
+$navbar-bg: #332711;
+$sidebar-bg: #1d2b1f;
+$footer-bg: #332711;
 
 // Code blocks
 $code-block-bg-alpha: -.8;
@@ -38,14 +38,13 @@ $input-bg: #242424;
 
 .stat-card {
   background: #1d2b1f;
-  border: 1px solid rgba(47, 160, 140, 0.35);
+  border: 1px solid rgba(62, 125, 63, 0.35);
 }
 
 .stat-card .stat-number {
-  color: #2fa08c;
+  color: #6FBF73;
 }
 
 .stat-card .stat-label {
   color: #cfd8d6;
 }
-

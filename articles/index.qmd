@@ -49,6 +49,6 @@ format: html
 ::: {style="display: block;"}
 :::
 ### Curate new records
-- [Curate and describe new records](/articles/curate_ffb_descriptions.qmd)
+- [Find species and state records missing from FFB](/articles/curate_ffb_new_records.qmd)
 :::
 :::

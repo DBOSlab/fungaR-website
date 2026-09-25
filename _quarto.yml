@@ -5,11 +5,11 @@ project:
     - figures/**
 
 website:
-  title: "floraR"
-  site-url: https://dboslab.github.io/floraR-website/
+  title: "fungaR"
+  site-url: https://dboslab.github.io/fungaR-website/
   page-navigation: true
   reader-mode: true
-  favicon: "figures/floraR_hex_sticker.png"
+  favicon: "figures/fungaR_hex_sticker.png"
 
   page-footer:
     center:
@@ -21,15 +21,15 @@ website:
         href: LICENSE.md
     right:
       - icon: github
-        href: https://github.com/DBOSlab/floraR
-        aria-label: floraR GitHub
+        href: https://github.com/DBOSlab/fungaR
+        aria-label: fungaR GitHub
 
   navbar:
     search: true
     background: light
     collapse-below: lg
     type: light
-    logo: "figures/floraR_hex_sticker.png"
+    logo: "figures/fungaR_hex_sticker.png"
     href: index.qmd
     left:
       - text: "Overview"
@@ -48,18 +48,18 @@ website:
         menu:
           - text: "Report a Bug"
             icon: "bug"
-            href: "https://github.com/DBOSlab/floraR/issues"
+            href: "https://github.com/DBOSlab/fungaR/issues"
           - text: "Ask a Question"
             icon: "chat-right-text"
-            href: "https://github.com/DBOSlab/floraR/discussions"
+            href: "https://github.com/DBOSlab/fungaR/discussions"
           - text: "FAQ"
             icon: "question-circle"
             href: faq/index.qmd
 
     tools:
       - icon: github
-        href: https://github.com/DBOSlab/floraR
-        text: floraR GitHub
+        href: https://github.com/DBOSlab/fungaR
+        text: fungaR GitHub
 
   sidebar:
     - id: articles
@@ -91,8 +91,8 @@ website:
             href: articles/explore_taxonomic_hierarchy.qmd
         - section: Curate new records
           contents:
-          - text: Curate and describe new records
-            href: articles/curate_ffb_descriptions.qmd
+          - text: Find species and state records missing from FFB
+            href: articles/curate_ffb_new_records.qmd
 
     - id: pt-articles
       title: Artigos
@@ -123,8 +123,8 @@ website:
             href: pt/articles/explore_taxonomic_hierarchy.qmd
         - section: Curar novos registros
           contents:
-          - text: Curar e descrever novos registros
-            href: pt/articles/curate_ffb_descriptions.qmd
+          - text: Encontrar espécies e registros estaduais ausentes na FFB
+            href: pt/articles/curate_ffb_new_records.qmd
 
 format:
   html:

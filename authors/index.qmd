@@ -39,7 +39,7 @@ resources:
   }
 </style>
 
-## The `floraR` Developer
+## The `fungaR` Developer
 
 ```{=html}
 <div class="authors-group">
@@ -53,7 +53,7 @@ resources:
         <a class="icon-link" href="https://orcid.org/0000-0001-7072-2656" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/2228981567893077" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Taxonomist and bioinformatician authoring and maintaining the floraR package, responsible for designing and coding functions as well as developing the project website</p>
+      <p>Taxonomist and bioinformatician authoring and maintaining the fungaR package, responsible for designing and coding functions as well as developing the project website</p>
     </div>
   </div>
 
