@@ -39,13 +39,13 @@ resources:
   }
 </style>
 
-## O Desenvolvedor do `floraR`
+## O Desenvolvedor do `fungaR`
 
 ```{=html}
 <div class="authors-group">
 
   <div class="author-card">
-    <img src="/authors/images/domingos.jpg" alt="Domingos Cardoso" class="author-photo" />
+    <img src="images/domingos.jpg" alt="Domingos Cardoso" class="author-photo" />
     <div class="author-info">
       <h3 class="author-name">Domingos Cardoso</h3>
       <p>
@@ -53,7 +53,41 @@ resources:
         <a class="icon-link" href="https://orcid.org/0000-0001-7072-2656" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/2228981567893077" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Taxonomista e bioinformata, autor e mantenedor do pacote floraR, responsável pelo design e codificação das funções, bem como pelo desenvolvimento do site do projeto</p>
+      <p>Taxonomista e bioinformata, autor e mantenedor do pacote fungaR, responsável pelo design e codificação das funções, bem como pelo desenvolvimento do site do projeto</p>
+    </div>
+  </div>
+
+</div>
+```
+
+## A Equipe de Coordenação da Funga
+
+```{=html}
+<div class="authors-group">
+
+  <div class="author-card">
+    <img src="images/ricardo.jpg" alt="E.Ricardo Drechsler-Santos" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">E.Ricardo Drechsler-Santos</h3>
+      <p>
+        <a class="icon-link" href="mailto:drechslersantos@yahoo.com.br "><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-3702-8715" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/7181472061444803" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Especialista em taxonomia, filogenética e conservação de fungos</p>
+    </div>
+  </div>
+
+  <div class="author-card">
+    <img src="images/diogo.jpg" alt="Diogo Henrique Costa de Rezende" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Diogo Henrique Costa de Rezende</h3>
+      <p>
+        <a class="icon-link" href="mailto:domingoscardoso@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-7381-6954" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/4989168413703096" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Especialista em taxonomia e filogenética de fungos</p>
     </div>
   </div>
 

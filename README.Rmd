@@ -246,11 +246,11 @@ Given a fungal genus or species, checks GBIF, speciesLink, and the Reflora Virtu
 ```r
 library(fungaR)
 
-gap <- funga_distribution_gap(taxon = "Phellinus piptadeniae")
+gap <- funga_distribution_gap(taxon = "Phellinotus piptadeniae")
 
 # Restrict the check to two states, using only GBIF
-gap_ba_pe <- funga_distribution_gap(taxon = "Phellinus piptadeniae",
-                                    state = c("Bahia", "Pernambuco"),
+gap_ba_pe <- funga_distribution_gap(taxon = "Phellinotus piptadeniae",
+                                    state = c("Minas Gerais", "Pernambuco"),
                                     sources = "gbif")
 ```
 
@@ -262,9 +262,9 @@ gap_ba_pe <- funga_distribution_gap(taxon = "Phellinus piptadeniae",
 - Offline Capability: Parse and analyze downloaded data without internet connection
 - Checklist Filtering: Browse and filter the FFB fungal checklist by taxonomic, geographic, and trait-based (including substrate/host) criteria without an input name list
 - Name Resolution: Exact and fuzzy matching of your own species lists against the FFB checklist, including synonym resolution
-- Taxonomic Hierarchy: Retrieve child taxa at any rank, from division down to species, on FFB's real fungi hierarchy
+- Taxonomic Hierarchy: Retrieve child taxa at any rank, from division down to species, on FFB's fungi hierarchy
 - Data Cleaning: Automated parsing and standardization of DwC-A fields
-- Fungal Data Curation: Cross-check MycoBank, GBIF, speciesLink, and REFLORA to flag species and state records missing from FFB
+- Fungal Data Curation: Cross-check MycoBank, GBIF, speciesLink, and Reflora to flag species and state records missing from FFB
 - Interactive HTML Reports: `funga_mycobank_gap()` and `funga_distribution_gap()` write filterable, downloadable HTML reports alongside their spreadsheet output
 - Tidyverse Integration: Seamless integration with dplyr, tidyr, and other tidyverse packages
 
@@ -276,7 +276,7 @@ Full function documentation and articles are available at the `fungaR` [website]
 
 
 ## Citation
-Cardoso, D. & Drechsler-Santos, E.R. 2026. fungaR: An R Package for Accessing, Analyzing, and Curating Fungal Data from the Flora e Funga do Brasil Platform. https://github.com/dboslab/fungaR
+Cardoso, D. & Drechsler-Santos, E.R. 2026. fungaR: Tools for Accessing, Analyzing, and Curating Fungal Data from the Flora e Funga do Brasil Platform. https://github.com/dboslab/fungaR
 
 
 

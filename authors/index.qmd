@@ -60,6 +60,40 @@ resources:
 </div>
 ```
 
+## The Funga Coordination Team
+
+```{=html}
+<div class="authors-group">
+
+  <div class="author-card">
+    <img src="images/ricardo.jpg" alt="E.Ricardo Drechsler-Santos" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">E.Ricardo Drechsler-Santos</h3>
+      <p>
+        <a class="icon-link" href="mailto:drechslersantos@yahoo.com.br "><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-3702-8715" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/7181472061444803" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Expert fungi taxonomy, phylogenetics, and conservation</p>
+    </div>
+  </div>
+
+  <div class="author-card">
+    <img src="images/diogo.jpg" alt="Diogo Henrique Costa de Rezende" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Diogo Henrique Costa de Rezende</h3>
+      <p>
+        <a class="icon-link" href="mailto:domingoscardoso@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-7381-6954" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/4989168413703096" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Expert fungi taxonomy and phylogenetics</p>
+    </div>
+  </div>
+
+</div>
+```
+
 ## The Flora e Funga do Brasil Coordination Team
 
 ```{=html}
