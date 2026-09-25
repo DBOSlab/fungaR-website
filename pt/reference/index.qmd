@@ -1,0 +1,47 @@
+---
+title: "Referência de Funções"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+<style>
+  body {
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    position: relative;
+    z-index: 0;
+  }
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    z-index: -1;
+  }
+</style>
+
+## floraR
+
+- [`flora_build_matrix()`](/pt/reference/flora_build_matrix.qmd)
+
+- [`flora_download()`](/pt/reference/flora_download.qmd)
+
+- [`flora_get_children_taxa()`](/pt/reference/flora_get_children_taxa.qmd)
+
+- [`flora_get_descriptions()`](/pt/reference/flora_get_descriptions.qmd)
+
+- [`flora_match()`](/pt/reference/flora_match.qmd)
+
+- [`flora_parse()`](/pt/reference/flora_parse.qmd)
+
+- [`flora_records()`](/pt/reference/flora_records.qmd)
+
+- [`flora_search()`](/pt/reference/flora_search.qmd)
+
+- [`flora_version()`](/pt/reference/flora_version.qmd)

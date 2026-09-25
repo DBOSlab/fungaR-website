@@ -1,0 +1,45 @@
+---
+title: 'funga_version'
+description: 'Summarize Available Fungal Taxonomic and Distributional Records from Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+fungaR::funga_version()
+```
+
+### Description
+
+Retrieves and summarizes metadata of the currently available versions of the
+combined plant and fungal taxonomic and distributional checklist published by the
+[Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/),
+hosted by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br).
+The metadata includes version number, publication date, number of records, and
+direct access URLs.
+
+### Details
+
+This function accesses the [IPT metadata for the FFB dataset](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)
+and extracts version information for each published data release. It returns
+a cleaned and structured summary as a data frame.
+
+### Value
+
+A `data.frame` with the following columns:
+
+- `Version`: Version number of the dataset release.
+- `Published_on`: Timestamp of the dataset release.
+- `Records`: Number of records in the release (FFB publishes plants and fungi together in one archive; `funga_parse()` is what subsets this down to the Fungi kingdom).
+- `URL`: Direct link to the dataset version on the IPT portal.
+
+### Examples
+
+```r
+ffb_version <- funga_version()
+  head(ffb_version)
+```
+
+

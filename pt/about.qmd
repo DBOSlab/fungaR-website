@@ -1,0 +1,76 @@
+---
+title: "Sobre o floraR"
+subtitle: "Ferramentas de código aberto para acessar, analisar e curar dados da plataforma Flora e Funga do Brasil"
+format:
+  html:
+    toc: true
+---
+
+<style>
+  body {
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    position: relative;
+    z-index: 0;
+  }
+
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    z-index: -1;
+  }
+</style>
+
+## Visão Geral
+
+`floraR` é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), mantida pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br). Ele oferece uma interface completa para o [portal de dados IPT da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil): baixando, analisando, filtrando e explorando dados versionados de Arquivo Darwin Core (DwC-A) — desde a navegação por critérios taxonômicos, geográficos ou de atributos até a resolução da sua própria lista de nomes de espécies em relação a ela.
+
+Além da recuperação de dados, o `floraR` também auxilia especialistas taxonômicos que contribuem para a FFB, simplificando a integração de novos nomes de espécies e registros de repositórios globais de biodiversidade, como IPNI, REFLORA e GBIF.
+
+## Flora e Funga do Brasil
+
+O Brasil abriga a maior diversidade de plantas, algas e fungos do mundo ([BFG 2022](https://doi.org/10.1002/tax.12640)). A lista de espécies que a documenta começou em 2008 como a *Lista de Espécies da Flora do Brasil*, evoluiu para o [Flora do Brasil 2020](http://doi.org/10.47871/jbrj2021004) para atender aos compromissos do Brasil com a Estratégia Global para a Conservação das Plantas, e — após a incorporação dos fungos — tornou-se a [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/).
+
+Para cada nome aceito, a FFB registra o status nomenclatural, a classificação taxonômica, a distribuição geográfica, o endemismo, a forma de vida, o hábitat e o tipo de vegetação — uma base taxonômica validada, reunida colaborativamente por centenas de taxonomistas e publicada como Arquivos Darwin Core versionados.
+
+## Descrição do Pacote
+
+Pacote: `floraR`
+Tipo: Pacote R
+Versão: 1.0.0
+
+Autor: Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0000-0001-7072-2656))
+
+Mantenedor: Domingos Cardoso (<domingoscardoso@jbrj.gov.br>)
+
+### Funcionalidades
+
+- Interface completa para o portal de dados IPT da Flora e Funga do Brasil
+- Controle de versões e análise de conjuntos de dados DwC-A baixados, com suporte a uso offline
+- Filtragem da lista de espécies por critérios taxonômicos, geográficos e de atributos
+- Resolução de nomes exata e aproximada (distância de Levenshtein) em relação à lista de espécies
+- Navegação pela hierarquia taxonômica em qualquer nível, da classe até a espécie
+- Ferramentas para curadoria de dados e integração com repositórios globais de biodiversidade
+- Fluxos de trabalho integrados ao tidyverse
+
+## Contribua
+
+Você pode contribuir com o `floraR`:
+
+- Abrindo issues para feedback ou relatos de bugs
+- Enviando pull requests com correções ou melhorias
+- Sugerindo ou desenvolvendo novas funcionalidades (abra uma issue para discussão antes)
+
+## Licença
+
+`floraR` é um [software de código aberto](/LICENSE.md). Ferramentas abertas fortalecem a ciência por meio da reprodutibilidade, acessibilidade e compartilhamento equitativo do conhecimento.
+
+## Agradecimentos
+
+O desenvolvimento do `floraR` é liderado pelo [Jardim Botânico do Rio de Janeiro (JBRJ)](https://www.gov.br/jbrj), em colaboração com as comunidades de biodiversidade e informática. Agradecemos também o apoio financeiro do [CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico](https://www.gov.br/cnpq/pt-br) e da [FINEP - Financiadora de Estudos e Projetos](https://www.gov.br/finep/pt-br).

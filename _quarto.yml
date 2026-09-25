@@ -1,0 +1,145 @@
+project:
+  output-dir: docs
+  type: website
+  resources:
+    - figures/**
+
+website:
+  title: "floraR"
+  site-url: https://dboslab.github.io/floraR-website/
+  page-navigation: true
+  reader-mode: true
+  favicon: "figures/floraR_hex_sticker.png"
+
+  page-footer:
+    center:
+      - text: "About"
+        href: about.qmd
+      - text: "FAQ"
+        href: faq/index.qmd
+      - text: "License"
+        href: LICENSE.md
+    right:
+      - icon: github
+        href: https://github.com/DBOSlab/floraR
+        aria-label: floraR GitHub
+
+  navbar:
+    search: true
+    background: light
+    collapse-below: lg
+    type: light
+    logo: "figures/floraR_hex_sticker.png"
+    href: index.qmd
+    left:
+      - text: "Overview"
+        href: index.qmd
+      - text: "Get Started"
+        href: get-started/index.qmd
+      - text: "Articles"
+        href: articles/index.qmd
+      - text: "News"
+        href: news/index.qmd
+      - text: "Reference"
+        href: reference/index.qmd
+      - text: "Authors"
+        href: authors/index.qmd
+      - text: "Help"
+        menu:
+          - text: "Report a Bug"
+            icon: "bug"
+            href: "https://github.com/DBOSlab/floraR/issues"
+          - text: "Ask a Question"
+            icon: "chat-right-text"
+            href: "https://github.com/DBOSlab/floraR/discussions"
+          - text: "FAQ"
+            icon: "question-circle"
+            href: faq/index.qmd
+
+    tools:
+      - icon: github
+        href: https://github.com/DBOSlab/floraR
+        text: floraR GitHub
+
+  sidebar:
+    - id: articles
+      title: Articles
+      collapse-level: 3
+      align: left
+      contents:
+        - text: Overview
+          href: articles/index.qmd
+        - section: Check dataset versions
+          contents:
+          - text: Check available FFB dataset versions
+            href: articles/check_ffb_versions.qmd
+        - section: Download and parse FFB data
+          contents:
+          - text: Download the FFB checklist
+            href: articles/download_ffb_dataset.qmd
+          - text: Parse FFB Darwin Core Archives
+            href: articles/parse_ffb_dwca.qmd
+        - section: Browse and filter the checklist
+          contents:
+          - text: Filter and retrieve checklist records
+            href: articles/filter_ffb_records.qmd
+        - section: Resolve and explore taxonomy
+          contents:
+          - text: Resolve your own species names
+            href: articles/resolve_species_names.qmd
+          - text: Explore the taxonomic hierarchy
+            href: articles/explore_taxonomic_hierarchy.qmd
+        - section: Curate new records
+          contents:
+          - text: Curate and describe new records
+            href: articles/curate_ffb_descriptions.qmd
+
+    - id: pt-articles
+      title: Artigos
+      collapse-level: 3
+      align: left
+      contents:
+        - text: Visão Geral
+          href: pt/articles/index.qmd
+        - section: Verificar versões do conjunto de dados
+          contents:
+          - text: Verificar as versões disponíveis da FFB
+            href: pt/articles/check_ffb_versions.qmd
+        - section: Baixar e analisar dados da FFB
+          contents:
+          - text: Baixar a lista de espécies da FFB
+            href: pt/articles/download_ffb_dataset.qmd
+          - text: Analisar arquivos Darwin Core da FFB
+            href: pt/articles/parse_ffb_dwca.qmd
+        - section: Navegar e filtrar a lista de espécies
+          contents:
+          - text: Filtrar e recuperar registros da lista de espécies
+            href: pt/articles/filter_ffb_records.qmd
+        - section: Resolver e explorar a taxonomia
+          contents:
+          - text: Resolver sua própria lista de nomes de espécies
+            href: pt/articles/resolve_species_names.qmd
+          - text: Explorar a hierarquia taxonômica
+            href: pt/articles/explore_taxonomic_hierarchy.qmd
+        - section: Curar novos registros
+          contents:
+          - text: Curar e descrever novos registros
+            href: pt/articles/curate_ffb_descriptions.qmd
+
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-copy: true
+    code-overflow: wrap
+    code-tools: true
+    css: styles.css
+    eval: false
+    lightbox: true
+    theme:
+      light: [spacelab, theme.scss]
+      dark: [spacelab, theme-dark.scss]
+    include-in-header:
+      - gtm-head.html
+      - lang-switcher.html
+    include-before-body: gtm-body.html

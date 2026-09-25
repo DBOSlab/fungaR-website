@@ -1,0 +1,51 @@
+/*-- scss:defaults --*/
+
+$primary-accent: #2fa08c;
+$link-color: $primary-accent;
+
+// Base document colors
+$body-bg: #181818;
+$body-color: white;
+
+$light: #525252;
+
+// Navigation element colors
+$navbar-bg: #17332f;
+$sidebar-bg: #17332f;
+$footer-bg: #17332f;
+
+// Code blocks
+$code-block-bg-alpha: -.8;
+
+// Bootstrap popovers
+$popover-bg: #242424;
+
+// Bootstrap inputs
+$input-bg: #242424;
+
+.mainbox {
+  background: #303030;
+}
+
+.mainbox a {
+  text-decoration: none;
+}
+
+.mainbox h2 {
+  border-bottom-width: 0px;
+  font-weight: lighter;
+}
+
+.stat-card {
+  background: #1d2b1f;
+  border: 1px solid rgba(47, 160, 140, 0.35);
+}
+
+.stat-card .stat-number {
+  color: #2fa08c;
+}
+
+.stat-card .stat-label {
+  color: #cfd8d6;
+}
+

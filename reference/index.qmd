@@ -1,0 +1,49 @@
+---
+title: "Function Reference"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+<style>
+  body {
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    position: relative;
+    z-index: 0;
+  }
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    z-index: -1;
+  }
+</style>
+
+## fungaR
+
+- [`funga_distribution_gap()`](/reference/funga_distribution_gap.qmd)
+
+- [`funga_download()`](/reference/funga_download.qmd)
+
+- [`funga_get_children_taxa()`](/reference/funga_get_children_taxa.qmd)
+
+- [`funga_match()`](/reference/funga_match.qmd)
+
+- [`funga_mycobank_gap()`](/reference/funga_mycobank_gap.qmd)
+
+- [`funga_parse()`](/reference/funga_parse.qmd)
+
+- [`funga_records()`](/reference/funga_records.qmd)
+
+- [`funga_search()`](/reference/funga_search.qmd)
+
+- [`funga_version()`](/reference/funga_version.qmd)
+
+
