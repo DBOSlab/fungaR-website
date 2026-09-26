@@ -1,0 +1,93 @@
+---
+title: 'spfungorum_gap'
+description: 'Find species with Index Fungorum Brazil evidence that are missing from FFB'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+fungaR::spfungorum_gap()
+```
+
+### Description
+
+Given a fungal genus, cross-checks [Species
+Fungorum](https://www.speciesfungorum.org) (Index Fungorum, maintained by the Royal Botanic Gardens, Kew) against the
+Flora e Funga do Brasil (FFB) checklist to find species-level names that Index
+Fungorum's own reported locality places in Brazil but that are not currently
+registered in FFB. Like `mycobank_gap`, this is not a general diff
+of the two databases: a name missing from FFB is only returned when Index Fungorum's
+own locality data indicates it occurs in Brazil.
+
+### Details
+
+Species Fungorum/Index Fungorum has no bulk export, but it does publish a public,
+documented web service (https://www.indexfungorum.org/ixfwebservice/fungus.asmx)
+that answers plain HTTP GET requests with XML - no SOAP client, headless browser, or
+authentication required, and no per-record page visit: a single request returns every
+name matching `taxon`, including, for many records, the type specimen's own
+reported `LOCATION` and `HOST` fields, which is what
+`Fungorum_Brazil_Evidence` is derived from. Index Fungorum's `LOCATION`
+field very often names a Brazilian state directly (e.g. `"Pernambuco"`) rather
+than the country itself, so the check covers the country name and every Brazilian
+state name (with or without diacritics), not just the literal word "Brazil".
+
+A candidate counts as "already in FFB" if either its raw Index Fungorum name or its
+Index Fungorum *currently accepted* name matches an FFB species - not the
+current name alone - because Index Fungorum and FFB sometimes disagree on which genus
+a name currently belongs to (the same situation documented for
+`mycobank_gap`).
+
+The FFB side of the comparison reuses `funga_get_children_taxa` to list
+every species (accepted and synonym) currently registered in FFB for the requested
+genus.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| taxon | Character. A single fungal genus name (e.g. `"Phellinotus"`). Species Fungorum's web service has no operation for searching by higher classification, so order-level searches are not supported. |
+| require_brazil_evidence | Logical. If `TRUE` (default), the returned table is filtered to only the candidates whose Index Fungorum `Location` mentions Brazil (the country name or any Brazilian state) - i.e. names Index Fungorum itself indicates occur in Brazil but that FFB is still missing. Set to `FALSE` to instead return every Index Fungorum species-level name missing from FFB regardless of locality, with `Fungorum_Brazil_Evidence` alongside for manual review. |
+| max_number | Numeric. Maximum number of matching names requested from the web service in a single call. Defaults to `1000`, generous for any genus. |
+| version | Character. FFB dataset version to compare against. Defaults to `"latest"`. Passed to `funga_get_children_taxa`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages. |
+| save | Logical. If `TRUE` (default), the result is saved to disk as an `.xlsx` spreadsheet. |
+| dir | Character. Directory where the spreadsheet is saved when `save = TRUE`. Defaults to `"spfungorum_gap"`. |
+| filename | Character. Name of the `.xlsx` file (without extension) to save. Defaults to `"spfungorum_gap_<taxon>"`. |
+| html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report (`<dir>/<filename>.html`) summarizing the results: KPI counts and the full candidate table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
+| open_report | Logical. If `TRUE` (default in interactive sessions), opens the rendered HTML report in the default browser. |
+
+### Value
+
+A `data.frame`, one row per Index Fungorum species-level name found in
+  the requested genus that is absent from the current FFB checklist and, by default,
+  whose Index Fungorum locality data indicates it occurs in Brazil, with columns:
+
+  Fungorum_NumberIndex Fungorum's numeric record identifier for the name.
+  Taxon_nameThe binomial as registered in Index Fungorum.
+  AuthorsAuthor citation.
+  YearYear of publication.
+  Name_statusIndex Fungorum's nomenclatural status (e.g. `"Legitimate"`).
+  Current_nameIndex Fungorum's currently accepted name for this entry, when
+    different (i.e. when `Taxon_name` is itself a synonym).
+  Fungorum_Location, Fungorum_HostType specimen locality and host, as reported
+    in Index Fungorum's own record (may be `NA` - not every record has these).
+  Fungorum_URLDirect link to the name's Species Fungorum page.
+  Fungorum_Brazil_EvidenceLogical; `TRUE` when `Fungorum_Location`
+    mentions Brazil.
+  In_FFBAlways `FALSE` (kept for clarity when combining with other tables).
+
+### Examples
+
+```r
+# Index Fungorum species-level names for genus Phellinotus with a Brazilian
+# reported locality that are still missing from FFB
+gap <- spfungorum_gap(taxon = "Phellinotus")
+
+# Every Index Fungorum name missing from FFB regardless of locality, for manual review
+gap_all <- spfungorum_gap(taxon = "Phellinotus", require_brazil_evidence = FALSE)
+```
+
+

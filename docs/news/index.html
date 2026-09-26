@@ -4588,7 +4588,10 @@ z-index: -1;
 <li><code>funga_search()</code>: Resolve your own species name list against the FFB checklist, with exact matching first and fuzzy (Levenshtein-distance) matching as a fallback for typos, including synonym resolution.</li>
 <li><code>funga_match()</code>: Compare two independent species name lists, aligning names that resolve to the same accepted taxon.</li>
 <li><code>funga_get_children_taxa()</code>: Retrieve all child taxa (species, subspecies, varieties, genera, etc.) below a given taxonomic name and rank, following FFB’s real fungi hierarchy (Division &gt; Order &gt; Genus &gt; Species).</li>
-<li><code>funga_mycobank_gap()</code>: Cross-check MycoBank’s global name database against the FFB checklist for a given genus or order, flagging species missing from FFB with optional GBIF/speciesLink Brazil-occurrence evidence.</li>
+<li><code>mycobank_gap()</code>: Cross-check MycoBank’s global name database against the FFB checklist for a given genus or order, returning by default only species-level names whose own MycoBank locality places them in Brazil but that are still missing from FFB.</li>
+<li><code>mycobank_records()</code>: Retrieve every MycoBank name matching a given species, genus, or order, filtered by default to those with MycoBank Brazil evidence, independent of whether it is already registered in FFB.</li>
+<li><code>spfungorum_gap()</code>: Cross-check Species Fungorum (Index Fungorum, Kew) against the FFB checklist for a given genus, via Index Fungorum’s own public web-service API, returning by default only species-level names whose own reported locality places them in Brazil but that are still missing from FFB.</li>
+<li><code>spfungorum_records()</code>: Retrieve every Index Fungorum name matching a given species or genus, filtered by default to those with a Brazilian reported locality, independent of whether it is already registered in FFB.</li>
 <li><code>funga_distribution_gap()</code>: Cross-check GBIF, speciesLink, and REFLORA for specimen evidence of a taxon in Brazilian states not yet listed in FFB’s official distribution.</li>
 <li>Most functions download and parse the FFB dataset automatically and cache it locally, so repeated queries and offline analysis work without re-downloading.</li>
 <li>Seamless integration with tidyverse workflows for downstream analyses.</li>
@@ -5123,22 +5126,25 @@ z-index: -1;
 <span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_search()`</span>: Resolve your own species name list against the FFB checklist, with exact matching first and fuzzy (Levenshtein-distance) matching as a fallback for typos, including synonym resolution.</span>
 <span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_match()`</span>: Compare two independent species name lists, aligning names that resolve to the same accepted taxon.</span>
 <span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_get_children_taxa()`</span>: Retrieve all child taxa (species, subspecies, varieties, genera, etc.) below a given taxonomic name and rank, following FFB&#39;s real fungi hierarchy (Division &gt; Order &gt; Genus &gt; Species).</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_mycobank_gap()`</span>: Cross-check MycoBank&#39;s global name database against the FFB checklist for a given genus or order, flagging species missing from FFB with optional GBIF/speciesLink Brazil-occurrence evidence.</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_distribution_gap()`</span>: Cross-check GBIF, speciesLink, and REFLORA for specimen evidence of a taxon in Brazilian states not yet listed in FFB&#39;s official distribution.</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Most functions download and parse the FFB dataset automatically and cache it locally, so repeated queries and offline analysis work without re-downloading.</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Seamless integration with tidyverse workflows for downstream analyses.</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Comprehensive testthat suite, continuous integration via GitHub Actions.</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">### Infrastructure</span></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>MIT license.</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GitHub Actions: R-CMD-check and test coverage.</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Hosted documentation: <span class="co">[</span><span class="ot">fungaR-website</span><span class="co">](https://dboslab.github.io/fungaR-website/)</span>, with How-To articles for every function and a full Portuguese translation (EN/PT language switcher).</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>Please report bugs or issues at:</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ot">&lt;https://github.com/DBOSlab/fungaR/issues&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`mycobank_gap()`</span>: Cross-check MycoBank&#39;s global name database against the FFB checklist for a given genus or order, returning by default only species-level names whose own MycoBank locality places them in Brazil but that are still missing from FFB.</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`mycobank_records()`</span>: Retrieve every MycoBank name matching a given species, genus, or order, filtered by default to those with MycoBank Brazil evidence, independent of whether it is already registered in FFB.</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`spfungorum_gap()`</span>: Cross-check Species Fungorum (Index Fungorum, Kew) against the FFB checklist for a given genus, via Index Fungorum&#39;s own public web-service API, returning by default only species-level names whose own reported locality places them in Brazil but that are still missing from FFB.</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`spfungorum_records()`</span>: Retrieve every Index Fungorum name matching a given species or genus, filtered by default to those with a Brazilian reported locality, independent of whether it is already registered in FFB.</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_distribution_gap()`</span>: Cross-check GBIF, speciesLink, and REFLORA for specimen evidence of a taxon in Brazilian states not yet listed in FFB&#39;s official distribution.</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Most functions download and parse the FFB dataset automatically and cache it locally, so repeated queries and offline analysis work without re-downloading.</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Seamless integration with tidyverse workflows for downstream analyses.</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Comprehensive testthat suite, continuous integration via GitHub Actions.</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">### Infrastructure</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>MIT license.</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GitHub Actions: R-CMD-check and test coverage.</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Hosted documentation: <span class="co">[</span><span class="ot">fungaR-website</span><span class="co">](https://dboslab.github.io/fungaR-website/)</span>, with How-To articles for every function and a full Portuguese translation (EN/PT language switcher).</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>Please report bugs or issues at:</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="ot">&lt;https://github.com/DBOSlab/fungaR/issues&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

@@ -1,0 +1,101 @@
+---
+title: "Retrieve records for a Brazilian taxon"
+format: html
+---
+
+Here we present a practical guide to `mycobank_records()` and `spfungorum_records()`, two `fungaR` functions for retrieving nomenclatural information about a Brazilian fungal taxon from [MycoBank](https://www.mycobank.org) and [Species Fungorum](https://www.speciesfungorum.org) (Index Fungorum, maintained by the Royal Botanic Gardens, Kew) respectively. Unlike [`mycobank_gap()`](/articles/curate_ffb_new_records.qmd) and [`spfungorum_gap()`](/articles/curate_ffb_new_records.qmd), these are **not** comparisons against the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) checklist — it doesn't matter whether the taxon is already registered in FFB. They are straightforward retrieval tools: give either one a species or genus, and it returns everything that repository has on record for it, filtered by default to only the names placed in Brazil.
+
+Both functions write their results in three complementary forms: the returned `data.frame`, a downloadable `.xlsx` spreadsheet, and — by default (`html_report = TRUE`) — a self-contained **HTML report** with KPI counts and the full record table as a sortable, filterable [`DT`](https://rstudio.github.io/DT/) widget with one-click copy/CSV/Excel download buttons, opened automatically in your browser in interactive sessions (`open_report = interactive()`).
+
+## When to use these instead of `mycobank_gap()`/`spfungorum_gap()`
+
+- Use **`mycobank_records()`**/**`spfungorum_records()`** when you already have a taxon in mind — a single species, or every species in a genus — and want to see everything that repository knows about the Brazilian occurrence(s), regardless of FFB status.
+- Use **[`mycobank_gap()`/`spfungorum_gap()`](/articles/curate_ffb_new_records.qmd)** when you want to find *candidates FFB is missing* — they add the FFB comparison step and only return names absent from the checklist.
+
+## `mycobank_records()`: retrieve MycoBank records for a taxon
+
+MycoBank has no public search API suited to bulk automation, so rather than scraping its live, JavaScript-driven search interface, `mycobank_records()` downloads and caches MycoBank's own bulk name export (`MBList.zip`, refreshed regularly by MycoBank, shared with `mycobank_gap()`'s cache), then filters it down to the requested species, genus, or order.
+
+The bulk export carries no locality information, so determining Brazil evidence requires visiting each matching name's own MycoBank page (`check_locality = TRUE`, the default, via [`chromote`](https://rstudio.github.io/chromote/), a headless-Chrome driver — MycoBank's name pages are a JavaScript app with no static HTML fallback) to read the type specimen's reported "Location details", along with several other fields only available on that individual page: substrate/host, etymology, name type (e.g. Basionym/Combination), the type specimen voucher itself, its collector, and the original-publication (protolog) citation. When `require_brazil_evidence = TRUE` (the default), the result is then filtered down to only the names whose locality mentions Brazil; set it to `FALSE` to instead get every matching MycoBank name regardless of locality, with the evidence columns alongside for manual review.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| `taxon` | Character. A single species, genus, or order name (e.g. `"Trichoderma harzianum"`, `"Trichoderma"`, or `"Xylariales"`). |
+| `rank` | `"species"` (default), `"genus"`, or `"order"`. |
+| `check_locality` | If `TRUE` (default), each matching name's own MycoBank page is visited to read its reported locality/substrate. Requires the `chromote` package and a local Chrome/Chromium install; skipped with a message if unavailable. |
+| `require_brazil_evidence` | If `TRUE` (default), the returned table is filtered to only names whose MycoBank locality mentions Brazil. Set `FALSE` to return every matching name regardless of locality. Only meaningful when `check_locality = TRUE`. |
+| `max_check` | Safety cap on how many matching names are sent through the (one-page-load-per-name) locality check. Default `200`. |
+| `mycobank_dir` | Local directory used to cache the downloaded MycoBank export (~140MB). Defaults to `"mycobank_download"`. |
+| `save` | If `TRUE` (default), saves the result as an `.xlsx` spreadsheet. |
+| `html_report` | If `TRUE` (default), also writes the interactive HTML report described above. |
+
+### Value
+
+A data frame, one row per matching MycoBank name and, by default, with a Brazilian MycoBank locality, with its MycoBank number, author, year, name status, classification, current name, full synonymy text, **original MycoBank URL** (rendered as a clickable link in the HTML report), and — when `check_locality = TRUE` — several fields scraped from the name's own MycoBank page: `MycoBank_Locality`, `MycoBank_Substrate`, `MycoBank_Etymology`, `MycoBank_Name_Type`, `MycoBank_Type_Specimen`, `MycoBank_Collector`, `MycoBank_Protolog`, and a `MycoBank_Brazil_Evidence` flag.
+
+### Example
+
+```r
+library(fungaR)
+
+# All MycoBank information for a single species, only if MycoBank places it in Brazil
+sp <- mycobank_records(taxon = "Trichoderma harzianum")
+
+# Every MycoBank species-level name in genus Trichoderma with a Brazilian MycoBank locality
+genus_records <- mycobank_records(taxon = "Trichoderma", rank = "genus")
+
+# Every matching name regardless of locality, for manual review
+all_records <- mycobank_records(taxon = "Trichoderma", rank = "genus",
+                                require_brazil_evidence = FALSE)
+
+# Faster, without the per-candidate locality check (no Brazil filtering possible)
+fast_records <- mycobank_records(taxon = "Trichoderma", rank = "genus",
+                                 check_locality = FALSE)
+```
+
+## `spfungorum_records()`: retrieve Index Fungorum records for a taxon
+
+Species Fungorum/Index Fungorum has no bulk export, but it does publish a public, documented web service (`fungus.asmx`, a plain HTTP GET/XML API - no SOAP client, headless browser, or authentication required) that `spfungorum_records()` queries directly. A single request returns every name matching `taxon`, including, for many records, the type specimen's own reported `LOCATION` and `HOST` - no per-record page visit needed, unlike MycoBank.
+
+Index Fungorum's `LOCATION` field very often names a Brazilian state directly (e.g. `"Pernambuco"`) rather than the country itself, so `Fungorum_Brazil_Evidence` checks the location against the country name and every Brazilian state name (with or without diacritics), not just the literal word "Brazil".
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| `taxon` | Character. A single species or genus name (e.g. `"Phellinotus neoaridus"` or `"Phellinotus"`). |
+| `rank` | `"species"` (default) or `"genus"`. Index Fungorum's web service has no operation for searching by higher classification, so order-level searches are not supported. |
+| `require_brazil_evidence` | If `TRUE` (default), the returned table is filtered to only names whose Index Fungorum location mentions Brazil. Set `FALSE` to return every matching name regardless of locality. |
+| `max_number` | Maximum number of matching names requested from the web service in a single call. Default `1000`, generous for any genus. |
+| `save` | If `TRUE` (default), saves the result as an `.xlsx` spreadsheet. |
+| `html_report` | If `TRUE` (default), also writes the interactive HTML report described above. |
+
+### Value
+
+A data frame, one row per matching Index Fungorum name and, by default, with a Brazilian reported locality, with its Fungorum number, author, year, name status, current name, **original Species Fungorum URL** (rendered as a clickable link in the HTML report), `Fungorum_Location`, `Fungorum_Host`, and a `Fungorum_Brazil_Evidence` flag.
+
+### Example
+
+```r
+library(fungaR)
+
+# All Index Fungorum information for a single species, only if it reports a
+# Brazilian locality
+sp <- spfungorum_records(taxon = "Phellinotus neoaridus")
+
+# Every Index Fungorum species-level name in genus Phellinotus with a
+# Brazilian reported locality
+genus_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus")
+
+# Every matching name regardless of locality, for manual review
+all_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus",
+                                  require_brazil_evidence = FALSE)
+```
+
+## Additional Tips
+
+- Install the [`chromote`](https://rstudio.github.io/chromote/) package (and have a local Chrome/Chromium install) to include `mycobank_records()`'s locality check; without it, that step (and the Brazil-evidence filtering that depends on it) is skipped with a message, and every matching name is returned unfiltered. `spfungorum_records()` needs no such extra dependency - locality (when available) always comes back with the same request.
+- `mycobank_dir` is shared between `mycobank_records()` and `mycobank_gap()` - pointing both functions at the same directory avoids re-downloading MycoBank's bulk export twice.
+- For larger genera, `mycobank_records()`'s per-candidate locality check can take a while - start with `check_locality = FALSE` to size up how many names match before running the full Brazil-evidence check. `spfungorum_records()` has no equivalent slow step: it is always a single request regardless of genus size.

@@ -40,7 +40,7 @@ No. `funga_records()` lets you browse and filter the FFB fungal checklist direct
 
 ### Does fungaR require an internet connection?
 
-Only the first time you query a given dataset version, or MycoBank's bulk name list. `funga_download()`/`funga_parse()` and `funga_mycobank_gap()` fetch and cache their respective datasets locally, and every other function reuses that cache automatically, so repeated queries and offline analysis work without a new download.
+Only the first time you query a given dataset version, or MycoBank's bulk name list. `funga_download()`/`funga_parse()` and `mycobank_gap()`/`mycobank_records()` fetch and cache their respective datasets locally, and every other function reuses that cache automatically, so repeated queries and offline analysis work without a new download. `spfungorum_gap()`/`spfungorum_records()` query Index Fungorum's web service directly each time, since there is no bulk export to cache.
 
 ### How do I install fungaR?
 
@@ -56,7 +56,7 @@ Yes. Every page has an EN/PT toggle in the navigation bar. Once you switch langu
 
 ### What output can fungaR generate?
 
-`fungaR` returns tidy data frames (and, for `funga_parse()`, a structured list of DwC-A tables) ready for downstream analysis. `funga_records()` can save results directly to CSV, while `funga_mycobank_gap()` and `funga_distribution_gap()` produce structured `.xlsx` spreadsheets — including each MycoBank name's original URL — designed for a taxonomist's manual review.
+`fungaR` returns tidy data frames (and, for `funga_parse()`, a structured list of DwC-A tables) ready for downstream analysis. `funga_records()` can save results directly to CSV, while `mycobank_gap()`, `mycobank_records()`, `spfungorum_gap()`, `spfungorum_records()`, and `funga_distribution_gap()` produce structured `.xlsx` spreadsheets — including each name's original URL — designed for a taxonomist's manual review.
 
 ### Why does FFB use "Division" instead of "Class" for fungi, and no family-rank record?
 
@@ -92,4 +92,4 @@ The `fungaR` package is a programmatic interface to the fungal side of the Flora
 
 ### Can I contribute new fungal names or records to Flora e Funga do Brasil?
 
-Yes. `fungaR` includes `funga_mycobank_gap()` and `funga_distribution_gap()` specifically to help taxonomic experts find candidates worth submitting — cross-checking MycoBank's global name database and Brazilian occurrence repositories (GBIF, speciesLink, REFLORA) against the current FFB checklist to flag species and state records that are plausibly Brazilian but still missing. To submit new names or corrections to the platform itself, see the contribution guidelines at [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) or contact the FFB coordination team at **floraefungadobrasil\@jbrj.gov.br**.
+Yes. `fungaR` includes `mycobank_gap()`, `spfungorum_gap()`, and `funga_distribution_gap()` specifically to help taxonomic experts find candidates worth submitting — cross-checking MycoBank's and Index Fungorum's global name databases, and Brazilian occurrence repositories (GBIF, speciesLink, REFLORA), against the current FFB checklist to flag species and state records that are plausibly Brazilian but still missing. If you already have a taxon in mind rather than needing an FFB comparison, `mycobank_records()`/`spfungorum_records()` retrieve everything those repositories have on record for it directly. To submit new names or corrections to the platform itself, see the contribution guidelines at [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) or contact the FFB coordination team at **floraefungadobrasil\@jbrj.gov.br**.

@@ -50,5 +50,6 @@ format: html
 :::
 ### Curate new records
 - [Find species and state records missing from FFB](/articles/curate_ffb_new_records.qmd)
+- [Retrieve records for a Brazilian taxon](/articles/retrieve_taxon_records.qmd)
 :::
 :::

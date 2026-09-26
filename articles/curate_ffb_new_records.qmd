@@ -3,17 +3,21 @@ title: "Find species and state records missing from FFB"
 format: html
 ---
 
-Here we present a practical guide to the `funga_mycobank_gap()` and `funga_distribution_gap()` functions of the `fungaR` package. Together, they support taxonomic experts curating and expanding [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/)'s fungal coverage, by cross-checking global mycological and biodiversity repositories and flagging candidates worth a manual review.
+Here we present a practical guide to the `mycobank_gap()`, `spfungorum_gap()`, and `funga_distribution_gap()` functions of the `fungaR` package. Together, they support taxonomic experts curating and expanding [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/)'s fungal coverage, by cross-checking global mycological and biodiversity repositories and flagging candidates worth a manual review.
 
-Both functions write their results in three complementary forms: the returned `data.frame`, a downloadable `.xlsx` spreadsheet, and — by default (`html_report = TRUE`) — a self-contained **HTML report** with KPI counts, breakdown tables, and the full candidate/record table as a sortable, filterable [`DT`](https://rstudio.github.io/DT/) widget with one-click copy/CSV/Excel download buttons, opened automatically in your browser in interactive sessions (`open_report = interactive()`).
+Looking for MycoBank or Index Fungorum information on a taxon you already have in mind, rather than a comparison against FFB? See [Retrieve records for a Brazilian taxon](/articles/retrieve_taxon_records.qmd) for `mycobank_records()`/`spfungorum_records()` instead.
 
-## `funga_mycobank_gap()`: find species missing from FFB
+All three functions write their results in three complementary forms: the returned `data.frame`, a downloadable `.xlsx` spreadsheet, and — by default (`html_report = TRUE`) — a self-contained **HTML report** with KPI counts, breakdown tables, and the full candidate/record table as a sortable, filterable [`DT`](https://rstudio.github.io/DT/) widget with one-click copy/CSV/Excel download buttons, opened automatically in your browser in interactive sessions (`open_report = interactive()`).
 
-Given a genus or order, `funga_mycobank_gap()` cross-checks [MycoBank](https://www.mycobank.org)'s global name database against the current FFB checklist, flagging species-level names that exist in MycoBank but are not yet registered in FFB.
+## `mycobank_gap()`: find MycoBank species with Brazil evidence missing from FFB
+
+Given a genus or order, `mycobank_gap()` cross-checks [MycoBank](https://www.mycobank.org)'s global name database against the current FFB checklist. This is **not a general diff of the two databases**: by default, only species-level MycoBank names that MycoBank's own locality data already places in Brazil — but that are still missing from FFB — are returned, so taxonomic experts get a shortlist of genuinely plausible new national records rather than every unrelated MycoBank name in the genus/order.
 
 MycoBank has no public search API suited to bulk automation, so rather than scraping its live, JavaScript-driven search interface, the function downloads and caches MycoBank's own bulk name export (`MBList.zip`, refreshed regularly by MycoBank), then filters it down to the requested genus or order using MycoBank's `Classification` column. Names are compared against FFB by their *currently accepted* MycoBank name (not the raw name itself), so an obscure historical synonym of a species FFB already lists under a different name is not flagged as missing.
 
-When `check_locality = TRUE` (default), each missing candidate's own MycoBank name page is additionally visited (via [`chromote`](https://rstudio.github.io/chromote/), a headless-Chrome driver — MycoBank's name pages are a JavaScript app with no static HTML fallback) to read the type specimen's reported "Location details", flagging candidates that MycoBank itself already associates with a Brazilian locality. This intentionally does not cross-check GBIF/speciesLink here — see `funga_distribution_gap()` below for that.
+Determining Brazil evidence requires visiting each missing candidate's own MycoBank name page (`check_locality = TRUE`, the default, via [`chromote`](https://rstudio.github.io/chromote/), a headless-Chrome driver — MycoBank's name pages are a JavaScript app with no static HTML fallback) to read the type specimen's reported "Location details", along with several other fields only available on that individual page: substrate/host, etymology, name type (e.g. Basionym/Combination), the type specimen voucher itself, its collector, and the original-publication (protolog) citation — beyond what MycoBank's bulk export alone provides. When `require_brazil_evidence = TRUE` (the default), the result is then filtered down to only the candidates whose locality mentions Brazil; set it to `FALSE` to instead get every MycoBank name missing from FFB regardless of locality, with the evidence columns alongside for manual review. This intentionally does not cross-check GBIF/speciesLink here — see `funga_distribution_gap()` below for that.
+
+A candidate counts as "already in FFB" if either its raw MycoBank name or its MycoBank *currently accepted* name matches an FFB species — not the current name alone — because MycoBank and FFB sometimes disagree on which genus a name currently belongs to.
 
 ### Arguments
 
@@ -22,6 +26,7 @@ When `check_locality = TRUE` (default), each missing candidate's own MycoBank na
 | `taxon` | Character. A single genus or order name (e.g. `"Trichoderma"` or `"Xylariales"`). |
 | `rank` | `"genus"` (default) or `"order"`. |
 | `check_locality` | If `TRUE` (default), each candidate's own MycoBank name page is visited to read its reported locality/substrate. Requires the `chromote` package and a local Chrome/Chromium install; skipped with a message if unavailable. |
+| `require_brazil_evidence` | If `TRUE` (default), the returned table is filtered to only candidates whose MycoBank locality mentions Brazil. Set `FALSE` to return every missing name regardless of locality. Only meaningful when `check_locality = TRUE`. |
 | `max_check` | Safety cap on how many candidates are sent through the (one-page-load-per-name) locality check. Default `200`. |
 | `version` | FFB dataset version to compare against. Defaults to `"latest"`. |
 | `mycobank_dir` | Local directory used to cache the downloaded MycoBank export (~140MB). Defaults to `"mycobank_download"`. |
@@ -30,20 +35,58 @@ When `check_locality = TRUE` (default), each missing candidate's own MycoBank na
 
 ### Value
 
-A data frame, one row per MycoBank species-level name missing from FFB, with its MycoBank number, author, name status, classification, current name, **original MycoBank URL**, and (when `check_locality = TRUE`) the reported `MycoBank_Locality`, `MycoBank_Substrate`, and a `MycoBank_Brazil_Evidence` flag — ready for a taxonomist's manual review.
+A data frame, one row per MycoBank species-level name missing from FFB and, by default, with a Brazilian MycoBank locality, with its MycoBank number, author, year, name status, classification, current name, full synonymy text, **original MycoBank URL** (rendered as a clickable link in the HTML report), and — when `check_locality = TRUE` — several fields scraped from the name's own MycoBank page: `MycoBank_Locality`, `MycoBank_Substrate`, `MycoBank_Etymology`, `MycoBank_Name_Type`, `MycoBank_Type_Specimen`, `MycoBank_Collector`, `MycoBank_Protolog`, and a `MycoBank_Brazil_Evidence` flag — ready for a taxonomist's manual review.
 
 ### Example
 
 ```r
 library(fungaR)
 
-# MycoBank species in genus Trichoderma missing from FFB, flagging
-# candidates MycoBank itself already associates with a Brazilian locality
-gap <- funga_mycobank_gap(taxon = "Trichoderma", rank = "genus")
+# MycoBank species in genus Trichoderma with a Brazilian MycoBank locality
+# that are still missing from FFB
+gap <- mycobank_gap(taxon = "Trichoderma", rank = "genus")
 
-# Faster, without the per-candidate locality check
-gap_fast <- funga_mycobank_gap(taxon = "Trichoderma", rank = "genus",
-                               check_locality = FALSE)
+# Every MycoBank name missing from FFB regardless of locality, for manual review
+gap_all <- mycobank_gap(taxon = "Trichoderma", rank = "genus",
+                        require_brazil_evidence = FALSE)
+
+# Faster, without the per-candidate locality check (no Brazil filtering possible)
+gap_fast <- mycobank_gap(taxon = "Trichoderma", rank = "genus",
+                         check_locality = FALSE)
+```
+
+## `spfungorum_gap()`: find Index Fungorum species with Brazil evidence missing from FFB
+
+Given a genus, `spfungorum_gap()` cross-checks [Species Fungorum](https://www.speciesfungorum.org) (Index Fungorum, Kew) against the current FFB checklist — the same "not a general diff" philosophy as `mycobank_gap()`, but sourced from Index Fungorum's own reported locality instead of MycoBank's.
+
+Unlike MycoBank, Index Fungorum publishes a public, documented web service (`fungus.asmx`, a plain HTTP GET/XML API — no SOAP client or headless browser needed) that already returns every matching name's own reported locality and host in a single request per genus, so there is no per-candidate page-visit step and no `chromote` dependency. Index Fungorum's `LOCATION` field very often names a Brazilian state directly (e.g. `"Pernambuco"`) rather than the country itself, so the Brazil-evidence check covers the country name and every Brazilian state, not just the literal word "Brazil". As with `mycobank_gap()`, a candidate counts as "already in FFB" if either its raw Index Fungorum name or its currently accepted name matches an FFB species.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| `taxon` | Character. A single genus name (e.g. `"Phellinotus"`). Index Fungorum's web service has no operation for searching by higher classification, so order-level searches are not supported. |
+| `require_brazil_evidence` | If `TRUE` (default), the returned table is filtered to only candidates whose Index Fungorum location mentions Brazil. Set `FALSE` to return every missing name regardless of locality. |
+| `max_number` | Maximum number of matching names requested from the web service in a single call. Default `1000`, generous for any genus. |
+| `version` | FFB dataset version to compare against. Defaults to `"latest"`. |
+| `save` | If `TRUE` (default), saves the result as an `.xlsx` spreadsheet. |
+| `html_report` | If `TRUE` (default), also writes the interactive HTML report described above. |
+
+### Value
+
+A data frame, one row per Index Fungorum species-level name missing from FFB and, by default, with a Brazilian reported locality, with its Fungorum number, author, year, name status, current name, **original Species Fungorum URL** (rendered as a clickable link in the HTML report), `Fungorum_Location`, `Fungorum_Host`, and a `Fungorum_Brazil_Evidence` flag.
+
+### Example
+
+```r
+library(fungaR)
+
+# Index Fungorum species in genus Phellinotus with a Brazilian reported
+# locality that are still missing from FFB
+gap <- spfungorum_gap(taxon = "Phellinotus")
+
+# Every Index Fungorum name missing from FFB regardless of locality, for manual review
+gap_all <- spfungorum_gap(taxon = "Phellinotus", require_brazil_evidence = FALSE)
 ```
 
 ## `funga_distribution_gap()`: find candidate new state records
@@ -84,9 +127,9 @@ gap_ba_pe <- funga_distribution_gap(taxon = "Trichoderma harzianum",
 
 - speciesLink's public API has, at the time of writing, a known SSL/endpoint reliability issue; `funga_distribution_gap()` treats speciesLink evidence as strictly best-effort and falls back gracefully to GBIF (and REFLORA) when it is unreachable.
 - Install the [`refloraR`](https://github.com/DBOSlab/refloraR) package to include REFLORA specimen evidence in `funga_distribution_gap()`; without it, that source is skipped with a message.
-- Install the [`chromote`](https://rstudio.github.io/chromote/) package (and have a local Chrome/Chromium install) to include the MycoBank locality check in `funga_mycobank_gap()`; without it, that step is skipped with a message.
-- Combine with [`funga_get_children_taxa()`](/articles/explore_taxonomic_hierarchy.qmd) to build the candidate genus/order list you want to check against MycoBank.
-- Both functions require internet access and, for larger genera, orders, or widespread species, can take a while when the per-candidate checks are enabled — start with `check_locality = FALSE` (`funga_mycobank_gap()`) to size up how many candidates exist before running the full check.
+- Install the [`chromote`](https://rstudio.github.io/chromote/) package (and have a local Chrome/Chromium install) to include the MycoBank locality check in `mycobank_gap()`; without it, that step (and the Brazil-evidence filtering that depends on it) is skipped with a message, and every missing name is returned unfiltered. `spfungorum_gap()` needs no such extra dependency.
+- Combine with [`funga_get_children_taxa()`](/articles/explore_taxonomic_hierarchy.qmd) to build the candidate genus list you want to check against MycoBank or Index Fungorum.
+- `mycobank_gap()`, for larger genera or orders, can take a while when the per-candidate locality checks are enabled — start with `check_locality = FALSE` to size up how many candidates exist before running the full Brazil-evidence check. `spfungorum_gap()` has no equivalent slow step: it is always a single request regardless of genus size.
 
 ## See Also
 

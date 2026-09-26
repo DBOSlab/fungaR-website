@@ -1,0 +1,90 @@
+---
+title: 'spfungorum_records'
+description: 'Retrieve Species Fungorum (Index Fungorum) records for a taxon, filtered to Brazil evidence'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+fungaR::spfungorum_records()
+```
+
+### Description
+
+Given a fungal species or genus, retrieves every matching name from
+[Species Fungorum](https://www.speciesfungorum.org) (the nomenclatural database
+maintained by the Royal Botanic Gardens, Kew, also known as Index Fungorum) and, by
+default, filters the result down to only the names whose own reported locality places
+them in Brazil - returning a structured spreadsheet of Index Fungorum information
+(including each name's original Species Fungorum URL) for those Brazilian records.
+Like `mycobank_records`, this is a straightforward retrieval tool,
+not a gap/comparison one - it does not cross-check FFB at all.
+
+### Details
+
+Species Fungorum/Index Fungorum has no bulk export, but it does publish a public,
+documented web service (https://www.indexfungorum.org/ixfwebservice/fungus.asmx)
+that answers plain HTTP GET requests with XML - no SOAP client, headless browser, or
+authentication required. A single request returns every name matching `taxon`,
+including, for many records, the type specimen's own reported `LOCATION` and
+`HOST` fields - the data this function uses as its Brazil-evidence signal. Unlike
+MycoBank, no per-record page visit is needed: everything comes back in one response.
+
+Index Fungorum's `LOCATION` field very often names a Brazilian state directly
+(e.g. `"Pernambuco"`) rather than the country itself, so
+`Fungorum_Brazil_Evidence` checks `Fungorum_Location` against the country
+name and every Brazilian state name (with or without diacritics), not just the literal
+word "Brazil".
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| taxon | Character. A single fungal species or genus name (e.g. `"Phellinotus neoaridus"` or `"Phellinotus"`). |
+| rank | Character. Whether `taxon` is a `"species"` (default) or a `"genus"`. Species Fungorum's web service has no operation for searching by higher classification (order/family), so `rank = "order"` is not supported. |
+| require_brazil_evidence | Logical. If `TRUE` (default), the returned table is filtered to only the names whose Index Fungorum `Location` mentions Brazil (the country name or any Brazilian state). Set to `FALSE` to instead return every matching name regardless of locality, for manual review. |
+| max_number | Numeric. Maximum number of matching names requested from the web service in a single call. Defaults to `1000`, generous for any genus. |
+| verbose | Logical. If `TRUE` (default), prints progress messages. |
+| save | Logical. If `TRUE` (default), the result is saved to disk as an `.xlsx` spreadsheet. |
+| dir | Character. Directory where the spreadsheet is saved when `save = TRUE`. Defaults to `"spfungorum_records"`. |
+| filename | Character. Name of the `.xlsx` file (without extension) to save. Defaults to `"spfungorum_records_<taxon>"`. |
+| html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report (`<dir>/<filename>.html`) summarizing the results: KPI counts and the full record table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
+| open_report | Logical. If `TRUE` (default in interactive sessions), opens the rendered HTML report in the default browser. |
+
+### Value
+
+A `data.frame`, one row per matching Index Fungorum name and, by default,
+  with a Brazilian reported locality, with columns:
+
+  Fungorum_NumberIndex Fungorum's numeric record identifier for the name.
+  Taxon_nameThe binomial as registered in Index Fungorum.
+  AuthorsAuthor citation.
+  YearYear of publication.
+  Name_statusIndex Fungorum's nomenclatural status (e.g. `"Legitimate"`).
+  Current_nameIndex Fungorum's currently accepted name for this entry, when
+    different (i.e. when `Taxon_name` is itself a synonym).
+  Fungorum_Location, Fungorum_HostType specimen locality and host, as reported
+    in Index Fungorum's own record (may be `NA` - not every record has these).
+  Fungorum_URLDirect link to the name's Species Fungorum page.
+  Fungorum_Brazil_EvidenceLogical; `TRUE` when `Fungorum_Location`
+    mentions Brazil (the country or any Brazilian state).
+
+### Examples
+
+```r
+# All Index Fungorum information for a single species, only if it reports a
+# Brazilian locality
+sp <- spfungorum_records(taxon = "Phellinotus neoaridus")
+
+# Every Index Fungorum species-level name in genus Phellinotus with a
+# Brazilian reported locality
+genus_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus")
+
+# Every matching name regardless of locality, for manual review
+all_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus",
+                                      require_brazil_evidence = FALSE)
+```
+
+

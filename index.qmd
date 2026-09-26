@@ -108,7 +108,7 @@ For each accepted fungal name, the checklist records nomenclatural status (accep
 
 Data are published as versioned Darwin Core Archives through the [FFB IPT Data Portal](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil), hosted by the [Rio de Janeiro Botanical Garden (JBRJ)](https://www.gov.br/jbrj/pt-br). `fungaR` reads directly from this portal, so every result reflects the checklist as curated by the taxonomist community at the time of the query.
 
-If you are a taxonomist and wish to contribute new fungal names, updates, or corrections to Flora e Funga do Brasil, see the [contribution guidelines](https://floradobrasil.jbrj.gov.br/consulta/) on the platform itself, or contact the FFB coordination team at **floraefungadobrasil\@jbrj.gov.br**. `fungaR`'s `funga_mycobank_gap()` and `funga_distribution_gap()` functions can help you find candidates worth submitting.\
+If you are a taxonomist and wish to contribute new fungal names, updates, or corrections to Flora e Funga do Brasil, see the [contribution guidelines](https://floradobrasil.jbrj.gov.br/consulta/) on the platform itself, or contact the FFB coordination team at **floraefungadobrasil\@jbrj.gov.br**. `fungaR`'s `mycobank_gap()`, `spfungorum_gap()`, and `funga_distribution_gap()` functions can help you find candidates worth submitting.\
 \
 :::
 ::: {style="display: flex; gap: 16px; justify-content: center; align-items: center;"}

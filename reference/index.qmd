@@ -36,8 +36,6 @@ format:
 
 - [`funga_match()`](/reference/funga_match.qmd)
 
-- [`funga_mycobank_gap()`](/reference/funga_mycobank_gap.qmd)
-
 - [`funga_parse()`](/reference/funga_parse.qmd)
 
 - [`funga_records()`](/reference/funga_records.qmd)
@@ -45,5 +43,13 @@ format:
 - [`funga_search()`](/reference/funga_search.qmd)
 
 - [`funga_version()`](/reference/funga_version.qmd)
+
+- [`mycobank_gap()`](/reference/mycobank_gap.qmd)
+
+- [`mycobank_records()`](/reference/mycobank_records.qmd)
+
+- [`spfungorum_gap()`](/reference/spfungorum_gap.qmd)
+
+- [`spfungorum_records()`](/reference/spfungorum_records.qmd)
 
 

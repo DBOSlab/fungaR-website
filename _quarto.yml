@@ -93,6 +93,8 @@ website:
           contents:
           - text: Find species and state records missing from FFB
             href: articles/curate_ffb_new_records.qmd
+          - text: Retrieve records for a Brazilian taxon
+            href: articles/retrieve_taxon_records.qmd
 
     - id: pt-articles
       title: Artigos

@@ -1,0 +1,109 @@
+---
+title: 'mycobank_records'
+description: 'Retrieve MycoBank records for a taxon, filtered to Brazilian occurrence evidence'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+fungaR::mycobank_records()
+```
+
+### Description
+
+Given a fungal species, genus, or order, retrieves every matching
+[MycoBank](https://www.mycobank.org) name and, by default, filters the result
+down to only the names whose own MycoBank locality data places them in Brazil -
+returning a structured spreadsheet of all available MycoBank information (including
+each name's original MycoBank URL) for those Brazilian records. Unlike
+`mycobank_gap`, this function does not cross-check FFB at all: it
+is a straightforward MycoBank retrieval tool, not a gap/comparison one.
+
+### Details
+
+MycoBank does not offer a public search API suited to bulk automation, but it does
+publish a full, regularly-updated bulk export of every name in its database
+(https://www.mycobank.org/images/MBList.zip). This function downloads and caches
+that export locally (the same way `funga_download` caches the FFB dataset),
+then filters it down to the requested species, genus, or order.
+
+The bulk export itself carries no locality information, so determining Brazil evidence
+requires visiting each matching name's individual MycoBank page (its
+`MycoBank_URL`) to read the "Location details" (and "Host/Substrate") reported for
+its type specimen. MycoBank's name pages are a JavaScript single-page application with
+no static HTML fallback, so this step (`check_locality = TRUE`, the default)
+requires the chromote package (and a local Chrome/Chromium installation) to drive
+a headless browser. When `require_brazil_evidence = TRUE` (the default), the
+returned table is filtered down to only the names whose MycoBank locality mentions
+Brazil; set it to `FALSE` to instead get every matching MycoBank name regardless
+of locality (with the evidence columns alongside, for manual review). Brazil-evidence
+filtering has no effect if `check_locality = FALSE`, since no locality data is
+available to filter on; a message explains this when it happens.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| taxon | Character. A single fungal species, genus, or order name (e.g. `"Trichoderma harzianum"`, `"Trichoderma"`, or `"Xylariales"`). |
+| rank | Character. Whether `taxon` is a `"species"` (default), a `"genus"`, or an `"order"`. |
+| check_locality | Logical. If `TRUE` (default), each matching MycoBank name has its own MycoBank name page visited (via chromote) to read the type specimen's reported locality and host/substrate, determining which names MycoBank itself already associates with Brazil. Set to `FALSE` to skip this (much faster, but without locality evidence, and `require_brazil_evidence` has no effect). |
+| require_brazil_evidence | Logical. If `TRUE` (default), the returned table is filtered to only the names whose MycoBank locality mentions Brazil. Set to `FALSE` to instead return every matching MycoBank name regardless of locality (with `MycoBank_Brazil_Evidence` alongside for manual review). Only meaningful when `check_locality = TRUE`. |
+| max_check | Numeric. Safety cap on how many matching names are sent through the (comparatively slow, one-page-load-per-name) locality check when `check_locality = TRUE`. Defaults to `200`; if more names are found, only the first `max_check` (alphabetically) are checked and a warning is issued. Ignored when `check_locality = FALSE`. |
+| mycobank_dir | Character. Local directory used to cache the downloaded MycoBank bulk export. Defaults to `"mycobank_download"`. Reused on subsequent calls to avoid re-downloading the (~140MB) file. |
+| verbose | Logical. If `TRUE` (default), prints progress messages. |
+| save | Logical. If `TRUE` (default), the result is saved to disk as an `.xlsx` spreadsheet. |
+| dir | Character. Directory where the spreadsheet is saved when `save = TRUE`. Defaults to `"mycobank_records"`. |
+| filename | Character. Name of the `.xlsx` file (without extension) to save. Defaults to `"mycobank_records_<taxon>"`. |
+| html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report (`<dir>/<filename>.html`) summarizing the results: KPI counts, a families-affected breakdown, and the full record table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
+| open_report | Logical. If `TRUE` (default in interactive sessions), opens the rendered HTML report in the default browser. |
+
+### Value
+
+A `data.frame`, one row per matching MycoBank name and, by default, with
+  a Brazilian MycoBank locality, with columns:
+
+  MycoBank_NumberMycoBank's numeric identifier for the name.
+  Taxon_nameThe binomial as registered in MycoBank.
+  AuthorsFull author citation.
+  YearYear of effective publication.
+  Name_statusMycoBank's nomenclatural status (e.g. `"Legitimate"`).
+  ClassificationFull MycoBank classification string (Kingdom to genus).
+  Current_nameMycoBank's currently accepted name for this entry, when different
+    (i.e. when `Taxon_name` is itself a synonym).
+  SynonymyMycoBank's full synonymy text (current name and/or basionym, each with
+    its complete author/journal/year citation), from the bulk export.
+  MycoBank_URLDirect link to the name's MycoBank page.
+  MycoBank_Locality, MycoBank_SubstrateType specimen locality and host/substrate
+    as reported on the name's own MycoBank page (only when `check_locality = TRUE`).
+  MycoBank_EtymologyThe name's etymology, as reported on its own MycoBank page
+    (only when `check_locality = TRUE`).
+  MycoBank_Name_TypeMycoBank's nomenclatural name type for this entry (e.g.
+    `"Basionym"`, `"Combination"`; only when `check_locality = TRUE`).
+  MycoBank_Type_SpecimenThe type specimen voucher (e.g. `"URM 80362
+    holotype"`; only when `check_locality = TRUE`).
+  MycoBank_CollectorThe type specimen's collector, as reported on the name's own
+    MycoBank page (only when `check_locality = TRUE`).
+  MycoBank_ProtologThe original-publication (protolog) citation, as reported on
+    the name's own MycoBank page (only when `check_locality = TRUE`).
+  MycoBank_Brazil_EvidenceLogical; `TRUE` when `MycoBank_Locality`
+    mentions Brazil (only when `check_locality = TRUE`).
+
+### Examples
+
+```r
+# All MycoBank information for a single species, only if MycoBank places
+# it in Brazil
+sp <- mycobank_records(taxon = "Trichoderma harzianum")
+
+# Every MycoBank species-level name in genus Trichoderma with a Brazilian
+# MycoBank locality
+genus_records <- mycobank_records(taxon = "Trichoderma", rank = "genus")
+
+# Every matching name regardless of locality, for manual review
+all_records <- mycobank_records(taxon = "Trichoderma", rank = "genus",
+                                      require_brazil_evidence = FALSE)
+```
+
+

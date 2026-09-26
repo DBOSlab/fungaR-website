@@ -42,7 +42,10 @@ The first official release of the `fungaR` R package, designed to provide compre
 - `funga_search()`: Resolve your own species name list against the FFB checklist, with exact matching first and fuzzy (Levenshtein-distance) matching as a fallback for typos, including synonym resolution.
 - `funga_match()`: Compare two independent species name lists, aligning names that resolve to the same accepted taxon.
 - `funga_get_children_taxa()`: Retrieve all child taxa (species, subspecies, varieties, genera, etc.) below a given taxonomic name and rank, following FFB's real fungi hierarchy (Division > Order > Genus > Species).
-- `funga_mycobank_gap()`: Cross-check MycoBank's global name database against the FFB checklist for a given genus or order, flagging species missing from FFB with optional GBIF/speciesLink Brazil-occurrence evidence.
+- `mycobank_gap()`: Cross-check MycoBank's global name database against the FFB checklist for a given genus or order, returning by default only species-level names whose own MycoBank locality places them in Brazil but that are still missing from FFB.
+- `mycobank_records()`: Retrieve every MycoBank name matching a given species, genus, or order, filtered by default to those with MycoBank Brazil evidence, independent of whether it is already registered in FFB.
+- `spfungorum_gap()`: Cross-check Species Fungorum (Index Fungorum, Kew) against the FFB checklist for a given genus, via Index Fungorum's own public web-service API, returning by default only species-level names whose own reported locality places them in Brazil but that are still missing from FFB.
+- `spfungorum_records()`: Retrieve every Index Fungorum name matching a given species or genus, filtered by default to those with a Brazilian reported locality, independent of whether it is already registered in FFB.
 - `funga_distribution_gap()`: Cross-check GBIF, speciesLink, and REFLORA for specimen evidence of a taxon in Brazilian states not yet listed in FFB's official distribution.
 - Most functions download and parse the FFB dataset automatically and cache it locally, so repeated queries and offline analysis work without re-downloading.
 - Seamless integration with tidyverse workflows for downstream analyses.

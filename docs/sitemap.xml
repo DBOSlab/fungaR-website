@@ -5,80 +5,88 @@
     <lastmod>2026-09-25T00:27:33.659Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/reference/funga_search.html</loc>
-    <lastmod>2026-09-25T13:06:39.694Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/reference/spfungorum_gap.html</loc>
+    <lastmod>2026-09-26T10:29:36.941Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/reference/funga_match.html</loc>
-    <lastmod>2026-09-25T13:06:39.686Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/reference/funga_distribution_gap.html</loc>
+    <lastmod>2026-09-26T10:29:36.911Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/reference/index.html</loc>
-    <lastmod>2026-09-25T13:06:39.699Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/reference/funga_records.html</loc>
+    <lastmod>2026-09-26T10:29:36.933Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/reference/funga_version.html</loc>
-    <lastmod>2026-09-25T13:06:39.695Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/reference/funga_download.html</loc>
+    <lastmod>2026-09-26T10:29:36.925Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/reference/funga_mycobank_gap.html</loc>
-    <lastmod>2026-09-25T13:06:39.688Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/reference/funga_get_children_taxa.html</loc>
+    <lastmod>2026-09-26T10:29:36.926Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/get-started/index.html</loc>
-    <lastmod>2026-09-25T00:15:16.984Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/reference/mycobank_gap.html</loc>
+    <lastmod>2026-09-26T10:29:36.937Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_parse.html</loc>
-    <lastmod>2026-08-31T20:49:22.583Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/news/index.html</loc>
+    <lastmod>2026-09-26T10:30:15.444Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_get_descriptions.html</loc>
-    <lastmod>2026-08-31T20:50:51.596Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_match.html</loc>
+    <lastmod>2026-08-31T20:50:27.362Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/reference/index.html</loc>
-    <lastmod>2026-09-25T00:15:16.983Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_download.html</loc>
+    <lastmod>2026-08-31T20:49:07.786Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_search.html</loc>
-    <lastmod>2026-08-31T20:50:02.725Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_records.html</loc>
+    <lastmod>2026-08-31T20:49:42.780Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_get_children_taxa.html</loc>
-    <lastmod>2026-08-31T20:50:40.497Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_build_matrix.html</loc>
+    <lastmod>2026-08-31T20:50:59.834Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/about.html</loc>
-    <lastmod>2026-09-25T00:15:16.978Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_version.html</loc>
+    <lastmod>2026-08-31T20:48:56.834Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/articles/filter_ffb_records.html</loc>
-    <lastmod>2026-08-31T20:47:53.766Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/news/index.html</loc>
+    <lastmod>2026-09-25T00:15:16.982Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/articles/explore_taxonomic_hierarchy.html</loc>
-    <lastmod>2026-08-31T20:48:25.957Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/index.html</loc>
+    <lastmod>2026-09-25T01:20:52.566Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/articles/index.html</loc>
-    <lastmod>2026-09-25T00:15:16.980Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/articles/resolve_species_names.html</loc>
+    <lastmod>2026-08-31T20:48:12.505Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/articles/parse_ffb_dwca.html</loc>
-    <lastmod>2026-08-31T20:47:37.705Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/articles/curate_ffb_descriptions.html</loc>
+    <lastmod>2026-08-31T20:48:41.504Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/faq/index.html</loc>
-    <lastmod>2026-09-25T00:15:16.979Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/articles/check_ffb_versions.html</loc>
+    <lastmod>2026-08-31T20:47:10.996Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/about.html</loc>
-    <lastmod>2026-09-25T00:26:38.351Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/articles/download_ffb_dataset.html</loc>
+    <lastmod>2026-08-31T20:47:22.870Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/fungaR-website/pt/authors/index.html</loc>
+    <lastmod>2026-09-25T13:18:18.831Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/fungaR-website/index.html</loc>
+    <lastmod>2026-09-26T10:30:36.754Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/fungaR-website/articles/curate_ffb_new_records.html</loc>
-    <lastmod>2026-09-25T01:27:29.382Z</lastmod>
+    <lastmod>2026-09-26T10:30:04.067Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/fungaR-website/articles/resolve_species_names.html</loc>
@@ -86,7 +94,7 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/fungaR-website/articles/index.html</loc>
-    <lastmod>2026-09-25T00:27:42.188Z</lastmod>
+    <lastmod>2026-09-26T10:28:52.194Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/fungaR-website/articles/parse_ffb_dwca.html</loc>
@@ -94,7 +102,7 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/fungaR-website/faq/index.html</loc>
-    <lastmod>2026-09-25T00:26:58.153Z</lastmod>
+    <lastmod>2026-09-26T10:30:33.747Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/fungaR-website/LICENSE.html</loc>
@@ -121,79 +129,87 @@
     <lastmod>2026-09-25T00:39:30.483Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/index.html</loc>
-    <lastmod>2026-09-25T01:20:37.017Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/articles/retrieve_taxon_records.html</loc>
+    <lastmod>2026-09-26T10:29:21.507Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/authors/index.html</loc>
-    <lastmod>2026-09-25T13:18:18.831Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/about.html</loc>
+    <lastmod>2026-09-26T10:30:47.664Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/articles/download_ffb_dataset.html</loc>
-    <lastmod>2026-08-31T20:47:22.870Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/faq/index.html</loc>
+    <lastmod>2026-09-25T00:15:16.979Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/articles/check_ffb_versions.html</loc>
-    <lastmod>2026-08-31T20:47:10.996Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/articles/parse_ffb_dwca.html</loc>
+    <lastmod>2026-08-31T20:47:37.705Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/articles/curate_ffb_descriptions.html</loc>
-    <lastmod>2026-08-31T20:48:41.504Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/articles/index.html</loc>
+    <lastmod>2026-09-25T00:15:16.980Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/articles/resolve_species_names.html</loc>
-    <lastmod>2026-08-31T20:48:12.505Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/articles/explore_taxonomic_hierarchy.html</loc>
+    <lastmod>2026-08-31T20:48:25.957Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/index.html</loc>
-    <lastmod>2026-09-25T01:20:52.566Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/articles/filter_ffb_records.html</loc>
+    <lastmod>2026-08-31T20:47:53.766Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/news/index.html</loc>
-    <lastmod>2026-09-25T00:15:16.982Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/about.html</loc>
+    <lastmod>2026-09-25T00:15:16.978Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_version.html</loc>
-    <lastmod>2026-08-31T20:48:56.834Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_get_children_taxa.html</loc>
+    <lastmod>2026-08-31T20:50:40.497Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_build_matrix.html</loc>
-    <lastmod>2026-08-31T20:50:59.834Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_search.html</loc>
+    <lastmod>2026-08-31T20:50:02.725Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_records.html</loc>
-    <lastmod>2026-08-31T20:49:42.780Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/reference/index.html</loc>
+    <lastmod>2026-09-25T00:15:16.983Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_download.html</loc>
-    <lastmod>2026-08-31T20:49:07.786Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_get_descriptions.html</loc>
+    <lastmod>2026-08-31T20:50:51.596Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_match.html</loc>
-    <lastmod>2026-08-31T20:50:27.362Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/reference/flora_parse.html</loc>
+    <lastmod>2026-08-31T20:49:22.583Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/news/index.html</loc>
-    <lastmod>2026-09-25T00:27:10.103Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/pt/get-started/index.html</loc>
+    <lastmod>2026-09-25T00:15:16.984Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/reference/funga_get_children_taxa.html</loc>
-    <lastmod>2026-09-25T13:06:39.684Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/reference/mycobank_records.html</loc>
+    <lastmod>2026-09-26T10:29:36.940Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/reference/funga_download.html</loc>
-    <lastmod>2026-09-25T13:06:39.682Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/reference/spfungorum_records.html</loc>
+    <lastmod>2026-09-26T10:29:36.943Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/reference/funga_records.html</loc>
-    <lastmod>2026-09-25T13:06:39.692Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/reference/funga_version.html</loc>
+    <lastmod>2026-09-26T10:29:36.935Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/fungaR-website/reference/funga_distribution_gap.html</loc>
-    <lastmod>2026-09-25T13:06:39.672Z</lastmod>
+    <loc>https://dboslab.github.io/fungaR-website/reference/index.html</loc>
+    <lastmod>2026-09-26T10:29:36.947Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/fungaR-website/reference/funga_match.html</loc>
+    <lastmod>2026-09-26T10:29:36.928Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/fungaR-website/reference/funga_search.html</loc>
+    <lastmod>2026-09-26T10:29:36.934Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/fungaR-website/reference/funga_parse.html</loc>
-    <lastmod>2026-09-25T13:06:39.689Z</lastmod>
+    <lastmod>2026-09-26T10:29:36.930Z</lastmod>
   </url>
 </urlset>
