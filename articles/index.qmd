@@ -1,6 +1,8 @@
 ---
 title: "Articles"
 format: html
+resources:
+  - figures/
 ---
 
 <style>
@@ -23,6 +25,10 @@ format: html
     z-index: -1;
   }
 </style>
+
+These "how-to" articles walk through `fungaR`'s functions in the order you would typically reach for them. The diagram below gives the overall shape of that workflow before you dive into the individual guides.
+
+<img src="/figures/fungaR_workflow.svg" alt="fungaR workflow diagram" width="100%" />
 
 ::: {layout-ncol="2"}
 ::: {style="display: block;"}

@@ -59,7 +59,9 @@ gap_fast <- mycobank_gap(taxon = "Trichoderma", rank = "genus",
 
 Given a genus, `spfungorum_gap()` cross-checks [Species Fungorum](https://www.speciesfungorum.org) (Index Fungorum, Kew) against the current FFB checklist — the same "not a general diff" philosophy as `mycobank_gap()`, but sourced from Index Fungorum's own reported locality instead of MycoBank's.
 
-Unlike MycoBank, Index Fungorum publishes a public, documented web service (`fungus.asmx`, a plain HTTP GET/XML API — no SOAP client or headless browser needed) that already returns every matching name's own reported locality and host in a single request per genus, so there is no per-candidate page-visit step and no `chromote` dependency. Index Fungorum's `LOCATION` field very often names a Brazilian state directly (e.g. `"Pernambuco"`) rather than the country itself, so the Brazil-evidence check covers the country name and every Brazilian state, not just the literal word "Brazil". As with `mycobank_gap()`, a candidate counts as "already in FFB" if either its raw Index Fungorum name or its currently accepted name matches an FFB species.
+Unlike MycoBank, Index Fungorum publishes a public, documented web service (`fungus.asmx`, a plain HTTP GET/XML API — no SOAP client or headless browser needed) that already returns every matching name's own reported locality and host in a single request per genus. Index Fungorum's `LOCATION` field very often names a Brazilian state directly (e.g. `"Pernambuco"`) rather than the country itself, so the Brazil-evidence check covers the country name and every Brazilian state (matched as whole words, so e.g. "Paraguay" is never mistaken for the state "Pará"), not just the literal word "Brazil". As with `mycobank_gap()`, a candidate counts as "already in FFB" if either its raw Index Fungorum name or its currently accepted name matches an FFB species.
+
+By default (`fetch_details = TRUE`), each missing candidate's own Species Fungorum page is also visited — a fast, plain HTTP request, no headless browser needed — to read the journal it was published in, the full formatted citation, the basionym/typification details, and the Index Fungorum LSID, and to correct `Current_name` with the freshly-scraped value whenever the bulk search response's own (occasionally stale) field differs.
 
 ### Arguments
 
@@ -67,6 +69,7 @@ Unlike MycoBank, Index Fungorum publishes a public, documented web service (`fun
 |---|---|
 | `taxon` | Character. A single genus name (e.g. `"Phellinotus"`). Index Fungorum's web service has no operation for searching by higher classification, so order-level searches are not supported. |
 | `require_brazil_evidence` | If `TRUE` (default), the returned table is filtered to only candidates whose Index Fungorum location mentions Brazil. Set `FALSE` to return every missing name regardless of locality. |
+| `fetch_details` | If `TRUE` (default), visits each missing candidate's own Species Fungorum page for its journal, full citation, basionym/typification details, and LSID, and to refresh `Current_name`. Set `FALSE` to skip this and use only the bulk search response's own fields. |
 | `max_number` | Maximum number of matching names requested from the web service in a single call. Default `1000`, generous for any genus. |
 | `version` | FFB dataset version to compare against. Defaults to `"latest"`. |
 | `save` | If `TRUE` (default), saves the result as an `.xlsx` spreadsheet. |
@@ -74,7 +77,7 @@ Unlike MycoBank, Index Fungorum publishes a public, documented web service (`fun
 
 ### Value
 
-A data frame, one row per Index Fungorum species-level name missing from FFB and, by default, with a Brazilian reported locality, with its Fungorum number, author, year, name status, current name, **original Species Fungorum URL** (rendered as a clickable link in the HTML report), `Fungorum_Location`, `Fungorum_Host`, and a `Fungorum_Brazil_Evidence` flag.
+A data frame, one row per Index Fungorum species-level name missing from FFB and, by default, with a Brazilian reported locality, with its Fungorum number, author, specific epithet, year, name status, current name, volume/part/page, publishing authors, **original Species Fungorum URL** (rendered as a clickable link in the HTML report), `Fungorum_Location`, `Fungorum_Host`, a `Fungorum_Brazil_Evidence` flag, and — when `fetch_details = TRUE` — `Fungorum_Journal`, `Fungorum_Citation`, `Fungorum_Basionym`, `Fungorum_Current_Name_Citation`, and `Fungorum_LSID`.
 
 ### Example
 
@@ -87,6 +90,9 @@ gap <- spfungorum_gap(taxon = "Phellinotus")
 
 # Every Index Fungorum name missing from FFB regardless of locality, for manual review
 gap_all <- spfungorum_gap(taxon = "Phellinotus", require_brazil_evidence = FALSE)
+
+# Faster, without the per-candidate page visit
+gap_fast <- spfungorum_gap(taxon = "Phellinotus", fetch_details = FALSE)
 ```
 
 ## `funga_distribution_gap()`: find candidate new state records
@@ -129,7 +135,7 @@ gap_ba_pe <- funga_distribution_gap(taxon = "Trichoderma harzianum",
 - Install the [`refloraR`](https://github.com/DBOSlab/refloraR) package to include REFLORA specimen evidence in `funga_distribution_gap()`; without it, that source is skipped with a message.
 - Install the [`chromote`](https://rstudio.github.io/chromote/) package (and have a local Chrome/Chromium install) to include the MycoBank locality check in `mycobank_gap()`; without it, that step (and the Brazil-evidence filtering that depends on it) is skipped with a message, and every missing name is returned unfiltered. `spfungorum_gap()` needs no such extra dependency.
 - Combine with [`funga_get_children_taxa()`](/articles/explore_taxonomic_hierarchy.qmd) to build the candidate genus list you want to check against MycoBank or Index Fungorum.
-- `mycobank_gap()`, for larger genera or orders, can take a while when the per-candidate locality checks are enabled — start with `check_locality = FALSE` to size up how many candidates exist before running the full Brazil-evidence check. `spfungorum_gap()` has no equivalent slow step: it is always a single request regardless of genus size.
+- `mycobank_gap()`, for larger genera or orders, can take a while when the per-candidate locality checks are enabled — start with `check_locality = FALSE` to size up how many candidates exist before running the full Brazil-evidence check. `spfungorum_gap()`'s Brazil-evidence filtering is always a single request regardless of genus size, but `fetch_details = TRUE` (the default) adds one fast plain-HTTP request per *missing* candidate for the journal/citation/basionym/LSID fields — set `fetch_details = FALSE` to skip that for very large result sets.
 
 ## See Also
 

@@ -57,9 +57,11 @@ fast_records <- mycobank_records(taxon = "Trichoderma", rank = "genus",
 
 ## `spfungorum_records()`: retrieve Index Fungorum records for a taxon
 
-Species Fungorum/Index Fungorum has no bulk export, but it does publish a public, documented web service (`fungus.asmx`, a plain HTTP GET/XML API - no SOAP client, headless browser, or authentication required) that `spfungorum_records()` queries directly. A single request returns every name matching `taxon`, including, for many records, the type specimen's own reported `LOCATION` and `HOST` - no per-record page visit needed, unlike MycoBank.
+Species Fungorum/Index Fungorum has no bulk export, but it does publish a public, documented web service (`fungus.asmx`, a plain HTTP GET/XML API - no SOAP client, headless browser, or authentication required) that `spfungorum_records()` queries directly. A single request returns every name matching `taxon`, including, for many records, the type specimen's own reported `LOCATION` and `HOST`.
 
-Index Fungorum's `LOCATION` field very often names a Brazilian state directly (e.g. `"Pernambuco"`) rather than the country itself, so `Fungorum_Brazil_Evidence` checks the location against the country name and every Brazilian state name (with or without diacritics), not just the literal word "Brazil".
+Index Fungorum's `LOCATION` field very often names a Brazilian state directly (e.g. `"Pernambuco"`) rather than the country itself, so `Fungorum_Brazil_Evidence` checks the location against the country name and every Brazilian state name (with or without diacritics, and matched as whole words so e.g. "Paraguay" is never mistaken for the state "Pará"), not just the literal word "Brazil".
+
+By default (`fetch_details = TRUE`), each returned name's own Species Fungorum page is also visited - a fast, plain HTTP request, no headless browser needed, unlike MycoBank - to read the journal it was published in, the full formatted citation, the basionym/typification details, and the Index Fungorum LSID. This also corrects `Current_name`: the bulk search response caches that field on the *original* name's own row, which can go stale relative to the current name's own record, so the freshly-scraped value is preferred whenever available.
 
 ### Arguments
 
@@ -68,13 +70,14 @@ Index Fungorum's `LOCATION` field very often names a Brazilian state directly (e
 | `taxon` | Character. A single species or genus name (e.g. `"Phellinotus neoaridus"` or `"Phellinotus"`). |
 | `rank` | `"species"` (default) or `"genus"`. Index Fungorum's web service has no operation for searching by higher classification, so order-level searches are not supported. |
 | `require_brazil_evidence` | If `TRUE` (default), the returned table is filtered to only names whose Index Fungorum location mentions Brazil. Set `FALSE` to return every matching name regardless of locality. |
+| `fetch_details` | If `TRUE` (default), visits each name's own Species Fungorum page for its journal, full citation, basionym/typification details, and LSID, and to refresh `Current_name`. Set `FALSE` to skip this and use only the bulk search response's own fields. |
 | `max_number` | Maximum number of matching names requested from the web service in a single call. Default `1000`, generous for any genus. |
 | `save` | If `TRUE` (default), saves the result as an `.xlsx` spreadsheet. |
 | `html_report` | If `TRUE` (default), also writes the interactive HTML report described above. |
 
 ### Value
 
-A data frame, one row per matching Index Fungorum name and, by default, with a Brazilian reported locality, with its Fungorum number, author, year, name status, current name, **original Species Fungorum URL** (rendered as a clickable link in the HTML report), `Fungorum_Location`, `Fungorum_Host`, and a `Fungorum_Brazil_Evidence` flag.
+A data frame, one row per matching Index Fungorum name and, by default, with a Brazilian reported locality, with its Fungorum number, author, specific epithet, year, name status, current name, volume/part/page, publishing authors, **original Species Fungorum URL** (rendered as a clickable link in the HTML report), `Fungorum_Location`, `Fungorum_Host`, a `Fungorum_Brazil_Evidence` flag, and — when `fetch_details = TRUE` — `Fungorum_Journal`, `Fungorum_Citation`, `Fungorum_Basionym`, `Fungorum_Current_Name_Citation`, and `Fungorum_LSID`.
 
 ### Example
 
@@ -92,10 +95,15 @@ genus_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus")
 # Every matching name regardless of locality, for manual review
 all_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus",
                                   require_brazil_evidence = FALSE)
+
+# Faster, without the per-record page visit (journal/citation/basionym/LSID
+# omitted, and Current_name uses the bulk response's value as-is)
+fast_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus",
+                                   fetch_details = FALSE)
 ```
 
 ## Additional Tips
 
-- Install the [`chromote`](https://rstudio.github.io/chromote/) package (and have a local Chrome/Chromium install) to include `mycobank_records()`'s locality check; without it, that step (and the Brazil-evidence filtering that depends on it) is skipped with a message, and every matching name is returned unfiltered. `spfungorum_records()` needs no such extra dependency - locality (when available) always comes back with the same request.
+- Install the [`chromote`](https://rstudio.github.io/chromote/) package (and have a local Chrome/Chromium install) to include `mycobank_records()`'s locality check; without it, that step (and the Brazil-evidence filtering that depends on it) is skipped with a message, and every matching name is returned unfiltered. `spfungorum_records()` needs no such extra dependency for its Brazil-evidence check specifically - the country/state locality always comes back with the initial bulk request, regardless of `fetch_details`.
 - `mycobank_dir` is shared between `mycobank_records()` and `mycobank_gap()` - pointing both functions at the same directory avoids re-downloading MycoBank's bulk export twice.
-- For larger genera, `mycobank_records()`'s per-candidate locality check can take a while - start with `check_locality = FALSE` to size up how many names match before running the full Brazil-evidence check. `spfungorum_records()` has no equivalent slow step: it is always a single request regardless of genus size.
+- For larger genera, `mycobank_records()`'s per-candidate locality check can take a while - start with `check_locality = FALSE` to size up how many names match before running the full Brazil-evidence check. `spfungorum_records()`'s Brazil-evidence filtering is always a single request regardless of genus size, but `fetch_details = TRUE` (the default) adds one fast plain-HTTP request per *returned* name for the journal/citation/basionym/LSID fields - set `fetch_details = FALSE` to skip that for very large result sets.

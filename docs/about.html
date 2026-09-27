@@ -4518,6 +4518,7 @@ height: 400px;
   <ul>
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
   <li><a href="#flora-e-funga-do-brasil" id="toc-flora-e-funga-do-brasil" class="nav-link" data-scroll-target="#flora-e-funga-do-brasil">Flora e Funga do Brasil</a></li>
+  <li><a href="#rede-de-taxonomistas-da-funga-do-brasil" id="toc-rede-de-taxonomistas-da-funga-do-brasil" class="nav-link" data-scroll-target="#rede-de-taxonomistas-da-funga-do-brasil">Rede de Taxonomistas da Funga do Brasil</a></li>
   <li><a href="#package-description" id="toc-package-description" class="nav-link" data-scroll-target="#package-description">Package Description</a>
   <ul class="collapse">
   <li><a href="#features" id="toc-features" class="nav-link" data-scroll-target="#features">Features</a></li>
@@ -4583,6 +4584,10 @@ z-index: -1;
 <h2 class="anchored" data-anchor-id="flora-e-funga-do-brasil">Flora e Funga do Brasil</h2>
 <p>Brazil harbors one of the richest fungal diversities in the world. The checklist that documents it began in 2008 as the <em>Lista de Espécies da Flora do Brasil</em>, evolved into <a href="http://doi.org/10.47871/jbrj2021004">Flora do Brasil 2020</a> to meet Brazil’s Global Strategy for Plant Conservation commitments, and — after incorporating fungi — became <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil</a>.</p>
 <p>For each accepted fungal name, FFB records nomenclatural status, taxonomic classification (Division, Order, Family, Genus), geographic distribution, endemism, nutritional/ecological mode, and substrate/host information — a validated taxonomic backbone assembled collaboratively by hundreds of taxonomists and mycologists, and published as versioned Darwin Core Archives.</p>
+</section>
+<section id="rede-de-taxonomistas-da-funga-do-brasil" class="level2">
+<h2 class="anchored" data-anchor-id="rede-de-taxonomistas-da-funga-do-brasil">Rede de Taxonomistas da Funga do Brasil</h2>
+<p>The <a href="https://redefunga.com.br/site/">Rede de Taxonomistas da Funga do Brasil (RTFB)</a> is a network connecting the specialists who document and validate Brazil’s fungal, lichen, and myxomycete diversity in FFB. It grew out of decades of collaborative work across initiatives such as the Catálogo de Plantas e Fungos do Brasil and the INCT Herbário Virtual da Flora e dos Fungos, and now serves as a shared platform for its members, their publications, and community news. <code>fungaR</code>’s curation tools (<code>mycobank_gap()</code>, <code>mycobank_records()</code>, <code>spfungorum_gap()</code>, <code>spfungorum_records()</code>, and <code>funga_distribution_gap()</code>) are designed to support exactly this kind of collaborative curation work.</p>
 </section>
 <section id="package-description" class="level2">
 <h2 class="anchored" data-anchor-id="package-description">Package Description</h2>
@@ -5130,41 +5135,45 @@ z-index: -1;
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>For each accepted fungal name, FFB records nomenclatural status, taxonomic classification (Division, Order, Family, Genus), geographic distribution, endemism, nutritional/ecological mode, and substrate/host information — a validated taxonomic backbone assembled collaboratively by hundreds of taxonomists and mycologists, and published as versioned Darwin Core Archives.</span>
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Package Description</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rede de Taxonomistas da Funga do Brasil</span></span>
 <span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>Package: <span class="in">`fungaR`</span></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>Type: R Package</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>Version: 1.0.0</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">Rede de Taxonomistas da Funga do Brasil (RTFB)</span><span class="co">](https://redefunga.com.br/site/)</span> is a network connecting the specialists who document and validate Brazil&#39;s fungal, lichen, and myxomycete diversity in FFB. It grew out of decades of collaborative work across initiatives such as the Catálogo de Plantas e Fungos do Brasil and the INCT Herbário Virtual da Flora e dos Fungos, and now serves as a shared platform for its members, their publications, and community news. <span class="in">`fungaR`</span>&#39;s curation tools (<span class="in">`mycobank_gap()`</span>, <span class="in">`mycobank_records()`</span>, <span class="in">`spfungorum_gap()`</span>, <span class="in">`spfungorum_records()`</span>, and <span class="in">`funga_distribution_gap()`</span>) are designed to support exactly this kind of collaborative curation work.</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## Package Description</span></span>
 <span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>Author: Domingos Cardoso (<span class="co">[</span><span class="ot">\@DBOSlab</span><span class="co">](https://github.com/DBOSlab)</span> <span class="co">[</span><span class="ot">ORCID</span><span class="co">](https://orcid.org/0000-0001-7072-2656)</span>)</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>Maintainer: Domingos Cardoso (<span class="ot">&lt;domingoscardoso@jbrj.gov.br&gt;</span>)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>Package: <span class="in">`fungaR`</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>Type: R Package</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>Version: 1.0.0</span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="fu">### Features</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>Author: Domingos Cardoso (<span class="co">[</span><span class="ot">\@DBOSlab</span><span class="co">](https://github.com/DBOSlab)</span> <span class="co">[</span><span class="ot">ORCID</span><span class="co">](https://orcid.org/0000-0001-7072-2656)</span>)</span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Comprehensive interface to the Flora e Funga do Brasil IPT data portal</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Version tracking and offline-capable parsing of downloaded DwC-A datasets</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Checklist filtering by taxonomic, geographic, and trait-based (including substrate/host) criteria</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Exact and fuzzy (Levenshtein-distance) name resolution against the checklist</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Taxonomic hierarchy traversal at any rank, from division down to species, on FFB&#39;s real fungi hierarchy</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cross-checking MycoBank, Index Fungorum, GBIF, speciesLink, and REFLORA to flag species and state records missing from FFB, or retrieving MycoBank/Index Fungorum records for a Brazilian taxon directly</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tidyverse-integrated workflows throughout</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="fu">## Contribute</span></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>You can contribute to <span class="in">`fungaR`</span> by:</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>Maintainer: Domingos Cardoso (<span class="ot">&lt;domingoscardoso@jbrj.gov.br&gt;</span>)</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="fu">### Features</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Comprehensive interface to the Flora e Funga do Brasil IPT data portal</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Version tracking and offline-capable parsing of downloaded DwC-A datasets</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Checklist filtering by taxonomic, geographic, and trait-based (including substrate/host) criteria</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Exact and fuzzy (Levenshtein-distance) name resolution against the checklist</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Taxonomic hierarchy traversal at any rank, from division down to species, on FFB&#39;s real fungi hierarchy</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cross-checking MycoBank, Index Fungorum, GBIF, speciesLink, and REFLORA to flag species and state records missing from FFB, or retrieving MycoBank/Index Fungorum records for a Brazilian taxon directly</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tidyverse-integrated workflows throughout</span>
 <span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Opening issues for feedback or bug reports</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Submitting pull requests for fixes or enhancements</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Suggesting or developing new features (please open an issue for discussion first)</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## Contribute</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>You can contribute to <span class="in">`fungaR`</span> by:</span>
 <span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## License</span></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="in">`fungaR`</span> is <span class="co">[</span><span class="ot">open source software</span><span class="co">](/LICENSE.md)</span>. Open tools empower science through reproducibility, accessibility, and equitable knowledge sharing.</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Opening issues for feedback or bug reports</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Submitting pull requests for fixes or enhancements</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Suggesting or developing new features (please open an issue for discussion first)</span>
 <span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="fu">## Acknowledgements</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="fu">## License</span></span>
 <span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>Development of <span class="in">`fungaR`</span> is led by the <span class="co">[</span><span class="ot">Rio de Janeiro Botanical Garden (JBRJ)</span><span class="co">](https://www.gov.br/jbrj)</span>, in collaboration with the mycological, biodiversity, and informatics communities — including the taxonomic expertise of colleagues such as Elisandro Ricardo Drechsler-Santos. We also gratefully acknowledge the financial support provided by <span class="co">[</span><span class="ot">CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico</span><span class="co">](https://www.gov.br/cnpq/pt-br)</span>, Brazil&#39;s National Council for Scientific and Technological Development, and <span class="co">[</span><span class="ot">FINEP - Financiadora de Estudos e Projetos</span><span class="co">](https://www.gov.br/finep/pt-br)</span>, Brazil&#39;s Funding Authority for Studies and Projects.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="in">`fungaR`</span> is <span class="co">[</span><span class="ot">open source software</span><span class="co">](/LICENSE.md)</span>. Open tools empower science through reproducibility, accessibility, and equitable knowledge sharing.</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="fu">## Acknowledgements</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>Development of <span class="in">`fungaR`</span> is led by the <span class="co">[</span><span class="ot">Rio de Janeiro Botanical Garden (JBRJ)</span><span class="co">](https://www.gov.br/jbrj)</span>, in collaboration with the mycological, biodiversity, and informatics communities — including the taxonomic expertise of colleagues such as Elisandro Ricardo Drechsler-Santos. We also gratefully acknowledge the financial support provided by <span class="co">[</span><span class="ot">CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico</span><span class="co">](https://www.gov.br/cnpq/pt-br)</span>, Brazil&#39;s National Council for Scientific and Technological Development, and <span class="co">[</span><span class="ot">FINEP - Financiadora de Estudos e Projetos</span><span class="co">](https://www.gov.br/finep/pt-br)</span>, Brazil&#39;s Funding Authority for Studies and Projects.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

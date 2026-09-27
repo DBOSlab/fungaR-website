@@ -45,6 +45,7 @@ word "Brazil".
 | taxon | Character. A single fungal species or genus name (e.g. `"Phellinotus neoaridus"` or `"Phellinotus"`). |
 | rank | Character. Whether `taxon` is a `"species"` (default) or a `"genus"`. Species Fungorum's web service has no operation for searching by higher classification (order/family), so `rank = "order"` is not supported. |
 | require_brazil_evidence | Logical. If `TRUE` (default), the returned table is filtered to only the names whose Index Fungorum `Location` mentions Brazil (the country name or any Brazilian state). Set to `FALSE` to instead return every matching name regardless of locality, for manual review. |
+| fetch_details | Logical. If `TRUE` (default), each returned name's own Species Fungorum page is visited (a fast, plain HTTP request - no headless browser, unlike MycoBank) to read the journal it was published in, the full formatted citation, the basionym or typification details, the current name's own full citation, and the Index Fungorum LSID - none of which are in the bulk `NameSearch` response. Set to `FALSE` to skip this and return only the fields already in that response. |
 | max_number | Numeric. Maximum number of matching names requested from the web service in a single call. Defaults to `1000`, generous for any genus. |
 | verbose | Logical. If `TRUE` (default), prints progress messages. |
 | save | Logical. If `TRUE` (default), the result is saved to disk as an `.xlsx` spreadsheet. |
@@ -61,13 +62,29 @@ A `data.frame`, one row per matching Index Fungorum name and, by default,
   Fungorum_NumberIndex Fungorum's numeric record identifier for the name.
   Taxon_nameThe binomial as registered in Index Fungorum.
   AuthorsAuthor citation.
+  SpecificEpithetThe bare specific epithet.
   YearYear of publication.
   Name_statusIndex Fungorum's nomenclatural status (e.g. `"Legitimate"`).
   Current_nameIndex Fungorum's currently accepted name for this entry, when
-    different (i.e. when `Taxon_name` is itself a synonym).
+    different (i.e. when `Taxon_name` is itself a synonym). When
+    `fetch_details = TRUE`, this is the freshly-scraped value from the name's own
+    page rather than the bulk search response's own (occasionally stale) field.
   Fungorum_Location, Fungorum_HostType specimen locality and host, as reported
     in Index Fungorum's own record (may be `NA` - not every record has these).
+  Volume, Part, PageThe publication's volume, part/issue, and page.
+  PublishingAuthorsFull author list of the publication the name appeared in,
+    which may differ from `Authors` (the name's own author citation).
   Fungorum_URLDirect link to the name's Species Fungorum page.
+  Fungorum_JournalThe journal the name was published in (only when
+    `fetch_details = TRUE`; not available from the bulk search response).
+  Fungorum_CitationThe full formatted citation as shown on the name's own
+    Species Fungorum page (only when `fetch_details = TRUE`).
+  Fungorum_BasionymThe basionym or typification details, when present (only
+    when `fetch_details = TRUE`).
+  Fungorum_Current_Name_CitationThe full citation of the currently accepted
+    name (only when `fetch_details = TRUE`).
+  Fungorum_LSIDThe Index Fungorum Life Science Identifier (only when
+    `fetch_details = TRUE`).
   Fungorum_Brazil_EvidenceLogical; `TRUE` when `Fungorum_Location`
     mentions Brazil (the country or any Brazilian state).
 

@@ -26,17 +26,17 @@ ffb_versions <- tryCatch(
 )
 
 if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
-  latest_row     <- ffb_versions[ffb_versions$Latest %in% TRUE, ]
+  latest_row <- ffb_versions[ffb_versions$Latest %in% TRUE, ]
   if (nrow(latest_row) == 0) latest_row <- ffb_versions[1, ]
-  n_versions     <- nrow(ffb_versions)
+  n_versions <- nrow(ffb_versions)
   latest_version <- latest_row$Version[1]
   latest_records <- format(as.numeric(gsub(",", "", latest_row$Records[1])), big.mark = ",")
-  latest_date    <- latest_row$Published_on[1]
+  latest_date <- latest_row$Published_on[1]
 } else {
-  n_versions     <- NA
+  n_versions <- NA
   latest_version <- NA
   latest_records <- NA
-  latest_date    <- NA
+  latest_date <- NA
 }
 ```
 
@@ -45,7 +45,7 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
     position: fixed;
     top: 60px;
     right: 450px;
-    width: 165px;
+    width: 140px;
     opacity: 0.85;
     z-index: 1;
   }
@@ -59,8 +59,28 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
 </style>
 
 <div class="floating-logos">
-  <img src='/figures/fungaR_hex_sticker.png' alt='fungaR hex sticker'>
-  <img src='/figures/jbrj_marca.jpg' alt='JBRJ logo'>
+
+  <a href="https://github.com/DBOSlab/fungaR"
+     target="_blank"
+     title="fungaR on GitHub">
+    <img src="/figures/fungaR_hex_sticker.png"
+         alt="fungaR logo">
+  </a>
+
+  <a href="https://redefunga.com.br/site/"
+     target="_blank"
+     title="The Rede Funga">
+    <img src="/figures/rede_taxon_br_funga.png"
+         alt="rede funga logo">
+  </a>
+  
+  <a href="https://www.gov.br/jbrj/pt-br"
+     target="_blank"
+     title="Jardim Botânico do Rio de Janeiro">
+    <img src="/figures/jbrj_marca.png"
+         alt="Jardim Botânico do Rio de Janeiro">
+  </a>
+
 </div>
 
 ::: whitebox
@@ -109,6 +129,23 @@ For each accepted fungal name, the checklist records nomenclatural status (accep
 Data are published as versioned Darwin Core Archives through the [FFB IPT Data Portal](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil), hosted by the [Rio de Janeiro Botanical Garden (JBRJ)](https://www.gov.br/jbrj/pt-br). `fungaR` reads directly from this portal, so every result reflects the checklist as curated by the taxonomist community at the time of the query.
 
 If you are a taxonomist and wish to contribute new fungal names, updates, or corrections to Flora e Funga do Brasil, see the [contribution guidelines](https://floradobrasil.jbrj.gov.br/consulta/) on the platform itself, or contact the FFB coordination team at **floraefungadobrasil\@jbrj.gov.br**. `fungaR`'s `mycobank_gap()`, `spfungorum_gap()`, and `funga_distribution_gap()` functions can help you find candidates worth submitting.\
+\
+
+## Rede de Taxonomistas da Funga do Brasil
+
+The [Rede de Taxonomistas da Funga do Brasil (RTFB)](https://redefunga.com.br/site/) brings together the specialists dedicated to documenting and validating data on fungi, lichens, and myxomycetes in FFB — the official reference base for government and society. The network grew naturally out of the long-standing effort of hundreds of people in Brazilian mycology to document fungal diversity, through initiatives such as the Flora e Funga do Brasil, the Herbário Virtual Reflora, the INCT Herbário Virtual da Flora e dos Fungos, the Catálogo da Vida do Brasil, the INCT Fungos do Brasil, and, more recently, the CNPq-funded Funga do Brasil Universal Project — all sharing the goal of strengthening collaboration between taxonomists and institutions.
+
+RTFB's purpose is to connect people, share knowledge, and promote the continuous updating of information on Brazil's fungal diversity within FFB, the authoritative base for cataloguing fungal names. This work contributes directly to fungi being recognized in public policy, red lists, conservation plans, environmental regulations, and bioeconomy initiatives, driving the development of mycology in the country. The network's own site serves as the main digital platform gathering information about its members, publications, news, and events, and connecting with other national and international initiatives.
+
+Its main goals include:
+
+- Giving visibility to the network and bringing together taxonomist specialists on a platform with approved, verified profiles.
+- Facilitating access to publications and content related to fungal taxonomy.
+- Sharing news, events, and research results.
+- Providing data tools, including specimen counters in collections, identification status, and species assessed by CNCFlora/IUCN.
+- Integrating information with external databases, such as Flora e Funga do Brasil and IUCN, among others.
+
+`fungaR`'s curation tools (`mycobank_gap()`, `mycobank_records()`, `spfungorum_gap()`, `spfungorum_records()`, and `funga_distribution_gap()`) are designed to support exactly this kind of collaborative curation work.\
 \
 :::
 ::: {style="display: flex; gap: 16px; justify-content: center; align-items: center;"}

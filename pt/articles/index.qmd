@@ -2,6 +2,8 @@
 title: "Artigos"
 format: html
 sidebar: pt-articles
+resources:
+  - figures/
 ---
 
 <style>
@@ -24,6 +26,10 @@ sidebar: pt-articles
     z-index: -1;
   }
 </style>
+
+Estes artigos práticos percorrem as funções do `fungaR` na ordem em que normalmente são usadas. O diagrama abaixo mostra o formato geral desse fluxo de trabalho antes de você explorar os guias individuais.
+
+<img src="/figures/fungaR_workflow.svg" alt="Diagrama do fluxo de trabalho do fungaR" width="100%" />
 
 ::: {layout-ncol="2"}
 ::: {style="display: block;"}

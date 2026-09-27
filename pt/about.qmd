@@ -35,9 +35,13 @@ Além da recuperação de dados, o `floraR` também auxilia especialistas taxon�
 
 ## Flora e Funga do Brasil
 
-O Brasil abriga a maior diversidade de plantas, algas e fungos do mundo ([BFG 2022](https://doi.org/10.1002/tax.12640)). A lista de espécies que a documenta começou em 2008 como a *Lista de Espécies da Flora do Brasil*, evoluiu para o [Flora do Brasil 2020](http://doi.org/10.47871/jbrj2021004) para atender aos compromissos do Brasil com a Estratégia Global para a Conservação das Plantas, e — após a incorporação dos fungos — tornou-se a [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/).
+O Brasil abriga uma das maiores diversidades fúngicas do mundo. A lista de espécies que a documenta começou em 2008 como a *Lista de Espécies da Flora do Brasil*, evoluiu para o [Flora do Brasil 2020](http://doi.org/10.47871/jbrj2021004) para atender aos compromissos do Brasil com a Estratégia Global para a Conservação das Plantas, e — após a incorporação dos fungos — tornou-se a [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/).
 
-Para cada nome aceito, a FFB registra o status nomenclatural, a classificação taxonômica, a distribuição geográfica, o endemismo, a forma de vida, o hábitat e o tipo de vegetação — uma base taxonômica validada, reunida colaborativamente por centenas de taxonomistas e publicada como Arquivos Darwin Core versionados.
+Para cada nome fúngico aceito, a FFB registra o status nomenclatural, a classificação taxonômica (Divisão, Ordem, Família, Gênero), a distribuição geográfica, o endemismo, o modo nutricional/ecológico e o substrato/hospedeiro — uma base taxonômica validada, reunida colaborativamente por centenas de taxonomistas e micologistas, e publicada como Arquivos Darwin Core versionados.
+
+## Rede de Taxonomistas da Funga do Brasil
+
+A [Rede de Taxonomistas da Funga do Brasil (RTFB)](https://redefunga.com.br/site/) reúne os especialistas que documentam e qualificam a diversidade de fungos, líquens e mixomicetos na FFB. Surgiu do histórico esforço colaborativo de iniciativas como o Catálogo de Plantas e Fungos do Brasil e o INCT Herbário Virtual da Flora e dos Fungos, e hoje serve como plataforma para seus membros, publicações e notícias da comunidade. As ferramentas de curadoria do `fungaR` (`mycobank_gap()`, `mycobank_records()`, `spfungorum_gap()`, `spfungorum_records()` e `funga_distribution_gap()`) foram desenhadas para apoiar exatamente esse trabalho colaborativo de curadoria.
 
 ## Descrição do Pacote
 

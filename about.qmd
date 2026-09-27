@@ -39,6 +39,10 @@ Brazil harbors one of the richest fungal diversities in the world. The checklist
 
 For each accepted fungal name, FFB records nomenclatural status, taxonomic classification (Division, Order, Family, Genus), geographic distribution, endemism, nutritional/ecological mode, and substrate/host information — a validated taxonomic backbone assembled collaboratively by hundreds of taxonomists and mycologists, and published as versioned Darwin Core Archives.
 
+## Rede de Taxonomistas da Funga do Brasil
+
+The [Rede de Taxonomistas da Funga do Brasil (RTFB)](https://redefunga.com.br/site/) is a network connecting the specialists who document and validate Brazil's fungal, lichen, and myxomycete diversity in FFB. It grew out of decades of collaborative work across initiatives such as the Catálogo de Plantas e Fungos do Brasil and the INCT Herbário Virtual da Flora e dos Fungos, and now serves as a shared platform for its members, their publications, and community news. `fungaR`'s curation tools (`mycobank_gap()`, `mycobank_records()`, `spfungorum_gap()`, `spfungorum_records()`, and `funga_distribution_gap()`) are designed to support exactly this kind of collaborative curation work.
+
 ## Package Description
 
 Package: `fungaR`

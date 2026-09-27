@@ -60,7 +60,7 @@ resources:
 </div>
 ```
 
-## The Funga Coordination Team
+## The Brazilian Funga Taxonomists Network
 
 ```{=html}
 <div class="authors-group">
@@ -83,11 +83,37 @@ resources:
     <div class="author-info">
       <h3 class="author-name">Diogo Henrique Costa de Rezende</h3>
       <p>
-        <a class="icon-link" href="mailto:domingoscardoso@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="mailto:diogobio.dh@gmail.com"><img src="/authors/images/email.png" alt="Email"/></a>
         <a class="icon-link" href="https://orcid.org/0000-0002-7381-6954" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/4989168413703096" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
       <p>Expert fungi taxonomy and phylogenetics</p>
+    </div>
+  </div>
+  
+    <div class="author-card">
+    <img src="images/genivaldo.jpg" alt="Genivaldo Alves-Silva" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Genivaldo Alves-Silva</h3>
+      <p>
+        <a class="icon-link" href="mailto:genivaldobio@gmail.com"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-8142-6665" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/3301704677133401" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Expert fungi taxonomy and phylogenetics</p>
+    </div>
+  </div>
+  
+    <div class="author-card">
+    <img src="images/kelmer.jpg" alt="Kelmer Martins da Cunha" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Kelmer Martins da Cunha</h3>
+      <p>
+        <a class="icon-link" href="mailto:kelmermartinscunha@gmail.com"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-0545-5966" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/3313897015978675" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Expert fungi taxonomy, database, and conservation</p>
     </div>
   </div>
 

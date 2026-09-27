@@ -4595,30 +4595,34 @@ height: 400px;
 <td>Logical. If <code>TRUE</code> (default), the returned table is filtered to only the names whose Index Fungorum <code>Location</code> mentions Brazil (the country name or any Brazilian state). Set to <code>FALSE</code> to instead return every matching name regardless of locality, for manual review.</td>
 </tr>
 <tr class="even">
+<td>fetch_details</td>
+<td>Logical. If <code>TRUE</code> (default), each returned name’s own Species Fungorum page is visited (a fast, plain HTTP request - no headless browser, unlike MycoBank) to read the journal it was published in, the full formatted citation, the basionym or typification details, the current name’s own full citation, and the Index Fungorum LSID - none of which are in the bulk <code>NameSearch</code> response. Set to <code>FALSE</code> to skip this and return only the fields already in that response.</td>
+</tr>
+<tr class="odd">
 <td>max_number</td>
 <td>Numeric. Maximum number of matching names requested from the web service in a single call. Defaults to <code>1000</code>, generous for any genus.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>verbose</td>
 <td>Logical. If <code>TRUE</code> (default), prints progress messages.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>save</td>
 <td>Logical. If <code>TRUE</code> (default), the result is saved to disk as an <code>.xlsx</code> spreadsheet.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>dir</td>
 <td>Character. Directory where the spreadsheet is saved when <code>save = TRUE</code>. Defaults to <code>&quot;spfungorum_records&quot;</code>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>filename</td>
 <td>Character. Name of the <code>.xlsx</code> file (without extension) to save. Defaults to <code>&quot;spfungorum_records_&lt;taxon&gt;&quot;</code>.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>html_report</td>
 <td>Logical. If <code>TRUE</code> (default), also writes a self-contained HTML report (<code>&lt;dir&gt;/&lt;filename&gt;.html</code>) summarizing the results: KPI counts and the full record table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <code>.xlsx</code> spreadsheet is unaffected).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>open_report</td>
 <td>Logical. If <code>TRUE</code> (default in interactive sessions), opens the rendered HTML report in the default browser.</td>
 </tr>
@@ -4628,7 +4632,7 @@ height: 400px;
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
 <p>A <code>data.frame</code>, one row per matching Index Fungorum name and, by default, with a Brazilian reported locality, with columns:</p>
-<p>Fungorum_NumberIndex Fungorum’s numeric record identifier for the name. Taxon_nameThe binomial as registered in Index Fungorum. AuthorsAuthor citation. YearYear of publication. Name_statusIndex Fungorum’s nomenclatural status (e.g. <code>&quot;Legitimate&quot;</code>). Current_nameIndex Fungorum’s currently accepted name for this entry, when different (i.e. when <code>Taxon_name</code> is itself a synonym). Fungorum_Location, Fungorum_HostType specimen locality and host, as reported in Index Fungorum’s own record (may be <code>NA</code> - not every record has these). Fungorum_URLDirect link to the name’s Species Fungorum page. Fungorum_Brazil_EvidenceLogical; <code>TRUE</code> when <code>Fungorum_Location</code> mentions Brazil (the country or any Brazilian state).</p>
+<p>Fungorum_NumberIndex Fungorum’s numeric record identifier for the name. Taxon_nameThe binomial as registered in Index Fungorum. AuthorsAuthor citation. SpecificEpithetThe bare specific epithet. YearYear of publication. Name_statusIndex Fungorum’s nomenclatural status (e.g. <code>&quot;Legitimate&quot;</code>). Current_nameIndex Fungorum’s currently accepted name for this entry, when different (i.e. when <code>Taxon_name</code> is itself a synonym). When <code>fetch_details = TRUE</code>, this is the freshly-scraped value from the name’s own page rather than the bulk search response’s own (occasionally stale) field. Fungorum_Location, Fungorum_HostType specimen locality and host, as reported in Index Fungorum’s own record (may be <code>NA</code> - not every record has these). Volume, Part, PageThe publication’s volume, part/issue, and page. PublishingAuthorsFull author list of the publication the name appeared in, which may differ from <code>Authors</code> (the name’s own author citation). Fungorum_URLDirect link to the name’s Species Fungorum page. Fungorum_JournalThe journal the name was published in (only when <code>fetch_details = TRUE</code>; not available from the bulk search response). Fungorum_CitationThe full formatted citation as shown on the name’s own Species Fungorum page (only when <code>fetch_details = TRUE</code>). Fungorum_BasionymThe basionym or typification details, when present (only when <code>fetch_details = TRUE</code>). Fungorum_Current_Name_CitationThe full citation of the currently accepted name (only when <code>fetch_details = TRUE</code>). Fungorum_LSIDThe Index Fungorum Life Science Identifier (only when <code>fetch_details = TRUE</code>). Fungorum_Brazil_EvidenceLogical; <code>TRUE</code> when <code>Fungorum_Location</code> mentions Brazil (the country or any Brazilian state).</p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
@@ -5161,48 +5165,65 @@ height: 400px;
 <span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxon <span class="pp">|</span> Character. A single fungal species or genus name (e.g. <span class="in">`&quot;Phellinotus neoaridus&quot;`</span> or <span class="in">`&quot;Phellinotus&quot;`</span>). <span class="pp">|</span></span>
 <span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> rank <span class="pp">|</span> Character. Whether <span class="in">`taxon`</span> is a <span class="in">`&quot;species&quot;`</span> (default) or a <span class="in">`&quot;genus&quot;`</span>. Species Fungorum&#39;s web service has no operation for searching by higher classification (order/family), so <span class="in">`rank = &quot;order&quot;`</span> is not supported. <span class="pp">|</span></span>
 <span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> require_brazil_evidence <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), the returned table is filtered to only the names whose Index Fungorum <span class="in">`Location`</span> mentions Brazil (the country name or any Brazilian state). Set to <span class="in">`FALSE`</span> to instead return every matching name regardless of locality, for manual review. <span class="pp">|</span></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> max_number <span class="pp">|</span> Numeric. Maximum number of matching names requested from the web service in a single call. Defaults to <span class="in">`1000`</span>, generous for any genus. <span class="pp">|</span></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), prints progress messages. <span class="pp">|</span></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), the result is saved to disk as an <span class="in">`.xlsx`</span> spreadsheet. <span class="pp">|</span></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Character. Directory where the spreadsheet is saved when <span class="in">`save = TRUE`</span>. Defaults to <span class="in">`&quot;spfungorum_records&quot;`</span>. <span class="pp">|</span></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Character. Name of the <span class="in">`.xlsx`</span> file (without extension) to save. Defaults to <span class="in">`&quot;spfungorum_records_&lt;taxon&gt;&quot;`</span>. <span class="pp">|</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> html_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), also writes a self-contained HTML report (<span class="in">`&lt;dir&gt;/&lt;filename&gt;.html`</span>) summarizing the results: KPI counts and the full record table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <span class="in">`.xlsx`</span> spreadsheet is unaffected). <span class="pp">|</span></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> open_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default in interactive sessions), opens the rendered HTML report in the default browser. <span class="pp">|</span></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>A <span class="in">`data.frame`</span>, one row per matching Index Fungorum name and, by default,</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>  with a Brazilian reported locality, with columns:</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>  Fungorum_NumberIndex Fungorum&#39;s numeric record identifier for the name.</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  Taxon_nameThe binomial as registered in Index Fungorum.</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  AuthorsAuthor citation.</span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>  YearYear of publication.</span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>  Name_statusIndex Fungorum&#39;s nomenclatural status (e.g. <span class="in">`&quot;Legitimate&quot;`</span>).</span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>  Current_nameIndex Fungorum&#39;s currently accepted name for this entry, when</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>    different (i.e. when <span class="in">`Taxon_name`</span> is itself a synonym).</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  Fungorum_Location, Fungorum_HostType specimen locality and host, as reported</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>    in Index Fungorum&#39;s own record (may be <span class="in">`NA`</span> - not every record has these).</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  Fungorum_URLDirect link to the name&#39;s Species Fungorum page.</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>  Fungorum_Brazil_EvidenceLogical; <span class="in">`TRUE`</span> when <span class="in">`Fungorum_Location`</span></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>    mentions Brazil (the country or any Brazilian state).</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="co"># All Index Fungorum information for a single species, only if it reports a</span></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Brazilian locality</span></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>sp <span class="ot">&lt;-</span> <span class="fu">spfungorum_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Phellinotus neoaridus&quot;</span>)</span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="co"># Every Index Fungorum species-level name in genus Phellinotus with a</span></span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="co"># Brazilian reported locality</span></span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>genus_records <span class="ot">&lt;-</span> <span class="fu">spfungorum_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Phellinotus&quot;</span>, <span class="at">rank =</span> <span class="st">&quot;genus&quot;</span>)</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="co"># Every matching name regardless of locality, for manual review</span></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>all_records <span class="ot">&lt;-</span> <span class="fu">spfungorum_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Phellinotus&quot;</span>, <span class="at">rank =</span> <span class="st">&quot;genus&quot;</span>,</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">require_brazil_evidence =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> fetch_details <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), each returned name&#39;s own Species Fungorum page is visited (a fast, plain HTTP request - no headless browser, unlike MycoBank) to read the journal it was published in, the full formatted citation, the basionym or typification details, the current name&#39;s own full citation, and the Index Fungorum LSID - none of which are in the bulk <span class="in">`NameSearch`</span> response. Set to <span class="in">`FALSE`</span> to skip this and return only the fields already in that response. <span class="pp">|</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> max_number <span class="pp">|</span> Numeric. Maximum number of matching names requested from the web service in a single call. Defaults to <span class="in">`1000`</span>, generous for any genus. <span class="pp">|</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), prints progress messages. <span class="pp">|</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), the result is saved to disk as an <span class="in">`.xlsx`</span> spreadsheet. <span class="pp">|</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Character. Directory where the spreadsheet is saved when <span class="in">`save = TRUE`</span>. Defaults to <span class="in">`&quot;spfungorum_records&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Character. Name of the <span class="in">`.xlsx`</span> file (without extension) to save. Defaults to <span class="in">`&quot;spfungorum_records_&lt;taxon&gt;&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> html_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), also writes a self-contained HTML report (<span class="in">`&lt;dir&gt;/&lt;filename&gt;.html`</span>) summarizing the results: KPI counts and the full record table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <span class="in">`.xlsx`</span> spreadsheet is unaffected). <span class="pp">|</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> open_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default in interactive sessions), opens the rendered HTML report in the default browser. <span class="pp">|</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>A <span class="in">`data.frame`</span>, one row per matching Index Fungorum name and, by default,</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>  with a Brazilian reported locality, with columns:</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  Fungorum_NumberIndex Fungorum&#39;s numeric record identifier for the name.</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  Taxon_nameThe binomial as registered in Index Fungorum.</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>  AuthorsAuthor citation.</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>  SpecificEpithetThe bare specific epithet.</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>  YearYear of publication.</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>  Name_statusIndex Fungorum&#39;s nomenclatural status (e.g. <span class="in">`&quot;Legitimate&quot;`</span>).</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  Current_nameIndex Fungorum&#39;s currently accepted name for this entry, when</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>    different (i.e. when <span class="in">`Taxon_name`</span> is itself a synonym). When</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>    <span class="in">`fetch_details = TRUE`</span>, this is the freshly-scraped value from the name&#39;s own</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>    page rather than the bulk search response&#39;s own (occasionally stale) field.</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>  Fungorum_Location, Fungorum_HostType specimen locality and host, as reported</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>    in Index Fungorum&#39;s own record (may be <span class="in">`NA`</span> - not every record has these).</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>  Volume, Part, PageThe publication&#39;s volume, part/issue, and page.</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>  PublishingAuthorsFull author list of the publication the name appeared in,</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>    which may differ from <span class="in">`Authors`</span> (the name&#39;s own author citation).</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>  Fungorum_URLDirect link to the name&#39;s Species Fungorum page.</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>  Fungorum_JournalThe journal the name was published in (only when</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>    <span class="in">`fetch_details = TRUE`</span>; not available from the bulk search response).</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>  Fungorum_CitationThe full formatted citation as shown on the name&#39;s own</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>    Species Fungorum page (only when <span class="in">`fetch_details = TRUE`</span>).</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>  Fungorum_BasionymThe basionym or typification details, when present (only</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>    when <span class="in">`fetch_details = TRUE`</span>).</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>  Fungorum_Current_Name_CitationThe full citation of the currently accepted</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>    name (only when <span class="in">`fetch_details = TRUE`</span>).</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>  Fungorum_LSIDThe Index Fungorum Life Science Identifier (only when</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>    <span class="in">`fetch_details = TRUE`</span>).</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>  Fungorum_Brazil_EvidenceLogical; <span class="in">`TRUE`</span> when <span class="in">`Fungorum_Location`</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>    mentions Brazil (the country or any Brazilian state).</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="co"># All Index Fungorum information for a single species, only if it reports a</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="co"># Brazilian locality</span></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>sp <span class="ot">&lt;-</span> <span class="fu">spfungorum_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Phellinotus neoaridus&quot;</span>)</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="co"># Every Index Fungorum species-level name in genus Phellinotus with a</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="co"># Brazilian reported locality</span></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>genus_records <span class="ot">&lt;-</span> <span class="fu">spfungorum_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Phellinotus&quot;</span>, <span class="at">rank =</span> <span class="st">&quot;genus&quot;</span>)</span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="co"># Every matching name regardless of locality, for manual review</span></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>all_records <span class="ot">&lt;-</span> <span class="fu">spfungorum_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Phellinotus&quot;</span>, <span class="at">rank =</span> <span class="st">&quot;genus&quot;</span>,</span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">require_brazil_evidence =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

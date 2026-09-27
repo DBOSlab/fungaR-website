@@ -18,25 +18,25 @@ resources:
 ---
 
 ```{r setup, include=FALSE}
-library(floraR)
+library(fungaR)
 
 ffb_versions <- tryCatch(
-  flora_version(),
+  funga_version(),
   error = function(e) NULL
 )
 
 if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
-  latest_row     <- ffb_versions[ffb_versions$Latest %in% TRUE, ]
+  latest_row <- ffb_versions[ffb_versions$Latest %in% TRUE, ]
   if (nrow(latest_row) == 0) latest_row <- ffb_versions[1, ]
-  n_versions     <- nrow(ffb_versions)
+  n_versions <- nrow(ffb_versions)
   latest_version <- latest_row$Version[1]
   latest_records <- format(as.numeric(gsub(",", "", latest_row$Records[1])), big.mark = ",")
-  latest_date    <- latest_row$Published_on[1]
+  latest_date <- latest_row$Published_on[1]
 } else {
-  n_versions     <- NA
+  n_versions <- NA
   latest_version <- NA
   latest_records <- NA
-  latest_date    <- NA
+  latest_date <- NA
 }
 ```
 
@@ -45,7 +45,7 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
     position: fixed;
     top: 60px;
     right: 450px;
-    width: 165px;
+    width: 140px;
     opacity: 0.85;
     z-index: 1;
   }
@@ -59,9 +59,30 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
 </style>
 
 <div class="floating-logos">
-  <img src='/figures/floraR_hex_sticker.png' alt='ícone hexagonal do floraR'>
-  <img src='/figures/jbrj_marca.jpg' alt='logo do JBRJ'>
+
+  <a href="https://github.com/DBOSlab/fungaR"
+     target="_blank"
+     title="fungaR on GitHub">
+    <img src="/figures/fungaR_hex_sticker.png"
+         alt="fungaR logo">
+  </a>
+
+  <a href="https://redefunga.com.br/site/"
+     target="_blank"
+     title="The Rede Funga">
+    <img src="/figures/rede_taxon_br_funga.png"
+         alt="rede funga logo">
+  </a>
+  
+  <a href="https://www.gov.br/jbrj/pt-br"
+     target="_blank"
+     title="Jardim Botânico do Rio de Janeiro">
+    <img src="/figures/jbrj_marca.png"
+         alt="Jardim Botânico do Rio de Janeiro">
+  </a>
+
 </div>
+
 
 ::: whitebox
 ::: {style="padding-left: 100px; padding-right: 50px; display: inline-block;"}
@@ -71,7 +92,7 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
 ::: {style="text-align: left;"}
 
 \
-`floraR` é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), mantida pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br). O pacote oferece uma interface completa para baixar, analisar, filtrar e explorar dados da lista de espécies a partir do portal IPT da FFB — desde a navegação por critérios taxonômicos, geográficos ou de atributos até a resolução da sua própria lista de nomes de espécies em relação a ela.\
+`fungaR` é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição fúngica da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), mantida pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br). O pacote oferece uma interface completa para baixar, analisar, filtrar e explorar dados da lista de espécies a partir do portal IPT da FFB — desde a navegação por critérios taxonômicos, geográficos ou de atributos até a resolução da sua própria lista de nomes de espécies em relação a ela, além de cruzar dados com o MycoBank e repositórios de ocorrência brasileiros para ajudar a curar espécies e registros ainda ausentes na plataforma.\
 \
 
 ```{=html}
@@ -95,20 +116,37 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
 </div>
 ```
 
-Esses números são obtidos ao vivo dos metadados do IPT da FFB por meio de `flora_version()` toda vez que esta página é construída — a mesma chamada que você mesmo faria antes de decidir com qual versão do conjunto de dados trabalhar.\
+Esses números são obtidos ao vivo dos metadados do IPT da FFB por meio de `funga_version()` toda vez que esta página é construída — a mesma chamada que você mesmo faria antes de decidir com qual versão do conjunto de dados trabalhar. Note que a FFB publica plantas e fungos juntos em um único lançamento combinado; `funga_parse()` é o que reduz isso ao reino Fungi.\
 \
 
 ## Flora e Funga do Brasil
 
-O Brasil abriga a maior diversidade de plantas, algas e fungos do mundo ([BFG 2022](https://doi.org/10.1002/tax.12640)). Reunir uma lista de espécies completa e continuamente atualizada dessa diversidade tem sido um esforço colaborativo de décadas, envolvendo centenas de taxonomistas em todo o país.
+O Brasil abriga uma das maiores diversidades fúngicas do mundo, incluindo fungos liquenizados e não liquenizados em todos os biomas do país. Reunir uma lista de espécies completa e continuamente atualizada dessa diversidade tem sido um esforço colaborativo de décadas, envolvendo centenas de taxonomistas e micologistas em todo o país.
 
 O projeto começou em 2008 como a *Lista de Espécies da Flora do Brasil*, uma primeira tentativa de compilar uma lista nacional de espécies validada por especialistas. Evoluiu para o [Flora do Brasil 2020](http://doi.org/10.47871/jbrj2021004), lançado para atender aos compromissos do Brasil com a Estratégia Global para a Conservação das Plantas da Convenção sobre Diversidade Biológica, e — após a incorporação dos fungos — para sua forma atual, [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/).
 
-Para cada nome aceito, a lista de espécies registra o status nomenclatural (aceito, sinônimo ou duvidoso), a classificação taxonômica, a distribuição geográfica entre estados brasileiros e domínios fitogeográficos, o status de endemismo, a forma de vida, o hábitat e o tipo de vegetação. Essa base taxonômica estruturada e validada sustenta a pesquisa taxonômica, as avaliações de conservação e a informática da biodiversidade em todo o país, sendo também a referência nomenclatural usada para validar as imagens de espécimes publicadas no [Herbário Virtual Reflora](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do).
+Para cada nome fúngico aceito, a lista de espécies registra o status nomenclatural (aceito, sinônimo ou duvidoso), a classificação taxonômica (Divisão, Ordem, Família, Gênero — a FFB não usa Classe para fungos), a distribuição geográfica entre estados brasileiros e domínios fitogeográficos, o status de endemismo, o modo nutricional/ecológico (por exemplo, saprófita, parasita, liquenizado, micorrízico) e informações de substrato/hospedeiro. Essa base taxonômica estruturada e validada sustenta a pesquisa micológica, as avaliações de conservação e a informática da biodiversidade em todo o país.
 
-Os dados são publicados como Arquivos Darwin Core versionados através do [Portal de Dados IPT da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil), hospedado pelo [Jardim Botânico do Rio de Janeiro (JBRJ)](https://www.gov.br/jbrj/pt-br). O `floraR` lê diretamente desse portal, de modo que cada resultado reflete a lista de espécies tal como curada pela comunidade de taxonomistas no momento da consulta.
+Os dados são publicados como Arquivos Darwin Core versionados através do [Portal de Dados IPT da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil), hospedado pelo [Jardim Botânico do Rio de Janeiro (JBRJ)](https://www.gov.br/jbrj/pt-br). O `fungaR` lê diretamente desse portal, de modo que cada resultado reflete a lista de espécies tal como curada pela comunidade de taxonomistas no momento da consulta.
 
-Se você é taxonomista e deseja contribuir com novos nomes, atualizações ou correções para a Flora e Funga do Brasil, consulte as diretrizes de contribuição na [própria plataforma](https://floradobrasil.jbrj.gov.br/consulta/), ou entre em contato com a equipe de coordenação da FFB pelo e-mail **floraefungadobrasil\@jbrj.gov.br**.\
+Se você é taxonomista e deseja contribuir com novos nomes, atualizações ou correções para a Flora e Funga do Brasil, consulte as diretrizes de contribuição na [própria plataforma](https://floradobrasil.jbrj.gov.br/consulta/), ou entre em contato com a equipe de coordenação da FFB pelo e-mail **floraefungadobrasil\@jbrj.gov.br**. As funções `mycobank_gap()`, `spfungorum_gap()` e `funga_distribution_gap()` do `fungaR` podem ajudar você a encontrar candidatos a submeter.\
+\
+
+## Rede de Taxonomistas da Funga do Brasil
+
+A [Rede de Taxonomistas da Funga do Brasil (RTFB)](https://redefunga.com.br/site/) reúne especialistas dedicados à documentação e qualificação dos dados sobre fungos, líquens e mixomicetos na Flora e Funga do Brasil — a base oficial de referência para o governo e a sociedade. A Rede surgiu de forma natural a partir do histórico esforço de centenas de pessoas da micologia brasileira para documentação da diversidade de fungos, incluindo projetos como a Flora e Funga do Brasil, o Herbário Virtual Reflora, o INCT Herbário Virtual da Flora e dos Fungos, o Catálogo da Vida do Brasil, o INCT Fungos do Brasil e, mais recentemente, o projeto Universal Funga do Brasil financiado pelo CNPq, tendo todas essas iniciativas o objetivo de fortalecer a colaboração entre taxonomistas e instituições.
+
+O propósito da RTFB é conectar pessoas, compartilhar conhecimento e promover a atualização contínua das informações sobre a diversidade fúngica brasileira na FFB, a base autoritativa para a catalogação de nomes fúngicos. Esse trabalho contribui diretamente para que os fungos sejam reconhecidos em políticas públicas, listas vermelhas, planos de conservação, regulamentações ambientais e ações de bioeconomia. O site da Rede é a principal plataforma digital para reunir informações sobre os membros, divulgar publicações, notícias e eventos, e promover a comunicação com outras iniciativas nacionais e internacionais.
+
+Suas principais metas incluem:
+
+- Dar visibilidade à Rede e reunir especialistas taxonomistas em uma plataforma com perfis aprovados e verificados.
+- Facilitar o acesso a publicações e conteúdos relacionados à taxonomia de fungos.
+- Divulgar notícias, eventos e resultados de pesquisa.
+- Disponibilizar ferramentas de dados, incluindo contadores de amostras em coleções, status de identificação e espécies avaliadas pelo CNCFlora/IUCN.
+- Integrar informações com bases externas, como a Flora e Funga do Brasil e a IUCN, entre outras.
+
+As ferramentas de curadoria do `fungaR` (`mycobank_gap()`, `mycobank_records()`, `spfungorum_gap()`, `spfungorum_records()` e `funga_distribution_gap()`) foram desenhadas para apoiar exatamente esse tipo de trabalho colaborativo de curadoria.\
 \
 :::
 ::: {style="display: flex; gap: 16px; justify-content: center; align-items: center;"}
@@ -123,13 +161,13 @@ Se você é taxonomista e deseja contribuir com novos nomes, atualizações ou c
 ::: {style="text-align: center;"}
 ### [Primeiros Passos](/pt/get-started/index.qmd)
 
-Bem-vindo! Aprenda como instalar o `floraR`
+Bem-vindo! Aprenda como instalar o `fungaR`
 :::
 
 ::: {style="text-align: center;"}
 ### [Artigos](/pt/articles/index.qmd)
 
-Tutoriais práticos para aprender a usar o `floraR`
+Tutoriais práticos para aprender a usar o `fungaR`
 :::
 :::
 :::
