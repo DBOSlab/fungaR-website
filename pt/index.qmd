@@ -45,7 +45,7 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
     position: fixed;
     top: 60px;
     right: 450px;
-    width: 140px;
+    width: 150px;
     opacity: 0.85;
     z-index: 1;
   }
