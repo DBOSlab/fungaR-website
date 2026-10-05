@@ -30,7 +30,7 @@ Beyond data retrieval, `fungaR` assists taxonomic experts contributing to FFB by
 
 ## Workflow
 
-<img src="inst/figures/fungaR_workflow.svg" alt="fungaR workflow diagram" width="100%" />
+<img src="figures/fungaR_workflow.svg" alt="fungaR workflow diagram" width="100%" />
 
 ## Installation
 

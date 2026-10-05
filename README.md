@@ -43,7 +43,7 @@ country’s fungal diversity in FFB.
 
 ## Workflow
 
-<img src="inst/figures/fungaR_workflow.svg" alt="fungaR workflow diagram" width="100%" />
+<img src="figures/fungaR_workflow.svg" alt="fungaR workflow diagram" width="100%" />
 
 ## Installation
 
