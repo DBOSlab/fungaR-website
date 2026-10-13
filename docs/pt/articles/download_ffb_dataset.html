@@ -4622,8 +4622,14 @@ height: 400px;
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../pt/articles/curate_ffb_new_records.qmd" class="sidebar-item-text sidebar-link">
+  <a href="../../pt/articles/curate_ffb_new_records.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Encontrar espécies e registros estaduais ausentes na FFB</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../pt/articles/retrieve_taxon_records.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Recuperar registros de um táxon brasileiro</span></a>
   </div>
 </li>
       </ul>
@@ -4675,10 +4681,10 @@ height: 400px;
 </header>
 
 
-<p>Aqui apresentamos um guia prático para a função <code>flora_download()</code> do pacote <code>floraR</code>. Essa função baixa registros taxonômicos e de distribuição da plataforma <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil (FFB)</a> no formato Darwin Core Archive (DwC-A), diretamente do <a href="https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil">portal de dados IPT da FFB</a>.</p>
+<p>Aqui apresentamos um guia prático para a função <code>funga_download()</code> do pacote <code>fungaR</code>. Essa função baixa registros taxonômicos e de distribuição da plataforma <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil (FFB)</a> no formato Darwin Core Archive (DwC-A), diretamente do <a href="https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil">portal de dados IPT da FFB</a>.</p>
 <section id="visão-geral-da-função" class="level2">
 <h2 class="anchored" data-anchor-id="visão-geral-da-função">Visão Geral da Função</h2>
-<p>A <code>flora_download()</code> recupera uma ou mais versões do conjunto de dados da FFB e salva cada uma em seu próprio subdiretório em disco. Ela verifica se a versão solicitada já está presente localmente e evita baixá-la novamente sem necessidade, portanto é seguro chamá-la repetidamente ao longo de um projeto.</p>
+<p>A <code>funga_download()</code> recupera uma ou mais versões do conjunto de dados da FFB e salva cada uma em seu próprio subdiretório em disco. Ela verifica se a versão solicitada já está presente localmente e evita baixá-la novamente sem necessidade, portanto é seguro chamá-la repetidamente ao longo de um projeto.</p>
 </section>
 <section id="argumentos" class="level2">
 <h2 class="anchored" data-anchor-id="argumentos">Argumentos</h2>
@@ -4696,7 +4702,7 @@ height: 400px;
 <tbody>
 <tr class="odd">
 <td><code>version</code></td>
-<td>Caractere. <code>&quot;latest&quot;</code> (padrão) baixa a versão mais recente; <code>&quot;all&quot;</code> baixa todas as versões disponíveis (download grande!); uma string ou vetor de versões (ex.: <code>&quot;393.418&quot;</code>) baixa versões específicas. Use <code>flora_version()</code> para consultar os números de versão válidos primeiro.</td>
+<td>Caractere. <code>&quot;latest&quot;</code> (padrão) baixa a versão mais recente; <code>&quot;all&quot;</code> baixa todas as versões disponíveis (download grande!); uma string ou vetor de versões (ex.: <code>&quot;393.418&quot;</code>) baixa versões específicas. Use <code>funga_version()</code> para consultar os números de versão válidos primeiro.</td>
 </tr>
 <tr class="even">
 <td><code>verbose</code></td>
@@ -4704,39 +4710,39 @@ height: 400px;
 </tr>
 <tr class="odd">
 <td><code>dir</code></td>
-<td>Caractere. Diretório local para salvar os arquivos baixados. O padrão é <code>&quot;flora_download&quot;</code>. Cada versão é extraída em seu próprio subdiretório.</td>
+<td>Caractere. Diretório local para salvar os arquivos baixados. O padrão é <code>&quot;funga_download&quot;</code>. Cada versão é extraída em seu próprio subdiretório.</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="baixar-o-conjunto-de-dados-mais-recente" class="level2">
 <h2 class="anchored" data-anchor-id="baixar-o-conjunto-de-dados-mais-recente">Baixar o conjunto de dados mais recente</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(floraR)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fungaR)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">dir =</span> <span class="st">&quot;flora_download&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">dir =</span> <span class="st">&quot;funga_download&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="baixar-uma-versão-específica" class="level2">
 <h2 class="anchored" data-anchor-id="baixar-uma-versão-específica">Baixar uma versão específica</h2>
-<p>Use <a href="../../pt/articles/check_ffb_versions.html"><code>flora_version()</code></a> primeiro para encontrar uma string de versão válida:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>versions_df <span class="ot">&lt;-</span> <span class="fu">flora_version</span>()</span>
+<p>Use <a href="../../pt/articles/check_ffb_versions.html"><code>funga_version()</code></a> primeiro para encontrar uma string de versão válida:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>versions_df <span class="ot">&lt;-</span> <span class="fu">funga_version</span>()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> versions_df<span class="sc">$</span>Version[<span class="dv">1</span>], <span class="at">dir =</span> <span class="st">&quot;flora_download&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> versions_df<span class="sc">$</span>Version[<span class="dv">1</span>], <span class="at">dir =</span> <span class="st">&quot;funga_download&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="baixar-múltiplas-versões" class="level2">
 <h2 class="anchored" data-anchor-id="baixar-múltiplas-versões">Baixar múltiplas versões</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> <span class="fu">c</span>(<span class="st">&quot;393.418&quot;</span>, <span class="st">&quot;392.417&quot;</span>), <span class="at">dir =</span> <span class="st">&quot;flora_download&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> <span class="fu">c</span>(<span class="st">&quot;393.418&quot;</span>, <span class="st">&quot;392.417&quot;</span>), <span class="at">dir =</span> <span class="st">&quot;funga_download&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="baixar-todas-as-versões-disponíveis" class="level2">
 <h2 class="anchored" data-anchor-id="baixar-todas-as-versões-disponíveis">Baixar todas as versões disponíveis</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download grande! Necessário apenas para arquivamento ou comparações entre versões.</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> <span class="st">&quot;all&quot;</span>, <span class="at">dir =</span> <span class="st">&quot;flora_download&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> <span class="st">&quot;all&quot;</span>, <span class="at">dir =</span> <span class="st">&quot;funga_download&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="dicas-adicionais" class="level2">
 <h2 class="anchored" data-anchor-id="dicas-adicionais">Dicas Adicionais</h2>
 <ul>
-<li>Você raramente precisa chamar <code>flora_download()</code> diretamente: <code>flora_records()</code>, <code>flora_search()</code>, <code>flora_match()</code> e <code>flora_get_children_taxa()</code> baixam e armazenam em cache o conjunto de dados automaticamente na primeira chamada.</li>
-<li>Se não houver conexão com a internet, a <code>flora_download()</code> recorre automaticamente a uma cópia local baixada anteriormente, se houver, em <code>dir</code>.</li>
-<li>Mantenha a pasta baixada (o comportamento padrão <code>rm_flora_database = FALSE</code> nas funções que a utilizam) para que análises repetidas reutilizem o cache em vez de baixar o arquivo novamente a cada vez.</li>
+<li>Você raramente precisa chamar <code>funga_download()</code> diretamente: <code>funga_records()</code>, <code>funga_search()</code>, <code>funga_match()</code> e <code>funga_get_children_taxa()</code> baixam e armazenam em cache o conjunto de dados automaticamente na primeira chamada.</li>
+<li>Se não houver conexão com a internet, a <code>funga_download()</code> recorre automaticamente a uma cópia local baixada anteriormente, se houver, em <code>dir</code>.</li>
+<li>Mantenha a pasta baixada (o comportamento padrão <code>rm_funga_database = FALSE</code> nas funções que a utilizam) para que análises repetidas reutilizem o cache em vez de baixar o arquivo novamente a cada vez.</li>
 </ul>
 </section>
 <section id="veja-também" class="level2">
@@ -5233,56 +5239,56 @@ height: 400px;
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>Aqui apresentamos um guia prático para a função <span class="in">`flora_download()`</span> do pacote <span class="in">`floraR`</span>. Essa função baixa registros taxonômicos e de distribuição da plataforma <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span> no formato Darwin Core Archive (DwC-A), diretamente do <span class="co">[</span><span class="ot">portal de dados IPT da FFB</span><span class="co">](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)</span>.</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>Aqui apresentamos um guia prático para a função <span class="in">`funga_download()`</span> do pacote <span class="in">`fungaR`</span>. Essa função baixa registros taxonômicos e de distribuição da plataforma <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span> no formato Darwin Core Archive (DwC-A), diretamente do <span class="co">[</span><span class="ot">portal de dados IPT da FFB</span><span class="co">](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)</span>.</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visão Geral da Função</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>A <span class="in">`flora_download()`</span> recupera uma ou mais versões do conjunto de dados da FFB e salva cada uma em seu próprio subdiretório em disco. Ela verifica se a versão solicitada já está presente localmente e evita baixá-la novamente sem necessidade, portanto é seguro chamá-la repetidamente ao longo de um projeto.</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>A <span class="in">`funga_download()`</span> recupera uma ou mais versões do conjunto de dados da FFB e salva cada uma em seu próprio subdiretório em disco. Ela verifica se a versão solicitada já está presente localmente e evita baixá-la novamente sem necessidade, portanto é seguro chamá-la repetidamente ao longo de um projeto.</span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">## Argumentos</span></span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Descrição <span class="pp">|</span></span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`version`</span> <span class="pp">|</span> Caractere. <span class="in">`&quot;latest&quot;`</span> (padrão) baixa a versão mais recente; <span class="in">`&quot;all&quot;`</span> baixa todas as versões disponíveis (download grande!); uma string ou vetor de versões (ex.: <span class="in">`&quot;393.418&quot;`</span>) baixa versões específicas. Use <span class="in">`flora_version()`</span> para consultar os números de versão válidos primeiro. <span class="pp">|</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`version`</span> <span class="pp">|</span> Caractere. <span class="in">`&quot;latest&quot;`</span> (padrão) baixa a versão mais recente; <span class="in">`&quot;all&quot;`</span> baixa todas as versões disponíveis (download grande!); uma string ou vetor de versões (ex.: <span class="in">`&quot;393.418&quot;`</span>) baixa versões específicas. Use <span class="in">`funga_version()`</span> para consultar os números de versão válidos primeiro. <span class="pp">|</span></span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`verbose`</span> <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), imprime mensagens informativas durante o download. <span class="pp">|</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`dir`</span> <span class="pp">|</span> Caractere. Diretório local para salvar os arquivos baixados. O padrão é <span class="in">`&quot;flora_download&quot;`</span>. Cada versão é extraída em seu próprio subdiretório. <span class="pp">|</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`dir`</span> <span class="pp">|</span> Caractere. Diretório local para salvar os arquivos baixados. O padrão é <span class="in">`&quot;funga_download&quot;`</span>. Cada versão é extraída em seu próprio subdiretório. <span class="pp">|</span></span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## Baixar o conjunto de dados mais recente</span></span>
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(floraR)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fungaR)</span>
 <span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">dir =</span> <span class="st">&quot;flora_download&quot;</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">dir =</span> <span class="st">&quot;funga_download&quot;</span>)</span>
 <span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Baixar uma versão específica</span></span>
 <span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>Use <span class="co">[</span><span class="ot">`flora_version()`</span><span class="co">](/pt/articles/check_ffb_versions.qmd)</span> primeiro para encontrar uma string de versão válida:</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>Use <span class="co">[</span><span class="ot">`funga_version()`</span><span class="co">](/pt/articles/check_ffb_versions.qmd)</span> primeiro para encontrar uma string de versão válida:</span>
 <span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>versions_df <span class="ot">&lt;-</span> <span class="fu">flora_version</span>()</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>versions_df <span class="ot">&lt;-</span> <span class="fu">funga_version</span>()</span>
 <span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> versions_df<span class="sc">$</span>Version[<span class="dv">1</span>], <span class="at">dir =</span> <span class="st">&quot;flora_download&quot;</span>)</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> versions_df<span class="sc">$</span>Version[<span class="dv">1</span>], <span class="at">dir =</span> <span class="st">&quot;funga_download&quot;</span>)</span>
 <span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## Baixar múltiplas versões</span></span>
 <span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> <span class="fu">c</span>(<span class="st">&quot;393.418&quot;</span>, <span class="st">&quot;392.417&quot;</span>), <span class="at">dir =</span> <span class="st">&quot;flora_download&quot;</span>)</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> <span class="fu">c</span>(<span class="st">&quot;393.418&quot;</span>, <span class="st">&quot;392.417&quot;</span>), <span class="at">dir =</span> <span class="st">&quot;funga_download&quot;</span>)</span>
 <span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Baixar todas as versões disponíveis</span></span>
 <span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
 <span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Download grande! Necessário apenas para arquivamento ou comparações entre versões.</span></span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> <span class="st">&quot;all&quot;</span>, <span class="at">dir =</span> <span class="st">&quot;flora_download&quot;</span>)</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> <span class="st">&quot;all&quot;</span>, <span class="at">dir =</span> <span class="st">&quot;funga_download&quot;</span>)</span>
 <span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dicas Adicionais</span></span>
 <span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Você raramente precisa chamar <span class="in">`flora_download()`</span> diretamente: <span class="in">`flora_records()`</span>, <span class="in">`flora_search()`</span>, <span class="in">`flora_match()`</span> e <span class="in">`flora_get_children_taxa()`</span> baixam e armazenam em cache o conjunto de dados automaticamente na primeira chamada.</span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Se não houver conexão com a internet, a <span class="in">`flora_download()`</span> recorre automaticamente a uma cópia local baixada anteriormente, se houver, em <span class="in">`dir`</span>.</span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Mantenha a pasta baixada (o comportamento padrão <span class="in">`rm_flora_database = FALSE`</span> nas funções que a utilizam) para que análises repetidas reutilizem o cache em vez de baixar o arquivo novamente a cada vez.</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Você raramente precisa chamar <span class="in">`funga_download()`</span> diretamente: <span class="in">`funga_records()`</span>, <span class="in">`funga_search()`</span>, <span class="in">`funga_match()`</span> e <span class="in">`funga_get_children_taxa()`</span> baixam e armazenam em cache o conjunto de dados automaticamente na primeira chamada.</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Se não houver conexão com a internet, a <span class="in">`funga_download()`</span> recorre automaticamente a uma cópia local baixada anteriormente, se houver, em <span class="in">`dir`</span>.</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Mantenha a pasta baixada (o comportamento padrão <span class="in">`rm_funga_database = FALSE`</span> nas funções que a utilizam) para que análises repetidas reutilizem o cache em vez de baixar o arquivo novamente a cada vez.</span>
 <span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="fu">## Veja Também</span></span>
 <span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a></span>

@@ -1,22 +1,21 @@
 ---
-title: 'flora_version'
-description: 'Resumir os registros taxonômicos e de distribuição disponíveis na Flora e Funga do Brasil'
+title: 'funga_version'
+description: 'Resumir os registros taxonômicos e de distribuição fúngica disponíveis na Flora e Funga do Brasil'
 toc: true
 toc-depth: 3
 ---
 
-
 ```{r}
 #| eval: false
-floraR::flora_version()
+fungaR::funga_version()
 ```
 
 ### Descrição
 
-Recupera e resume os metadados das versões atualmente disponíveis dos registros
-taxonômicos e de distribuição da [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/),
+Recupera e resume os metadados das versões atualmente disponíveis da lista de
+espécies combinada (plantas e fungos) publicada pela [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/),
 hospedada pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br).
-Os metadados incluem número da versão, data de publicação, número de registros e
+Os metadados incluem número da versão, data de publicação, número de registros, e
 URLs de acesso direto.
 
 ### Detalhes
@@ -31,12 +30,12 @@ Um `data.frame` com as seguintes colunas:
 
 - `Version`: Número da versão da publicação do conjunto de dados.
 - `Published_on`: Data/hora da publicação do conjunto de dados.
-- `Records`: Número de registros de espécimes de plantas na publicação.
+- `Records`: Número de registros na publicação (a FFB publica plantas e fungos juntos em um único arquivo; `funga_parse()` é o que reduz isso ao reino Fungi).
 - `URL`: Link direto para a versão do conjunto de dados no portal IPT.
 
 ### Exemplos
 
 ```r
-ffb_version <- flora_version()
+ffb_version <- funga_version()
   head(ffb_version)
 ```

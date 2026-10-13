@@ -39,7 +39,7 @@ resources:
   }
 </style>
 
-## The `fungaR` Developer
+## The `fungaR` Developers
 
 ```{=html}
 <div class="authors-group">
@@ -57,6 +57,19 @@ resources:
     </div>
   </div>
 
+  <div class="author-card">
+    <img src="images/lucas.jpg" alt="Lucas Jordão" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Lucas Jordão</h3>
+      <p>
+        <a class="icon-link" href="mailto:lucasjordao@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-9501-0548" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/6445788694639027" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Taxonomist and bioinformatician authoring the fungaR package, responsible for designing and coding functions</p>
+    </div>
+  </div>
+
 </div>
 ```
 
@@ -70,7 +83,7 @@ resources:
     <div class="author-info">
       <h3 class="author-name">E.Ricardo Drechsler-Santos</h3>
       <p>
-        <a class="icon-link" href="mailto:drechslersantos@yahoo.com.br "><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="mailto:drechslersantos@yahoo.com.br"><img src="/authors/images/email.png" alt="Email"/></a>
         <a class="icon-link" href="https://orcid.org/0000-0002-3702-8715" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/7181472061444803" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
@@ -116,6 +129,20 @@ resources:
       <p>Expert fungi taxonomy, database, and conservation</p>
     </div>
   </div>
+  
+    <div class="author-card">
+    <img src="images/ari.jpg" alt="Aristóteles Góes-Neto" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Aristóteles Góes-Neto</h3>
+      <p>
+        <a class="icon-link" href="mailto:arigoesneto@gmail.com"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-7692-6243" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/6134133834289438" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Expert fungi taxonomy, phylogenetics, and genomics</p>
+    </div>
+  </div>
+
 
 </div>
 ```

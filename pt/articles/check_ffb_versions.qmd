@@ -3,13 +3,13 @@ title: "Verificar as versões disponíveis da FFB"
 format: html
 ---
 
-Aqui apresentamos um guia prático para a função `flora_version()` do pacote `floraR`. Essa função recupera metadados sobre as versões do conjunto de dados da lista de espécies [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) atualmente publicadas no [portal de dados IPT da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil), hospedado pelo Jardim Botânico do Rio de Janeiro.
+Aqui apresentamos um guia prático para a função `funga_version()` do pacote `fungaR`. Essa função recupera metadados sobre as versões do conjunto de dados da lista de espécies [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) atualmente publicadas no [portal de dados IPT da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil), hospedado pelo Jardim Botânico do Rio de Janeiro.
 
 Como a FFB é uma lista de espécies viva, continuamente atualizada à medida que taxonomistas revisam e adicionam nomes, cada publicação do conjunto de dados é versionada. Verificar quais versões existem — e qual é a atual — costuma ser o primeiro passo antes de baixar, analisar ou filtrar dados da FFB, pois permite fixar sua análise em uma versão específica e citável.
 
 ## Visão Geral da Função
 
-A `flora_version()` não recebe argumentos: ela simplesmente consulta os metadados do IPT da FFB e retorna um data frame resumindo cada versão publicada.
+A `funga_version()` não recebe argumentos: ela simplesmente consulta os metadados do IPT da FFB e retorna um data frame resumindo cada versão publicada.
 
 ## Colunas de saída
 
@@ -24,9 +24,9 @@ A `flora_version()` não recebe argumentos: ela simplesmente consulta os metadad
 ## Listar todas as versões disponíveis
 
 ```r
-library(floraR)
+library(fungaR)
 
-versions_df <- flora_version()
+versions_df <- funga_version()
 head(versions_df)
 ```
 
@@ -39,8 +39,8 @@ latest$Version
 
 ## Dicas Adicionais
 
-- As funções `flora_download()`, `flora_parse()`, e todas as demais construídas sobre elas (`flora_records()`, `flora_search()`, `flora_match()`, `flora_get_children_taxa()`), usam `version = "latest"` por padrão. Você só precisa chamar `flora_version()` diretamente quando quiser fixar uma análise em uma versão específica e mais antiga, por motivos de reprodutibilidade.
-- Informe uma string de versão específica da coluna `Version` (ex.: `flora_download(version = versions_df$Version[1])`) para trabalhar com essa versão exata em vez da atual.
+- As funções `funga_download()`, `funga_parse()`, e todas as demais construídas sobre elas (`funga_records()`, `funga_search()`, `funga_match()`, `funga_get_children_taxa()`), usam `version = "latest"` por padrão. Você só precisa chamar `funga_version()` diretamente quando quiser fixar uma análise em uma versão específica e mais antiga, por motivos de reprodutibilidade.
+- Informe uma string de versão específica da coluna `Version` (ex.: `funga_download(version = versions_df$Version[1])`) para trabalhar com essa versão exata em vez da atual.
 - A coluna `Records` é uma forma rápida de verificar se um download foi concluído corretamente: o número de linhas analisadas deve estar na mesma ordem de grandeza.
 
 ## Veja Também

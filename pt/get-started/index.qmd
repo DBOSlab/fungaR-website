@@ -28,27 +28,27 @@ format:
 
 ## Instalar o pacote
 
-Você pode instalar a versão de desenvolvimento mais recente do pacote `floraR` a partir do [GitHub](https://github.com/DBOSlab/floraR) da seguinte forma:
+Você pode instalar a versão de desenvolvimento mais recente do pacote `fungaR` a partir do [GitHub](https://github.com/DBOSlab/fungaR) da seguinte forma:
 
 ```{r}
 #| eval: false
 
-if (!requireNamespace("BiocManager", quietly = TRUE)) 
-install.packages("BiocManager") 
+if (!requireNamespace("BiocManager", quietly = TRUE))
+install.packages("BiocManager")
 
-# Instale a versão de desenvolvimento do floraR a partir do GitHub,
+# Instale a versão de desenvolvimento do fungaR a partir do GitHub,
 # juntamente com as dependências necessárias
-BiocManager::install("DBOSlab/floraR", dependencies = TRUE)
+BiocManager::install("DBOSlab/fungaR", dependencies = TRUE)
 ```
 
 :::{.callout-caution}
-`floraR` requer R (>= 4.1.0). Se você já tem uma instalação recente do R, pode ir direto para o passo de instalação acima.
+`fungaR` requer R (>= 4.1.0). Se você já tem uma instalação recente do R, pode ir direto para o passo de instalação acima.
 :::
 
 ```{r}
 #| eval: false
 
-library(floraR)
+library(fungaR)
 ```
 
 ## Primeiros Passos
@@ -58,9 +58,9 @@ Após a instalação, um bom primeiro passo é verificar quais versões do conju
 ```{r}
 #| eval: false
 
-flora_version()
+funga_version()
 ```
 
-A maioria das funções — incluindo `flora_records()`, `flora_search()` e `flora_get_children_taxa()` — baixa e analisa o conjunto de dados da FFB automaticamente na primeira chamada, e reutiliza o mesmo cache local nas chamadas seguintes, então raramente é preciso chamar `flora_download()`/`flora_parse()` diretamente, a menos que você queira inspecionar os dados brutos.
+A maioria das funções — incluindo `funga_records()`, `funga_search()` e `funga_get_children_taxa()` — baixa e analisa o conjunto de dados da FFB automaticamente na primeira chamada, e reutiliza o mesmo cache local nas chamadas seguintes, então raramente é preciso chamar `funga_download()`/`funga_parse()` diretamente, a menos que você queira inspecionar os dados brutos. Note que a FFB publica plantas e fungos juntos em um único lançamento combinado; `funga_parse()` é o que reduz tudo ao reino Fungi.
 
-A partir daí, navegue pelos [Artigos práticos](/pt/articles/index.qmd) para aprender a baixar e analisar dados da lista de espécies, filtrar registros por critérios taxonômicos ou geográficos, resolver sua própria lista de nomes de espécies em relação à lista de espécies, explorar a hierarquia taxonômica e curar novos registros.
+A partir daí, navegue pelos [Artigos práticos](/pt/articles/index.qmd) para aprender a baixar e analisar dados da lista de espécies, filtrar registros por critérios taxonômicos ou geográficos, resolver sua própria lista de nomes de espécies em relação à lista de espécies, explorar a hierarquia taxonômica e encontrar espécies e registros estaduais ausentes na FFB.

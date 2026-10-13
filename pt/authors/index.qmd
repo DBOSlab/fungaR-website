@@ -39,13 +39,13 @@ resources:
   }
 </style>
 
-## O Desenvolvedor do `fungaR`
+## Os Desenvolvedores do `fungaR`
 
 ```{=html}
 <div class="authors-group">
 
   <div class="author-card">
-    <img src="images/domingos.jpg" alt="Domingos Cardoso" class="author-photo" />
+    <img src="/authors/images/domingos.jpg" alt="Domingos Cardoso" class="author-photo" />
     <div class="author-info">
       <h3 class="author-name">Domingos Cardoso</h3>
       <p>
@@ -54,6 +54,19 @@ resources:
         <a class="icon-link" href="http://lattes.cnpq.br/2228981567893077" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
       <p>Taxonomista e bioinformata, autor e mantenedor do pacote fungaR, responsável pelo design e codificação das funções, bem como pelo desenvolvimento do site do projeto</p>
+    </div>
+  </div>
+
+  <div class="author-card">
+    <img src="/authors/images/lucas.jpg" alt="Lucas Jordão" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Lucas Jordão</h3>
+      <p>
+        <a class="icon-link" href="mailto:lucasjordao@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-9501-0548" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/6445788694639027" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Taxonomista e bioinformata, autor do pacote fungaR, responsável pelo design e codificação das funções</p>
     </div>
   </div>
 
@@ -66,11 +79,11 @@ resources:
 <div class="authors-group">
 
   <div class="author-card">
-    <img src="images/ricardo.jpg" alt="E.Ricardo Drechsler-Santos" class="author-photo" />
+    <img src="/authors/images/ricardo.jpg" alt="E.Ricardo Drechsler-Santos" class="author-photo" />
     <div class="author-info">
       <h3 class="author-name">E.Ricardo Drechsler-Santos</h3>
       <p>
-        <a class="icon-link" href="mailto:drechslersantos@yahoo.com.br "><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="mailto:drechslersantos@yahoo.com.br"><img src="/authors/images/email.png" alt="Email"/></a>
         <a class="icon-link" href="https://orcid.org/0000-0002-3702-8715" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/7181472061444803" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
@@ -79,7 +92,7 @@ resources:
   </div>
 
   <div class="author-card">
-    <img src="images/diogo.jpg" alt="Diogo Henrique Costa de Rezende" class="author-photo" />
+    <img src="/authors/images/diogo.jpg" alt="Diogo Henrique Costa de Rezende" class="author-photo" />
     <div class="author-info">
       <h3 class="author-name">Diogo Henrique Costa de Rezende</h3>
       <p>
@@ -92,7 +105,7 @@ resources:
   </div>
 
     <div class="author-card">
-    <img src="images/genivaldo.jpg" alt="Genivaldo Alves-Silva" class="author-photo" />
+    <img src="/authors/images/genivaldo.jpg" alt="Genivaldo Alves-Silva" class="author-photo" />
     <div class="author-info">
       <h3 class="author-name">Genivaldo Alves-Silva</h3>
       <p>
@@ -105,7 +118,7 @@ resources:
   </div>
 
     <div class="author-card">
-    <img src="images/kelmer.jpg" alt="Kelmer Martins da Cunha" class="author-photo" />
+    <img src="/authors/images/kelmer.jpg" alt="Kelmer Martins da Cunha" class="author-photo" />
     <div class="author-info">
       <h3 class="author-name">Kelmer Martins da Cunha</h3>
       <p>
@@ -114,6 +127,19 @@ resources:
         <a class="icon-link" href="http://lattes.cnpq.br/3313897015978675" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
       <p>Especialista em taxonomia, banco de dados e conservação de fungos</p>
+    </div>
+  </div>
+
+    <div class="author-card">
+    <img src="/authors/images/ari.jpg" alt="Aristóteles Góes-Neto" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Aristóteles Góes-Neto</h3>
+      <p>
+        <a class="icon-link" href="mailto:arigoesneto@gmail.com"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-7692-6243" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/6134133834289438" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Especialista em taxonomia, filogenia e genômica de fungos</p>
     </div>
   </div>
 
@@ -126,7 +152,7 @@ resources:
 <div class="authors-group">
 
   <div class="author-card">
-    <img src="images/rafaela.jpg" alt="Rafaela Forzza" class="author-photo" />
+    <img src="/authors/images/rafaela.jpg" alt="Rafaela Forzza" class="author-photo" />
     <div class="author-info">
       <h3 class="author-name">Rafaela Forzza</h3>
       <p>
@@ -139,7 +165,7 @@ resources:
   </div>
 
   <div class="author-card">
-    <img src="images/domingos.jpg" alt="Domingos Cardoso" class="author-photo" />
+    <img src="/authors/images/domingos.jpg" alt="Domingos Cardoso" class="author-photo" />
     <div class="author-info">
       <h3 class="author-name">Domingos Cardoso</h3>
       <p>
@@ -152,7 +178,7 @@ resources:
   </div>
   
   <div class="author-card">
-    <img src="images/fabiana.jpg" alt="Fabiana Filardi" class="author-photo" />
+    <img src="/authors/images/fabiana.jpg" alt="Fabiana Filardi" class="author-photo" />
     <div class="author-info">
       <h3 class="author-name">Fabiana Filardi</h3>
       <p>

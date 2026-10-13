@@ -408,7 +408,7 @@ official distribution for that taxon — flagging candidate new state
 records. Its HTML report goes one step further than the state-level
 table, listing the actual **individual occurrence records** behind each
 new-state candidate, each linking directly to that record’s page on GBIF
-or REFLORA.
+or Reflora.
 
 ``` r
 library(fungaR)
@@ -452,9 +452,11 @@ Full function documentation and articles are available at the `fungaR`
 
 ## Citation
 
-Cardoso, D. & Drechsler-Santos, E.R. 2026. fungaR: Tools for Accessing,
-Analyzing, and Curating Fungal Data from the Flora e Funga do Brasil
-Platform. <https://github.com/dboslab/fungaR>
+Cardoso, D., Jordão, L., Rezende, D.H.C., Alves-Silva, G.,
+Martins-da-Cunha, K., Góes-Neto, A., Drechsler-Santos, E.R. 2026.
+fungaR: Tools for Accessing, Analyzing, and Curating Fungal Data from
+the Flora e Funga do Brasil Platform.
+<https://github.com/DBOSlab/fungaR>
 
 ## Contributing
 

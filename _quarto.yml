@@ -127,6 +127,8 @@ website:
           contents:
           - text: Encontrar espécies e registros estaduais ausentes na FFB
             href: pt/articles/curate_ffb_new_records.qmd
+          - text: Recuperar registros de um táxon brasileiro
+            href: pt/articles/retrieve_taxon_records.qmd
 
 format:
   html:

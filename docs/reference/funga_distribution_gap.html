@@ -4565,7 +4565,7 @@ height: 400px;
 </section>
 <section id="details" class="level3">
 <h3 class="anchored" data-anchor-id="details">Details</h3>
-<p>FFB’s own officially-listed states are retrieved the same way <code>funga_records</code> does internally, from the parsed FFB distribution table. Occurrence evidence beyond FFB comes from up to three independent sources (see <code>sources</code>): GBIF’s public REST API (no key required, and the most reliable of the three), speciesLink’s public web service (best-effort - see <code>mycobank_gap</code>’s Note on its known SSL/endpoint issues), and the refloraR package’s <code>reflora_records</code> for REFLORA specimen data (used only if the refloraR package is installed).</p>
+<p>FFB’s own officially-listed states are retrieved the same way <code>funga_records</code> does internally, from the parsed FFB distribution table. Occurrence evidence beyond FFB comes from up to three independent sources (see <code>sources</code>): GBIF’s public REST API (no key required, and the most reliable of the three), speciesLink’s public web service (best-effort - see <code>mycobank_gap</code>’s Note on its known SSL/endpoint issues), and the refloraR package’s <code>reflora_records</code> for Reflora specimen data (used only if the refloraR package is installed).</p>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -4615,7 +4615,7 @@ height: 400px;
 </tr>
 <tr class="odd">
 <td>html_report</td>
-<td>Logical. If <code>TRUE</code> (default), also writes a self-contained HTML report (<code>&lt;dir&gt;/&lt;filename&gt;.html</code>) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, and the individual occurrence records (not aggregated) found in the new-state-record candidate states - each linking out to the specific record in its source database (GBIF occurrence page or REFLORA specimen page) - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <code>.xlsx</code> spreadsheet is unaffected).</td>
+<td>Logical. If <code>TRUE</code> (default), also writes a self-contained HTML report (<code>&lt;dir&gt;/&lt;filename&gt;.html</code>) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, and the individual occurrence records (not aggregated) found in the new-state-record candidate states - each linking out to the specific record in its source database (GBIF occurrence page or Reflora specimen page) - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <code>.xlsx</code> spreadsheet is unaffected).</td>
 </tr>
 <tr class="even">
 <td>open_report</td>
@@ -4627,7 +4627,7 @@ height: 400px;
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
 <p>A <code>data.frame</code>, one row per Brazilian state with any occurrence evidence for <code>taxon</code>, with columns:</p>
-<p>TaxonThe queried taxon name. StateBrazilian state name. In_FFB_distributionLogical; whether FFB already lists this state for the taxon. GBIF_recordsNumber of Brazil GBIF occurrence records in this state (when <code>&quot;gbif&quot; %in% sources</code>). speciesLink_evidenceLogical; whether speciesLink reported this state (best-effort, see Details). REFLORA_recordsNumber of REFLORA specimen records in this state (when <code>&quot;reflora&quot; %in% sources</code> and refloraR is installed). New_state_record_candidate<code>TRUE</code> when the state has evidence from at least one external source but is <em>not</em> in <code>In_FFB_distribution</code> - i.e. a candidate worth manual taxonomic review.</p>
+<p>TaxonThe queried taxon name. StateBrazilian state name. In_FFB_distributionLogical; whether FFB already lists this state for the taxon. GBIF_recordsNumber of Brazil GBIF occurrence records in this state (when <code>&quot;gbif&quot; %in% sources</code>). speciesLink_evidenceLogical; whether speciesLink reported this state (best-effort, see Details). Reflora_recordsNumber of Reflora specimen records in this state (when <code>&quot;reflora&quot; %in% sources</code> and refloraR is installed). New_state_record_candidate<code>TRUE</code> when the state has evidence from at least one external source but is <em>not</em> in <code>In_FFB_distribution</code> - i.e. a candidate worth manual taxonomic review.</p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
@@ -5139,7 +5139,7 @@ height: 400px;
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>(no key required, and the most reliable of the three), speciesLink&#39;s public web service</span>
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>(best-effort - see <span class="in">`mycobank_gap`</span>&#39;s Note on its known SSL/endpoint</span>
 <span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>issues), and the refloraR package&#39;s <span class="in">`reflora_records`</span> for</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>REFLORA specimen data (used only if the refloraR package is installed).</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>Reflora specimen data (used only if the refloraR package is installed).</span>
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
 <span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
@@ -5153,7 +5153,7 @@ height: 400px;
 <span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), the result is saved to disk as an <span class="in">`.xlsx`</span> spreadsheet. <span class="pp">|</span></span>
 <span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Character. Directory where the spreadsheet is saved when <span class="in">`save = TRUE`</span>. Defaults to <span class="in">`&quot;funga_distribution_gap&quot;`</span>. <span class="pp">|</span></span>
 <span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Character. Name of the <span class="in">`.xlsx`</span> file (without extension) to save. Defaults to <span class="in">`&quot;funga_distribution_gap_&lt;taxon&gt;&quot;`</span>. <span class="pp">|</span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> html_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), also writes a self-contained HTML report (<span class="in">`&lt;dir&gt;/&lt;filename&gt;.html`</span>) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, and the individual occurrence records (not aggregated) found in the new-state-record candidate states - each linking out to the specific record in its source database (GBIF occurrence page or REFLORA specimen page) - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <span class="in">`.xlsx`</span> spreadsheet is unaffected). <span class="pp">|</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> html_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), also writes a self-contained HTML report (<span class="in">`&lt;dir&gt;/&lt;filename&gt;.html`</span>) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, and the individual occurrence records (not aggregated) found in the new-state-record candidate states - each linking out to the specific record in its source database (GBIF occurrence page or Reflora specimen page) - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <span class="in">`.xlsx`</span> spreadsheet is unaffected). <span class="pp">|</span></span>
 <span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> open_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default in interactive sessions), opens the rendered HTML report in the default browser. <span class="pp">|</span></span>
 <span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
@@ -5168,7 +5168,7 @@ height: 400px;
 <span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>    <span class="in">`&quot;gbif&quot; %in% sources`</span>).</span>
 <span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>  speciesLink_evidenceLogical; whether speciesLink reported this state</span>
 <span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>    (best-effort, see Details).</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>  REFLORA_recordsNumber of REFLORA specimen records in this state (when</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>  Reflora_recordsNumber of Reflora specimen records in this state (when</span>
 <span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>    <span class="in">`&quot;reflora&quot; %in% sources`</span> and refloraR is installed).</span>
 <span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  New_state_record_candidate<span class="in">`TRUE`</span> when the state has evidence from at</span>
 <span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>    least one external source but is *not* in <span class="in">`In_FFB_distribution`</span> - i.e. a</span>

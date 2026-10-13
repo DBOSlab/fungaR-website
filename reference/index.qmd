@@ -44,6 +44,8 @@ format:
 
 - [`funga_version()`](/reference/funga_version.qmd)
 
+- [`gbif_gap()`](/reference/gbif_gap.qmd)
+
 - [`mycobank_gap()`](/reference/mycobank_gap.qmd)
 
 - [`mycobank_records()`](/reference/mycobank_records.qmd)

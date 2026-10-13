@@ -26,22 +26,31 @@ format:
   }
 </style>
 
-## floraR
+## fungaR
 
-- [`flora_build_matrix()`](/pt/reference/flora_build_matrix.qmd)
+- [`funga_distribution_gap()`](/pt/reference/funga_distribution_gap.qmd)
 
-- [`flora_download()`](/pt/reference/flora_download.qmd)
+- [`funga_download()`](/pt/reference/funga_download.qmd)
 
-- [`flora_get_children_taxa()`](/pt/reference/flora_get_children_taxa.qmd)
+- [`funga_get_children_taxa()`](/pt/reference/funga_get_children_taxa.qmd)
 
-- [`flora_get_descriptions()`](/pt/reference/flora_get_descriptions.qmd)
+- [`funga_match()`](/pt/reference/funga_match.qmd)
 
-- [`flora_match()`](/pt/reference/flora_match.qmd)
+- [`funga_parse()`](/pt/reference/funga_parse.qmd)
 
-- [`flora_parse()`](/pt/reference/flora_parse.qmd)
+- [`funga_records()`](/pt/reference/funga_records.qmd)
 
-- [`flora_records()`](/pt/reference/flora_records.qmd)
+- [`funga_search()`](/pt/reference/funga_search.qmd)
 
-- [`flora_search()`](/pt/reference/flora_search.qmd)
+- [`funga_version()`](/pt/reference/funga_version.qmd)
 
-- [`flora_version()`](/pt/reference/flora_version.qmd)
+- [`gbif_gap()`](/pt/reference/gbif_gap.qmd)
+
+- [`mycobank_gap()`](/pt/reference/mycobank_gap.qmd)
+
+- [`mycobank_records()`](/pt/reference/mycobank_records.qmd)
+
+- [`spfungorum_gap()`](/pt/reference/spfungorum_gap.qmd)
+
+- [`spfungorum_records()`](/pt/reference/spfungorum_records.qmd)
+

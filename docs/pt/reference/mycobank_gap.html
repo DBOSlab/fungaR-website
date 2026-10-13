@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Baixar conjuntos de dados de plantas da plataforma Flora e Funga do Brasil">
+<meta name="description" content="Encontrar espécies fúngicas com evidência do MycoBank no Brasil ausentes da FFB">
 
-<title>flora_download – fungaR</title>
+<title>mycobank_gap – fungaR</title>
 <style>
 
 code{white-space: pre-wrap;}
@@ -4534,12 +4534,12 @@ height: 400px;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">flora_download</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">mycobank_gap</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 <div>
   <div class="description">
-    Baixar conjuntos de dados de plantas da plataforma Flora e Funga do Brasil
+    Encontrar espécies fúngicas com evidência do MycoBank no Brasil ausentes da FFB
   </div>
 </div>
 
@@ -4557,16 +4557,16 @@ height: 400px;
 
 
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>floraR<span class="sc">::</span><span class="fu">flora_download</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fungaR<span class="sc">::</span><span class="fu">mycobank_gap</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="descrição" class="level3">
 <h3 class="anchored" data-anchor-id="descrição">Descrição</h3>
-<p>Baixa registros taxonômicos e de distribuição de plantas em formato Darwin Core Archive (DwC-A) da plataforma <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil (FFB)</a> do <a href="https://www.gov.br/jbrj/pt-br">Jardim Botânico do Rio de Janeiro</a>. A função permite baixar a versão mais recente, versões específicas do conjunto de dados, ou todas as versões disponíveis.</p>
+<p>Dado um gênero ou ordem fúngica, cruza a base de nomes global do <a href="https://www.mycobank.org">MycoBank</a> com a lista de espécies atual da Flora e Funga do Brasil (FFB) para encontrar nomes em nível de espécie que os próprios dados de localidade do MycoBank situam no Brasil, mas que ainda não estão registrados na FFB. Esta <strong>não é uma comparação geral</strong> entre as duas bases: um nome ausente da FFB só é retornado quando os próprios dados de localidade do MycoBank indicam que ele ocorre no Brasil.</p>
 </section>
 <section id="detalhes" class="level3">
 <h3 class="anchored" data-anchor-id="detalhes">Detalhes</h3>
-<p>Cada versão do conjunto de dados é obtida diretamente do <a href="https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil">portal de dados IPT da FFB</a> e salva localmente em uma pasta estruturada. A função verifica se a versão solicitada já foi baixada e evita baixá-la novamente sem necessidade.</p>
-<p>Para baixar uma versão específica, recomenda-se usar <code>flora_version()</code> para consultar as versões disponíveis primeiro e extrair a string exata da versão.</p>
+<p>O MycoBank não oferece uma API pública de busca adequada para automação em lote, mas publica uma exportação completa e regularmente atualizada de todos os nomes em sua base de dados (https://www.mycobank.org/images/MBList.zip). Esta função baixa e armazena em cache essa exportação localmente (da mesma forma que <code>funga_download</code> armazena em cache o conjunto de dados da FFB), e então a filtra para o gênero ou ordem solicitado.</p>
+<p>A exportação em lote em si não carrega informação de localidade, então determinar a evidência de ocorrência no Brasil requer visitar a própria página de nome de cada candidato ausente no MycoBank (sua <code>MycoBank_URL</code>) para ler os “Location details” (e “Host/Substrate”) relatados para seu espécime-tipo. As páginas de nome do MycoBank são uma aplicação JavaScript de página única sem alternativa HTML estática, então esta etapa (<code>check_locality = TRUE</code>, o padrão) requer o pacote chromote (e uma instalação local do Chrome/Chromium) para conduzir um navegador headless. Quando <code>require_brazil_evidence = TRUE</code> (o padrão), a tabela retornada é filtrada apenas para os nomes cuja localidade no MycoBank menciona o Brasil; defina como <code>FALSE</code> para obter em vez disso todo nome do MycoBank ausente da FFB independentemente da localidade (com as colunas de evidência ao lado, para revisão manual).</p>
 </section>
 <section id="argumentos" class="level3">
 <h3 class="anchored" data-anchor-id="argumentos">Argumentos</h3>
@@ -4583,43 +4583,88 @@ height: 400px;
 </thead>
 <tbody>
 <tr class="odd">
-<td>version</td>
-<td>Caractere. Especifica qual(is) versão(ões) do conjunto de dados baixar: - <code>&quot;latest&quot;</code> (padrão): Baixa a versão mais recente do conjunto de dados. - <code>&quot;all&quot;</code>: Baixa todas as versões disponíveis do conjunto de dados (pode exigir bastante espaço em disco). - Uma string de versão específica (ex.: <code>&quot;393.001&quot;</code>) ou um vetor de caracteres com versões. Use <code>flora_version()</code> para consultar e selecionar números de versão válidos.</td>
+<td>taxon</td>
+<td>Caractere. Um único nome de gênero ou ordem (ex.: <code>&quot;Trichoderma&quot;</code> ou <code>&quot;Xylariales&quot;</code>).</td>
 </tr>
 <tr class="even">
+<td>rank</td>
+<td>Caractere. Se <code>taxon</code> é um <code>&quot;genus&quot;</code> (padrão) ou uma <code>&quot;order&quot;</code>.</td>
+</tr>
+<tr class="odd">
+<td>check_locality</td>
+<td>Lógico. Se <code>TRUE</code> (padrão), a própria página de nome de cada candidato ausente no MycoBank é visitada (via chromote) para ler a localidade e o substrato/hospedeiro relatados do espécime-tipo, determinando quais nomes o próprio MycoBank já associa ao Brasil. Defina como <code>FALSE</code> para pular isso (muito mais rápido, mas sem evidência de localidade, e <code>require_brazil_evidence</code> não tem efeito).</td>
+</tr>
+<tr class="even">
+<td>require_brazil_evidence</td>
+<td>Lógico. Se <code>TRUE</code> (padrão), a tabela retornada é filtrada apenas para os nomes cuja localidade no MycoBank menciona o Brasil. Defina como <code>FALSE</code> para retornar em vez disso todo nome do MycoBank ausente da FFB independentemente da localidade (com <code>MycoBank_Brazil_Evidence</code> ao lado, para revisão manual). Só tem efeito quando <code>check_locality = TRUE</code>.</td>
+</tr>
+<tr class="odd">
+<td>max_check</td>
+<td>Numérico. Limite de segurança para quantos candidatos passam pela verificação de localidade (comparativamente lenta, um carregamento de página por nome) quando <code>check_locality = TRUE</code>. O padrão é <code>200</code>; se mais nomes forem encontrados, apenas os primeiros <code>max_check</code> (em ordem alfabética) são verificados e um aviso é emitido. Ignorado quando <code>check_locality = FALSE</code>.</td>
+</tr>
+<tr class="even">
+<td>mycobank_dir</td>
+<td>Caractere. Diretório local usado para armazenar em cache a exportação em lote baixada do MycoBank. O padrão é <code>&quot;mycobank_download&quot;</code>. Reutilizado em chamadas subsequentes para evitar baixar novamente o arquivo (~140MB).</td>
+</tr>
+<tr class="odd">
 <td>verbose</td>
-<td>Lógico. Se <code>TRUE</code> (padrão), imprime mensagens informativas durante o download. Se <code>FALSE</code>, executa silenciosamente.</td>
+<td>Lógico. Se <code>TRUE</code> (padrão), imprime mensagens de progresso.</td>
+</tr>
+<tr class="even">
+<td>save</td>
+<td>Lógico. Se <code>TRUE</code> (padrão), o resultado é salvo em disco como uma planilha <code>.xlsx</code>.</td>
 </tr>
 <tr class="odd">
 <td>dir</td>
-<td>Caractere. Caminho do diretório local para salvar os arquivos baixados. O padrão é criar uma pasta chamada <code>&quot;flora_download&quot;</code> no diretório de trabalho. Cada versão do conjunto de dados é extraída em seu próprio subdiretório.</td>
+<td>Caractere. Diretório onde a planilha é salva quando <code>save = TRUE</code>. O padrão é <code>&quot;mycobank_gap&quot;</code>.</td>
+</tr>
+<tr class="even">
+<td>filename</td>
+<td>Caractere. Nome do arquivo <code>.xlsx</code> (sem extensão) a salvar. O padrão é <code>&quot;mycobank_gap_&lt;taxon&gt;&quot;</code>.</td>
+</tr>
+<tr class="odd">
+<td>html_report</td>
+<td>Lógico. Se <code>TRUE</code> (padrão), também grava um relatório HTML autocontido (<code>&lt;dir&gt;/&lt;filename&gt;.html</code>) resumindo os resultados: contagens-chave (KPIs) e a tabela completa de candidatos como um widget DT ordenável e filtrável, com botões para copiar ou baixar em CSV/Excel. Requer os pacotes rmarkdown, DT, e htmltools; se algum estiver ausente, o relatório é ignorado com uma mensagem (a planilha <code>.xlsx</code> não é afetada).</td>
+</tr>
+<tr class="even">
+<td>open_report</td>
+<td>Lógico. Se <code>TRUE</code> (padrão em sessões interativas), abre o relatório HTML no navegador assim que renderizado.</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="valor" class="level3">
 <h3 class="anchored" data-anchor-id="valor">Valor</h3>
-<p>Uma ou mais pastas contendo os arquivos Darwin Core Archive (DwC-A) da(s) versão(ões) selecionada(s) do conjunto de dados <em>Flora e Funga do Brasil</em>. Se não houver conexão com a internet disponível, conjuntos de dados locais previamente baixados serão usados automaticamente (se encontrados).</p>
+<p>Um <code>data.frame</code>, uma linha por nome do MycoBank em nível de espécie encontrado no gênero/ordem solicitado que está ausente da lista de espécies atual da FFB e, por padrão, cuja localidade no MycoBank indica ocorrência no Brasil, com colunas:</p>
+<ul>
+<li><strong>MycoBank_Number</strong> — Identificador numérico do MycoBank para o nome.</li>
+<li><strong>Taxon_name</strong> — O binômio como registrado no MycoBank.</li>
+<li><strong>Authors</strong> — Citação completa de autor.</li>
+<li><strong>Year</strong> — Ano de publicação efetiva.</li>
+<li><strong>Name_status</strong> — Status nomenclatural no MycoBank (ex.: <code>&quot;Legitimate&quot;</code>).</li>
+<li><strong>Classification</strong> — String completa de classificação do MycoBank (Reino até gênero).</li>
+<li><strong>Current_name</strong> — Nome atualmente aceito pelo MycoBank para esta entrada, quando diferente (ou seja, quando <code>Taxon_name</code> é em si um sinônimo).</li>
+<li><strong>Synonymy</strong> — Texto completo de sinonímia do MycoBank (nome atual e/ou basiônimo, cada um com sua citação completa de autor/periódico/ano), da exportação em lote.</li>
+<li><strong>MycoBank_URL</strong> — Link direto para a página do nome no MycoBank.</li>
+<li><strong>MycoBank_Locality, MycoBank_Substrate</strong> — Localidade do espécime-tipo e hospedeiro/substrato, conforme relatado na própria página do nome no MycoBank (apenas quando <code>check_locality = TRUE</code>).</li>
+<li><strong>MycoBank_Etymology</strong> — A etimologia do nome, conforme relatado em sua própria página do MycoBank (apenas quando <code>check_locality = TRUE</code>).</li>
+<li><strong>MycoBank_Name_Type</strong> — Tipo de nome nomenclatural do MycoBank para esta entrada (ex.: <code>&quot;Basionym&quot;</code>, <code>&quot;Combination&quot;</code>; apenas quando <code>check_locality = TRUE</code>).</li>
+<li><strong>MycoBank_Type_Specimen</strong> — O voucher do espécime-tipo (ex.: <code>&quot;URM 80362 holotype&quot;</code>; apenas quando <code>check_locality = TRUE</code>).</li>
+<li><strong>MycoBank_Collector</strong> — O coletor do espécime-tipo, conforme relatado na própria página do nome no MycoBank (apenas quando <code>check_locality = TRUE</code>).</li>
+<li><strong>MycoBank_Protolog</strong> — A citação da publicação original (protólogo), conforme relatado na própria página do nome no MycoBank (apenas quando <code>check_locality = TRUE</code>).</li>
+<li><strong>MycoBank_Brazil_Evidence</strong> — Lógico; <code>TRUE</code> quando <code>MycoBank_Locality</code> menciona o Brasil (apenas quando <code>check_locality = TRUE</code>).</li>
+<li><strong>In_FFB</strong> — Sempre <code>FALSE</code> (mantido para clareza ao combinar com outras tabelas).</li>
+</ul>
 </section>
 <section id="exemplos" class="level3">
 <h3 class="anchored" data-anchor-id="exemplos">Exemplos</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver as versões disponíveis do conjunto de dados</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>versions_df <span class="ot">&lt;-</span> <span class="fu">flora_version</span>()</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar o conjunto de dados mais recente</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>()</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar uma versão específica</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> versions_df<span class="sc">$</span>Version[<span class="dv">1</span>])</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar múltiplas versões</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> <span class="fu">c</span>(<span class="st">&quot;393.001&quot;</span>, <span class="st">&quot;392.002&quot;</span>))</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar todas as versões (download grande!)</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> <span class="st">&quot;all&quot;</span>)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Trabalhar offline (usa dados previamente baixados, se disponíveis)</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> <span class="st">&quot;latest&quot;</span>, <span class="at">dir =</span> <span class="st">&quot;flora_download&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Espécies do MycoBank no gênero Trichoderma com localidade brasileira no</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># MycoBank que ainda estão ausentes da FFB</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> <span class="fu">mycobank_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>, <span class="at">rank =</span> <span class="st">&quot;genus&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Todo nome do MycoBank ausente da FFB independentemente da localidade, para revisão manual</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>gap_all <span class="ot">&lt;-</span> <span class="fu">mycobank_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>, <span class="at">rank =</span> <span class="st">&quot;genus&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">require_brazil_evidence =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 <!-- -->
@@ -5092,71 +5137,104 @@ height: 400px;
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &#39;flora_download&#39;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> &#39;Baixar conjuntos de dados de plantas da plataforma Flora e Funga do Brasil&#39;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &#39;mycobank_gap&#39;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> &#39;Encontrar espécies fúngicas com evidência do MycoBank no Brasil ausentes da FFB&#39;</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> true</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="an">toc-depth:</span><span class="co"> 3</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>floraR<span class="sc">::</span><span class="fu">flora_download</span>()</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descrição</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Baixa registros taxonômicos e de distribuição de plantas em formato Darwin Core</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>Archive (DwC-A) da plataforma <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>do <span class="co">[</span><span class="ot">Jardim Botânico do Rio de Janeiro</span><span class="co">](https://www.gov.br/jbrj/pt-br)</span>.</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>A função permite baixar a versão mais recente, versões específicas do conjunto</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>de dados, ou todas as versões disponíveis.</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="fu">### Detalhes</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>Cada versão do conjunto de dados é obtida diretamente do <span class="co">[</span><span class="ot">portal de dados IPT da FFB</span><span class="co">](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>e salva localmente em uma pasta estruturada. A função verifica se a versão</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>solicitada já foi baixada e evita baixá-la novamente sem necessidade.</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>Para baixar uma versão específica, recomenda-se usar <span class="in">`flora_version()`</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>para consultar as versões disponíveis primeiro e extrair a string exata da versão.</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">### Argumentos</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>fungaR<span class="sc">::</span><span class="fu">mycobank_gap</span>()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descrição</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>Dado um gênero ou ordem fúngica, cruza a base de nomes global do</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">MycoBank</span><span class="co">](https://www.mycobank.org)</span> com a lista de espécies atual da Flora</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>e Funga do Brasil (FFB) para encontrar nomes em nível de espécie que os</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>próprios dados de localidade do MycoBank situam no Brasil, mas que ainda</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>não estão registrados na FFB. Esta **não é uma comparação geral** entre as</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>duas bases: um nome ausente da FFB só é retornado quando os próprios dados</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>de localidade do MycoBank indicam que ele ocorre no Brasil.</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">### Detalhes</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>O MycoBank não oferece uma API pública de busca adequada para automação em</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>lote, mas publica uma exportação completa e regularmente atualizada de</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>todos os nomes em sua base de dados</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>(https://www.mycobank.org/images/MBList.zip). Esta função baixa e armazena</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>em cache essa exportação localmente (da mesma forma que <span class="in">`funga_download`</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>armazena em cache o conjunto de dados da FFB), e então a filtra para o</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>gênero ou ordem solicitado.</span>
 <span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Descrição <span class="pp">|</span></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> version <span class="pp">|</span> Caractere. Especifica qual(is) versão(ões) do conjunto de dados baixar: - <span class="in">`&quot;latest&quot;`</span> (padrão): Baixa a versão mais recente do conjunto de dados. - <span class="in">`&quot;all&quot;`</span>: Baixa todas as versões disponíveis do conjunto de dados (pode exigir bastante espaço em disco). - Uma string de versão específica (ex.: <span class="in">`&quot;393.001&quot;`</span>) ou um vetor de caracteres com versões. Use <span class="in">`flora_version()`</span> para consultar e selecionar números de versão válidos. <span class="pp">|</span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), imprime mensagens informativas durante o download. Se <span class="in">`FALSE`</span>, executa silenciosamente. <span class="pp">|</span></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Caractere. Caminho do diretório local para salvar os arquivos baixados. O padrão é criar uma pasta chamada <span class="in">`&quot;flora_download&quot;`</span> no diretório de trabalho. Cada versão do conjunto de dados é extraída em seu próprio subdiretório. <span class="pp">|</span></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valor</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>Uma ou mais pastas contendo os arquivos Darwin Core Archive (DwC-A) da(s)</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>versão(ões) selecionada(s) do conjunto de dados *Flora e Funga do Brasil*.</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>Se não houver conexão com a internet disponível, conjuntos de dados locais</span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>previamente baixados serão usados automaticamente (se encontrados).</span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exemplos</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver as versões disponíveis do conjunto de dados</span></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>versions_df <span class="ot">&lt;-</span> <span class="fu">flora_version</span>()</span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar o conjunto de dados mais recente</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>()</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar uma versão específica</span></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> versions_df<span class="sc">$</span>Version[<span class="dv">1</span>])</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar múltiplas versões</span></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> <span class="fu">c</span>(<span class="st">&quot;393.001&quot;</span>, <span class="st">&quot;392.002&quot;</span>))</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar todas as versões (download grande!)</span></span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> <span class="st">&quot;all&quot;</span>)</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>A exportação em lote em si não carrega informação de localidade, então</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>determinar a evidência de ocorrência no Brasil requer visitar a própria</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>página de nome de cada candidato ausente no MycoBank (sua</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="in">`MycoBank_URL`</span>) para ler os &quot;Location details&quot; (e &quot;Host/Substrate&quot;)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>relatados para seu espécime-tipo. As páginas de nome do MycoBank são uma</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>aplicação JavaScript de página única sem alternativa HTML estática, então</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>esta etapa (<span class="in">`check_locality = TRUE`</span>, o padrão) requer o pacote</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>chromote (e uma instalação local do Chrome/Chromium) para conduzir um</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>navegador headless. Quando <span class="in">`require_brazil_evidence = TRUE`</span> (o</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>padrão), a tabela retornada é filtrada apenas para os nomes cuja</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>localidade no MycoBank menciona o Brasil; defina como <span class="in">`FALSE`</span> para</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>obter em vez disso todo nome do MycoBank ausente da FFB independentemente</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>da localidade (com as colunas de evidência ao lado, para revisão manual).</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="fu">### Argumentos</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Descrição <span class="pp">|</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxon <span class="pp">|</span> Caractere. Um único nome de gênero ou ordem (ex.: <span class="in">`&quot;Trichoderma&quot;`</span> ou <span class="in">`&quot;Xylariales&quot;`</span>). <span class="pp">|</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> rank <span class="pp">|</span> Caractere. Se <span class="in">`taxon`</span> é um <span class="in">`&quot;genus&quot;`</span> (padrão) ou uma <span class="in">`&quot;order&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> check_locality <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), a própria página de nome de cada candidato ausente no MycoBank é visitada (via chromote) para ler a localidade e o substrato/hospedeiro relatados do espécime-tipo, determinando quais nomes o próprio MycoBank já associa ao Brasil. Defina como <span class="in">`FALSE`</span> para pular isso (muito mais rápido, mas sem evidência de localidade, e <span class="in">`require_brazil_evidence`</span> não tem efeito). <span class="pp">|</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> require_brazil_evidence <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), a tabela retornada é filtrada apenas para os nomes cuja localidade no MycoBank menciona o Brasil. Defina como <span class="in">`FALSE`</span> para retornar em vez disso todo nome do MycoBank ausente da FFB independentemente da localidade (com <span class="in">`MycoBank_Brazil_Evidence`</span> ao lado, para revisão manual). Só tem efeito quando <span class="in">`check_locality = TRUE`</span>. <span class="pp">|</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> max_check <span class="pp">|</span> Numérico. Limite de segurança para quantos candidatos passam pela verificação de localidade (comparativamente lenta, um carregamento de página por nome) quando <span class="in">`check_locality = TRUE`</span>. O padrão é <span class="in">`200`</span>; se mais nomes forem encontrados, apenas os primeiros <span class="in">`max_check`</span> (em ordem alfabética) são verificados e um aviso é emitido. Ignorado quando <span class="in">`check_locality = FALSE`</span>. <span class="pp">|</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> mycobank_dir <span class="pp">|</span> Caractere. Diretório local usado para armazenar em cache a exportação em lote baixada do MycoBank. O padrão é <span class="in">`&quot;mycobank_download&quot;`</span>. Reutilizado em chamadas subsequentes para evitar baixar novamente o arquivo (~140MB). <span class="pp">|</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), imprime mensagens de progresso. <span class="pp">|</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), o resultado é salvo em disco como uma planilha <span class="in">`.xlsx`</span>. <span class="pp">|</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Caractere. Diretório onde a planilha é salva quando <span class="in">`save = TRUE`</span>. O padrão é <span class="in">`&quot;mycobank_gap&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Caractere. Nome do arquivo <span class="in">`.xlsx`</span> (sem extensão) a salvar. O padrão é <span class="in">`&quot;mycobank_gap_&lt;taxon&gt;&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> html_report <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), também grava um relatório HTML autocontido (<span class="in">`&lt;dir&gt;/&lt;filename&gt;.html`</span>) resumindo os resultados: contagens-chave (KPIs) e a tabela completa de candidatos como um widget DT ordenável e filtrável, com botões para copiar ou baixar em CSV/Excel. Requer os pacotes rmarkdown, DT, e htmltools; se algum estiver ausente, o relatório é ignorado com uma mensagem (a planilha <span class="in">`.xlsx`</span> não é afetada). <span class="pp">|</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> open_report <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão em sessões interativas), abre o relatório HTML no navegador assim que renderizado. <span class="pp">|</span></span>
 <span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="co"># Trabalhar offline (usa dados previamente baixados, se disponíveis)</span></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_download</span>(<span class="at">version =</span> <span class="st">&quot;latest&quot;</span>, <span class="at">dir =</span> <span class="st">&quot;flora_download&quot;</span>)</span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valor</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>Um <span class="in">`data.frame`</span>, uma linha por nome do MycoBank em nível de espécie</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>encontrado no gênero/ordem solicitado que está ausente da lista de espécies</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>atual da FFB e, por padrão, cuja localidade no MycoBank indica ocorrência</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>no Brasil, com colunas:</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**MycoBank_Number** — Identificador numérico do MycoBank para o nome.</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Taxon_name** — O binômio como registrado no MycoBank.</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Authors** — Citação completa de autor.</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Year** — Ano de publicação efetiva.</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Name_status** — Status nomenclatural no MycoBank (ex.: <span class="in">`&quot;Legitimate&quot;`</span>).</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Classification** — String completa de classificação do MycoBank (Reino até gênero).</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Current_name** — Nome atualmente aceito pelo MycoBank para esta entrada, quando diferente (ou seja, quando <span class="in">`Taxon_name`</span> é em si um sinônimo).</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Synonymy** — Texto completo de sinonímia do MycoBank (nome atual e/ou basiônimo, cada um com sua citação completa de autor/periódico/ano), da exportação em lote.</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**MycoBank_URL** — Link direto para a página do nome no MycoBank.</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**MycoBank_Locality, MycoBank_Substrate** — Localidade do espécime-tipo e hospedeiro/substrato, conforme relatado na própria página do nome no MycoBank (apenas quando <span class="in">`check_locality = TRUE`</span>).</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**MycoBank_Etymology** — A etimologia do nome, conforme relatado em sua própria página do MycoBank (apenas quando <span class="in">`check_locality = TRUE`</span>).</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**MycoBank_Name_Type** — Tipo de nome nomenclatural do MycoBank para esta entrada (ex.: <span class="in">`&quot;Basionym&quot;`</span>, <span class="in">`&quot;Combination&quot;`</span>; apenas quando <span class="in">`check_locality = TRUE`</span>).</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**MycoBank_Type_Specimen** — O voucher do espécime-tipo (ex.: <span class="in">`&quot;URM 80362 holotype&quot;`</span>; apenas quando <span class="in">`check_locality = TRUE`</span>).</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**MycoBank_Collector** — O coletor do espécime-tipo, conforme relatado na própria página do nome no MycoBank (apenas quando <span class="in">`check_locality = TRUE`</span>).</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**MycoBank_Protolog** — A citação da publicação original (protólogo), conforme relatado na própria página do nome no MycoBank (apenas quando <span class="in">`check_locality = TRUE`</span>).</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**MycoBank_Brazil_Evidence** — Lógico; <span class="in">`TRUE`</span> quando <span class="in">`MycoBank_Locality`</span> menciona o Brasil (apenas quando <span class="in">`check_locality = TRUE`</span>).</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**In_FFB** — Sempre <span class="in">`FALSE`</span> (mantido para clareza ao combinar com outras tabelas).</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exemplos</span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="co"># Espécies do MycoBank no gênero Trichoderma com localidade brasileira no</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="co"># MycoBank que ainda estão ausentes da FFB</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> <span class="fu">mycobank_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>, <span class="at">rank =</span> <span class="st">&quot;genus&quot;</span>)</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="co"># Todo nome do MycoBank ausente da FFB independentemente da localidade, para revisão manual</span></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>gap_all <span class="ot">&lt;-</span> <span class="fu">mycobank_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>, <span class="at">rank =</span> <span class="st">&quot;genus&quot;</span>,</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>                        <span class="at">require_brazil_evidence =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

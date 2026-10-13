@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Construir uma matriz de caracteres a partir de descrições extraídas">
+<meta name="description" content="Baixar conjuntos de dados fúngicos da plataforma Flora e Funga do Brasil">
 
-<title>flora_build_matrix – fungaR</title>
+<title>funga_download – fungaR</title>
 <style>
 
 code{white-space: pre-wrap;}
@@ -4534,12 +4534,12 @@ height: 400px;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">flora_build_matrix</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">funga_download</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 <div>
   <div class="description">
-    Construir uma matriz de caracteres a partir de descrições extraídas
+    Baixar conjuntos de dados fúngicos da plataforma Flora e Funga do Brasil
   </div>
 </div>
 
@@ -4557,17 +4557,17 @@ height: 400px;
 
 
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>floraR<span class="sc">::</span><span class="fu">flora_build_matrix</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fungaR<span class="sc">::</span><span class="fu">funga_download</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="descrição" class="level3">
 <h3 class="anchored" data-anchor-id="descrição">Descrição</h3>
-<p>Converte o texto de descrição extraído da Flora e Funga do Brasil em uma matriz de caracteres, onde as linhas correspondem a táxons e as colunas correspondem a estados de caráter analisados a partir das strings de descrição.</p>
+<p>Baixa registros taxonômicos e de distribuição fúngica em formato Darwin Core Archive (DwC-A) a partir da plataforma <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil (FFB)</a> do <a href="https://www.gov.br/jbrj/pt-br">Jardim Botânico do Rio de Janeiro</a>. A função permite baixar a publicação mais recente, versões específicas do conjunto de dados, ou todas as versões disponíveis.</p>
 </section>
 <section id="detalhes" class="level3">
 <h3 class="anchored" data-anchor-id="detalhes">Detalhes</h3>
-<p>Esta função é um wrapper em torno de um analisador interno que remove entradas <code>NULL</code> e trata a estrutura de saída aninhada retornada por <code>flora_get_descriptions()</code> quando há falhas presentes.</p>
-<p>Se <code>descriptions</code> tiver comprimento 2, a função assume que o primeiro elemento contém a lista de descrições real e o segundo elemento contém os nomes dos táxons que falharam. Em ambos os casos, descrições <code>NULL</code> são removidas antes que a matriz seja construída.</p>
-<p>Espera-se que as strings de descrição sigam um formato semiestruturado no qual categorias de caracteres são separadas por pontos, nomes de categoria são separados de seus valores por dois-pontos, e múltiplos estados são separados por ponto e vírgula. A primeira descrição é usada para definir a estrutura esperada da matriz e os nomes das colunas.</p>
+<p>Cada versão do conjunto de dados é recuperada diretamente do <a href="https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil">portal de dados IPT da FFB</a> e salva localmente em uma pasta estruturada. A função verifica se a versão solicitada já foi baixada e evita baixá-la novamente sem necessidade.</p>
+<p>Para baixar uma versão específica, recomenda-se usar <code>funga_version()</code> para consultar primeiro as versões disponíveis e extrair a string de versão exata.</p>
+<p>Note que a FFB publica uma única lista de espécies combinada para os reinos Plantae e Fungi, portanto o arquivo baixado em si não é exclusivo de fungos; <code>funga_parse()</code> é o que reduz os dados ao reino Fungi para todas as funções subsequentes do fungaR.</p>
 </section>
 <section id="argumentos" class="level3">
 <h3 class="anchored" data-anchor-id="argumentos">Argumentos</h3>
@@ -4584,20 +4584,43 @@ height: 400px;
 </thead>
 <tbody>
 <tr class="odd">
-<td>descriptions</td>
-<td>Uma lista nomeada de strings de descrição, geralmente uma das saídas de <code>flora_get_descriptions()</code>, como <code>descriptions[[1]]</code>. Se falhas foram retornadas junto com as descrições, a função usa apenas o componente de descrição extraída.</td>
+<td>version</td>
+<td>Caractere. Especifica qual(is) versão(ões) do conjunto de dados baixar: - <code>&quot;latest&quot;</code> (padrão): Baixa a versão mais recente do conjunto de dados. - <code>&quot;all&quot;</code>: Baixa todas as versões disponíveis do conjunto de dados (pode exigir bastante espaço em disco). - Uma string de versão específica (ex.: <code>&quot;393.001&quot;</code>) ou um vetor de caracteres com versões. Use <code>funga_version()</code> para consultar e selecionar números de versão válidos.</td>
+</tr>
+<tr class="even">
+<td>verbose</td>
+<td>Lógico. Se <code>TRUE</code> (padrão), imprime mensagens informativas durante o download. Se <code>FALSE</code>, executa silenciosamente.</td>
+</tr>
+<tr class="odd">
+<td>dir</td>
+<td>Caractere. Caminho do diretório local para salvar os arquivos baixados. O padrão é criar uma pasta chamada <code>&quot;funga_download&quot;</code> no diretório de trabalho. Cada versão do conjunto de dados é extraída em seu próprio subdiretório.</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="valor" class="level3">
 <h3 class="anchored" data-anchor-id="valor">Valor</h3>
-<p>Uma matriz de caracteres com táxons como linhas e estados de caráter analisados como colunas.</p>
+<p>Uma ou mais pastas contendo os arquivos Darwin Core Archive (DwC-A) para a(s) versão(ões) selecionada(s) do conjunto de dados <em>Flora e Funga do Brasil</em>. Se não houver conexão com a internet, conjuntos de dados locais baixados anteriormente serão usados automaticamente (se encontrados).</p>
 </section>
 <section id="exemplos" class="level3">
 <h3 class="anchored" data-anchor-id="exemplos">Exemplos</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mat_control <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver as versões disponíveis do conjunto de dados</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>versions_df <span class="ot">&lt;-</span> <span class="fu">funga_version</span>()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar o conjunto de dados mais recente</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar uma versão específica</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> versions_df<span class="sc">$</span>Version[<span class="dv">1</span>])</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar múltiplas versões</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> <span class="fu">c</span>(<span class="st">&quot;393.001&quot;</span>, <span class="st">&quot;392.002&quot;</span>))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar todas as versões (download grande!)</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> <span class="st">&quot;all&quot;</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Trabalhar offline (usa dados baixados anteriormente, se disponíveis)</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> <span class="st">&quot;latest&quot;</span>, <span class="at">dir =</span> <span class="st">&quot;funga_download&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 <!-- -->
@@ -5070,59 +5093,75 @@ height: 400px;
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &#39;flora_build_matrix&#39;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> &#39;Construir uma matriz de caracteres a partir de descrições extraídas&#39;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &#39;funga_download&#39;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> &#39;Baixar conjuntos de dados fúngicos da plataforma Flora e Funga do Brasil&#39;</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> true</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="an">toc-depth:</span><span class="co"> 3</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>floraR<span class="sc">::</span><span class="fu">flora_build_matrix</span>()</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descrição</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Converte o texto de descrição extraído da Flora e Funga do Brasil em uma</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>matriz de caracteres, onde as linhas correspondem a táxons e as colunas</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>correspondem a estados de caráter analisados a partir das strings de</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>descrição.</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>fungaR<span class="sc">::</span><span class="fu">funga_download</span>()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descrição</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>Baixa registros taxonômicos e de distribuição fúngica em formato Darwin Core</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Archive (DwC-A) a partir da plataforma <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>do <span class="co">[</span><span class="ot">Jardim Botânico do Rio de Janeiro</span><span class="co">](https://www.gov.br/jbrj/pt-br)</span>.</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>A função permite baixar a publicação mais recente, versões específicas do</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>conjunto de dados, ou todas as versões disponíveis.</span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu">### Detalhes</span></span>
 <span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>Esta função é um wrapper em torno de um analisador interno que remove</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>entradas <span class="in">`NULL`</span> e trata a estrutura de saída aninhada retornada por</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="in">`flora_get_descriptions()`</span> quando há falhas presentes.</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>Cada versão do conjunto de dados é recuperada diretamente do <span class="co">[</span><span class="ot">portal de dados IPT da FFB</span><span class="co">](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>e salva localmente em uma pasta estruturada. A função verifica se a versão</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>solicitada já foi baixada e evita baixá-la novamente sem necessidade.</span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>Se <span class="in">`descriptions`</span> tiver comprimento 2, a função assume que o primeiro</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>elemento contém a lista de descrições real e o segundo elemento contém os</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>nomes dos táxons que falharam. Em ambos os casos, descrições <span class="in">`NULL`</span> são</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>removidas antes que a matriz seja construída.</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>Espera-se que as strings de descrição sigam um formato semiestruturado no</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>qual categorias de caracteres são separadas por pontos, nomes de categoria</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>são separados de seus valores por dois-pontos, e múltiplos estados são</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>separados por ponto e vírgula. A primeira descrição é usada para definir a</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>estrutura esperada da matriz e os nomes das colunas.</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="fu">### Argumentos</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Descrição <span class="pp">|</span></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> descriptions <span class="pp">|</span> Uma lista nomeada de strings de descrição, geralmente uma das saídas de <span class="in">`flora_get_descriptions()`</span>, como <span class="in">`descriptions[[1]]`</span>. Se falhas foram retornadas junto com as descrições, a função usa apenas o componente de descrição extraída. <span class="pp">|</span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valor</span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>Uma matriz de caracteres com táxons como linhas e estados de caráter</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>analisados como colunas.</span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exemplos</span></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>mat_control <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>Para baixar uma versão específica, recomenda-se usar <span class="in">`funga_version()`</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>para consultar primeiro as versões disponíveis e extrair a string de versão exata.</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>Note que a FFB publica uma única lista de espécies combinada para os reinos</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>Plantae e Fungi, portanto o arquivo baixado em si não é exclusivo de fungos;</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="in">`funga_parse()`</span> é o que reduz os dados ao reino Fungi para todas as</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>funções subsequentes do fungaR.</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="fu">### Argumentos</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Descrição <span class="pp">|</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> version <span class="pp">|</span> Caractere. Especifica qual(is) versão(ões) do conjunto de dados baixar: - <span class="in">`&quot;latest&quot;`</span> (padrão): Baixa a versão mais recente do conjunto de dados. - <span class="in">`&quot;all&quot;`</span>: Baixa todas as versões disponíveis do conjunto de dados (pode exigir bastante espaço em disco). - Uma string de versão específica (ex.: <span class="in">`&quot;393.001&quot;`</span>) ou um vetor de caracteres com versões. Use <span class="in">`funga_version()`</span> para consultar e selecionar números de versão válidos. <span class="pp">|</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), imprime mensagens informativas durante o download. Se <span class="in">`FALSE`</span>, executa silenciosamente. <span class="pp">|</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Caractere. Caminho do diretório local para salvar os arquivos baixados. O padrão é criar uma pasta chamada <span class="in">`&quot;funga_download&quot;`</span> no diretório de trabalho. Cada versão do conjunto de dados é extraída em seu próprio subdiretório. <span class="pp">|</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valor</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>Uma ou mais pastas contendo os arquivos Darwin Core Archive (DwC-A) para a(s)</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>versão(ões) selecionada(s) do conjunto de dados *Flora e Funga do Brasil*.</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>Se não houver conexão com a internet, conjuntos de dados locais baixados</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>anteriormente serão usados automaticamente (se encontrados).</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exemplos</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver as versões disponíveis do conjunto de dados</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>versions_df <span class="ot">&lt;-</span> <span class="fu">funga_version</span>()</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar o conjunto de dados mais recente</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>()</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar uma versão específica</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> versions_df<span class="sc">$</span>Version[<span class="dv">1</span>])</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar múltiplas versões</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> <span class="fu">c</span>(<span class="st">&quot;393.001&quot;</span>, <span class="st">&quot;392.002&quot;</span>))</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Baixar todas as versões (download grande!)</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> <span class="st">&quot;all&quot;</span>)</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Trabalhar offline (usa dados baixados anteriormente, se disponíveis)</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_download</span>(<span class="at">version =</span> <span class="st">&quot;latest&quot;</span>, <span class="at">dir =</span> <span class="st">&quot;funga_download&quot;</span>)</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

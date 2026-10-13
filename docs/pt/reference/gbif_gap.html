@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Resumir os registros taxonômicos e de distribuição disponíveis na Flora e Funga do Brasil">
+<meta name="description" content="Encontrar espécies fúngicas com espécimes-tipo brasileiros no GBIF ausentes da FFB">
 
-<title>flora_version – fungaR</title>
+<title>gbif_gap – fungaR</title>
 <style>
 
 code{white-space: pre-wrap;}
@@ -4519,6 +4519,7 @@ height: 400px;
   <ul>
   <li><a href="#descrição" id="toc-descrição" class="nav-link active" data-scroll-target="#descrição">Descrição</a></li>
   <li><a href="#detalhes" id="toc-detalhes" class="nav-link" data-scroll-target="#detalhes">Detalhes</a></li>
+  <li><a href="#argumentos" id="toc-argumentos" class="nav-link" data-scroll-target="#argumentos">Argumentos</a></li>
   <li><a href="#valor" id="toc-valor" class="nav-link" data-scroll-target="#valor">Valor</a></li>
   <li><a href="#exemplos" id="toc-exemplos" class="nav-link" data-scroll-target="#exemplos">Exemplos</a></li>
   </ul>
@@ -4533,12 +4534,12 @@ height: 400px;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">flora_version</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">gbif_gap</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 <div>
   <div class="description">
-    Resumir os registros taxonômicos e de distribuição disponíveis na Flora e Funga do Brasil
+    Encontrar espécies fúngicas com espécimes-tipo brasileiros no GBIF ausentes da FFB
   </div>
 </div>
 
@@ -4556,30 +4557,104 @@ height: 400px;
 
 
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>floraR<span class="sc">::</span><span class="fu">flora_version</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fungaR<span class="sc">::</span><span class="fu">gbif_gap</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="descrição" class="level3">
 <h3 class="anchored" data-anchor-id="descrição">Descrição</h3>
-<p>Recupera e resume os metadados das versões atualmente disponíveis dos registros taxonômicos e de distribuição da <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil (FFB)</a>, hospedada pelo <a href="https://www.gov.br/jbrj/pt-br">Jardim Botânico do Rio de Janeiro</a>. Os metadados incluem número da versão, data de publicação, número de registros e URLs de acesso direto.</p>
+<p>Dado um gênero fúngico, encontra os nomes em nível de espécie cujos espécimes-tipo - holótipos, isótipos, lectótipos, sintipos, parátipos, e assim por diante - foram coletados no Brasil de acordo com o <a href="https://www.gbif.org">Global Biodiversity Information Facility</a> (GBIF), mas que não estão atualmente registrados na Flora e Funga do Brasil (FFB). Um espécime-tipo coletado no Brasil é evidência direta de que o táxon ocorre no país, então todo nome retornado é um candidato à inclusão na FFB.</p>
 </section>
 <section id="detalhes" class="level3">
 <h3 class="anchored" data-anchor-id="detalhes">Detalhes</h3>
-<p>Esta função acessa os <a href="https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil">metadados do IPT para o conjunto de dados da FFB</a> e extrai as informações de versão de cada publicação de dados. Ela retorna um resumo limpo e estruturado como um data frame.</p>
+<p>O GBIF agrega os espécimes-tipo digitalizados por herbários e fungários do mundo todo (ex.: RB, K, NY, URM). A busca ocorre em três etapas, cada uma cobrindo o gênero inteiro de uma vez em vez de uma requisição por espécie, de modo que até gêneros grandes retornam em segundos:</p>
+<ol type="1">
+<li>uma única busca de ocorrência facetada lista todo nome no gênero com espécimes-tipo coletados no Brasil, e quantos;</li>
+<li>esses nomes são resolvidos contra o backbone taxonômico do GBIF, que também fornece a espécie aceita de cada nome;</li>
+<li>para os nomes ausentes da FFB apenas, os próprios espécimes-tipo são recuperados (muitos nomes por requisição) para resumir seu status de tipo, herbário/fungário, número de catálogo, e estado.</li>
+</ol>
+<p>Os espécimes-tipo são arquivados no GBIF sob sua identificação atual, que para um tipo geralmente é o próprio nome tipificado ou, quando esse nome agora é um sinônimo, seu nome aceito. Apenas nomes em nível de espécie são reportados.</p>
+<p>Um candidato conta como “já na FFB” se o seu nome no GBIF OU seu nome <em>aceito</em> no GBIF corresponder a qualquer nome da FFB (aceito ou sinônimo, em qualquer lugar da lista de espécies, já que o GBIF e a FFB podem discordar sobre a qual gênero uma espécie pertence). Os nomes são comparados ignorando maiúsculas/minúsculas, acentuação, hífens, e a terminação genitiva <em>-ii</em>/<em>-i</em>, de modo que variantes ortográficas não são reportadas como ausentes.</p>
+<p>Apenas Fungi são buscados: o gênero é procurado no reino Fungi do GBIF, de modo que um nome de gênero compartilhado com uma planta, alga, ou animal nunca resolve para o grupo errado.</p>
+<p>O lado da FFB da comparação usa o mesmo conjunto de dados da FFB em cache local que <code>funga_download</code> e <code>funga_parse</code> (na pasta <code>&quot;funga_download&quot;</code>), baixando-o apenas quando necessário.</p>
+</section>
+<section id="argumentos" class="level3">
+<h3 class="anchored" data-anchor-id="argumentos">Argumentos</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Argumento</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>taxon</td>
+<td>Caractere. Um único nome de gênero fúngico (ex.: <code>&quot;Trichoderma&quot;</code>, <code>&quot;Phellinotus&quot;</code>).</td>
+</tr>
+<tr class="even">
+<td>type_status</td>
+<td>Caractere ou <code>NULL</code>. Status de tipo do GBIF contados como evidência (vocabulário atual do GBIF, ex.: <code>&quot;Holotype&quot;</code>, <code>&quot;Isotype&quot;</code>). <code>NULL</code> (padrão) usa todas as categorias de tipo primárias e secundárias: Type, Holotype, Isotype, Lectotype, Isolectotype, Syntype, Isosyntype, Neotype, Isoneotype, Epitype, Isoepitype, Paratype, Isoparatype, Paralectotype, OriginalMaterial, e TypeSeries. Use, por exemplo, <code>c(&quot;Holotype&quot;, &quot;Isotype&quot;)</code> para uma busca mais rigorosa.</td>
+</tr>
+<tr class="odd">
+<td>version</td>
+<td>Caractere. Versão do conjunto de dados da FFB a comparar. Padrão <code>&quot;latest&quot;</code>. Passado para <code>funga_download</code>.</td>
+</tr>
+<tr class="even">
+<td>verbose</td>
+<td>Lógico. Se <code>TRUE</code> (padrão), imprime mensagens de progresso.</td>
+</tr>
+<tr class="odd">
+<td>save</td>
+<td>Lógico. Se <code>TRUE</code> (padrão), o resultado é salvo em disco como uma planilha <code>.xlsx</code>.</td>
+</tr>
+<tr class="even">
+<td>dir</td>
+<td>Caractere. Diretório onde a planilha é salva quando <code>save = TRUE</code>. O padrão é <code>&quot;gbif_gap&quot;</code>.</td>
+</tr>
+<tr class="odd">
+<td>filename</td>
+<td>Caractere. Nome do arquivo <code>.xlsx</code> (sem extensão) a salvar. O padrão é <code>&quot;gbif_gap_&lt;taxon&gt;&quot;</code>.</td>
+</tr>
+<tr class="even">
+<td>html_report</td>
+<td>Lógico. Se <code>TRUE</code> (padrão), também grava um relatório HTML autocontido (<code>&lt;dir&gt;/&lt;filename&gt;.html</code>) resumindo os resultados: contagens-chave (KPIs) e a tabela completa de candidatos como um widget DT ordenável e filtrável, com botões para copiar ou baixar em CSV/Excel. Requer os pacotes rmarkdown, DT, e htmltools; se algum estiver ausente, o relatório é ignorado com uma mensagem (a planilha <code>.xlsx</code> não é afetada).</td>
+</tr>
+<tr class="odd">
+<td>open_report</td>
+<td>Lógico. Se <code>TRUE</code> (padrão em sessões interativas), abre o relatório HTML no navegador assim que renderizado.</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="valor" class="level3">
 <h3 class="anchored" data-anchor-id="valor">Valor</h3>
-<p>Um <code>data.frame</code> com as seguintes colunas:</p>
+<p>Um <code>data.frame</code>, uma linha por nome do GBIF em nível de espécie no gênero solicitado que tem espécimes-tipo coletados no Brasil e está ausente da lista de espécies atual da FFB, com colunas:</p>
 <ul>
-<li><code>Version</code>: Número da versão da publicação do conjunto de dados.</li>
-<li><code>Published_on</code>: Data/hora da publicação do conjunto de dados.</li>
-<li><code>Records</code>: Número de registros de espécimes de plantas na publicação.</li>
-<li><code>URL</code>: Link direto para a versão do conjunto de dados no portal IPT.</li>
+<li><strong>GBIF_Key</strong> — A chave do nome no backbone do GBIF.</li>
+<li><strong>Taxon_name</strong> — O nome como registrado no GBIF.</li>
+<li><strong>Authors</strong> — Citação de autor.</li>
+<li><strong>Taxonomic_status</strong> — Status taxonômico no GBIF (ex.: <code>&quot;ACCEPTED&quot;</code>, <code>&quot;SYNONYM&quot;</code>, <code>&quot;DOUBTFUL&quot;</code>).</li>
+<li><strong>Accepted_name, Accepted_full_name</strong> — Espécie aceita pelo GBIF para este nome, sem e com autores (o próprio nome quando ele é aceito).</li>
+<li><strong>N_type_specimens</strong> — Número de espécimes-tipo coletados no Brasil no GBIF.</li>
+<li><strong>Type_statuses</strong> — Os status de tipo entre eles (ex.: <code>&quot;Holotype; Isotype&quot;</code>).</li>
+<li><strong>Type_specimens</strong> — Até dez espécimes como herbário/fungário e número de catálogo, com status de tipo (ex.: <code>&quot;URM 80362 (Holotype)&quot;</code>).</li>
+<li><strong>Specimen_names</strong> — Os nomes sob os quais os espécimes-tipo estão arquivados no GBIF - geralmente o nome tipificado, que para um sinônimo difere de <code>Taxon_name</code> (ex.: os tipos do basiônimo de uma espécie).</li>
+<li><strong>Collectors, Years, States</strong> — Coletores, anos de coleta, e estados brasileiros desses espécimes.</li>
+<li><strong>GBIF_Published_in</strong> — Citação do protólogo, quando o GBIF a possui.</li>
+<li><strong>GBIF_URL</strong> — Link para a página do nome no GBIF.</li>
+<li><strong>In_FFB</strong> — Sempre <code>FALSE</code> (mantido para clareza ao combinar com outras tabelas).</li>
 </ul>
 </section>
 <section id="exemplos" class="level3">
 <h3 class="anchored" data-anchor-id="exemplos">Exemplos</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ffb_version <span class="ot">&lt;-</span> <span class="fu">flora_version</span>()</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(ffb_version)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Espécies de Trichoderma com espécimes-tipo brasileiros que estão ausentes da FFB</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> <span class="fu">gbif_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Evidência mais rigorosa: apenas holótipos e isótipos</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>gap_strict <span class="ot">&lt;-</span> <span class="fu">gbif_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>, <span class="at">type_status =</span> <span class="fu">c</span>(<span class="st">&quot;Holotype&quot;</span>, <span class="st">&quot;Isotype&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 <!-- -->
@@ -5052,47 +5127,102 @@ height: 400px;
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &#39;flora_version&#39;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> &#39;Resumir os registros taxonômicos e de distribuição disponíveis na Flora e Funga do Brasil&#39;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &#39;gbif_gap&#39;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> &#39;Encontrar espécies fúngicas com espécimes-tipo brasileiros no GBIF ausentes da FFB&#39;</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> true</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="an">toc-depth:</span><span class="co"> 3</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>floraR<span class="sc">::</span><span class="fu">flora_version</span>()</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descrição</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Recupera e resume os metadados das versões atualmente disponíveis dos registros</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>taxonômicos e de distribuição da <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>hospedada pelo <span class="co">[</span><span class="ot">Jardim Botânico do Rio de Janeiro</span><span class="co">](https://www.gov.br/jbrj/pt-br)</span>.</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>Os metadados incluem número da versão, data de publicação, número de registros e</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>URLs de acesso direto.</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="fu">### Detalhes</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>Esta função acessa os <span class="co">[</span><span class="ot">metadados do IPT para o conjunto de dados da FFB</span><span class="co">](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>e extrai as informações de versão de cada publicação de dados. Ela retorna</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>um resumo limpo e estruturado como um data frame.</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valor</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>fungaR<span class="sc">::</span><span class="fu">gbif_gap</span>()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descrição</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>Dado um gênero fúngico, encontra os nomes em nível de espécie cujos</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>espécimes-tipo - holótipos, isótipos, lectótipos, sintipos, parátipos, e</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>assim por diante - foram coletados no Brasil de acordo com o</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Global Biodiversity Information Facility</span><span class="co">](https://www.gbif.org)</span> (GBIF), mas</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>que não estão atualmente registrados na Flora e Funga do Brasil (FFB). Um</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>espécime-tipo coletado no Brasil é evidência direta de que o táxon ocorre</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>no país, então todo nome retornado é um candidato à inclusão na FFB.</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">### Detalhes</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>O GBIF agrega os espécimes-tipo digitalizados por herbários e fungários do</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>mundo todo (ex.: RB, K, NY, URM). A busca ocorre em três etapas, cada uma</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>cobrindo o gênero inteiro de uma vez em vez de uma requisição por espécie,</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>de modo que até gêneros grandes retornam em segundos:</span>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>Um <span class="in">`data.frame`</span> com as seguintes colunas:</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Version`</span>: Número da versão da publicação do conjunto de dados.</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Published_on`</span>: Data/hora da publicação do conjunto de dados.</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Records`</span>: Número de registros de espécimes de plantas na publicação.</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`URL`</span>: Link direto para a versão do conjunto de dados no portal IPT.</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exemplos</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>uma única busca de ocorrência facetada lista todo nome no gênero com espécimes-tipo coletados no Brasil, e quantos;</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>esses nomes são resolvidos contra o backbone taxonômico do GBIF, que também fornece a espécie aceita de cada nome;</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>para os nomes ausentes da FFB apenas, os próprios espécimes-tipo são recuperados (muitos nomes por requisição) para resumir seu status de tipo, herbário/fungário, número de catálogo, e estado.</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>Os espécimes-tipo são arquivados no GBIF sob sua identificação atual, que</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>para um tipo geralmente é o próprio nome tipificado ou, quando esse nome</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>agora é um sinônimo, seu nome aceito. Apenas nomes em nível de espécie são</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>reportados.</span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>ffb_version <span class="ot">&lt;-</span> <span class="fu">flora_version</span>()</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(ffb_version)</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>Um candidato conta como &quot;já na FFB&quot; se o seu nome no GBIF OU seu nome</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>*aceito* no GBIF corresponder a qualquer nome da FFB (aceito ou sinônimo,</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>em qualquer lugar da lista de espécies, já que o GBIF e a FFB podem</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>discordar sobre a qual gênero uma espécie pertence). Os nomes são</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>comparados ignorando maiúsculas/minúsculas, acentuação, hífens, e a</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>terminação genitiva *-ii*/*-i*, de modo que variantes ortográficas não</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>são reportadas como ausentes.</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>Apenas Fungi são buscados: o gênero é procurado no reino Fungi do GBIF, de</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>modo que um nome de gênero compartilhado com uma planta, alga, ou animal</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>nunca resolve para o grupo errado.</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>O lado da FFB da comparação usa o mesmo conjunto de dados da FFB em cache</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>local que <span class="in">`funga_download`</span> e <span class="in">`funga_parse`</span> (na pasta</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="in">`&quot;funga_download&quot;`</span>), baixando-o apenas quando necessário.</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### Argumentos</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Descrição <span class="pp">|</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxon <span class="pp">|</span> Caractere. Um único nome de gênero fúngico (ex.: <span class="in">`&quot;Trichoderma&quot;`</span>, <span class="in">`&quot;Phellinotus&quot;`</span>). <span class="pp">|</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> type_status <span class="pp">|</span> Caractere ou <span class="in">`NULL`</span>. Status de tipo do GBIF contados como evidência (vocabulário atual do GBIF, ex.: <span class="in">`&quot;Holotype&quot;`</span>, <span class="in">`&quot;Isotype&quot;`</span>). <span class="in">`NULL`</span> (padrão) usa todas as categorias de tipo primárias e secundárias: Type, Holotype, Isotype, Lectotype, Isolectotype, Syntype, Isosyntype, Neotype, Isoneotype, Epitype, Isoepitype, Paratype, Isoparatype, Paralectotype, OriginalMaterial, e TypeSeries. Use, por exemplo, <span class="in">`c(&quot;Holotype&quot;, &quot;Isotype&quot;)`</span> para uma busca mais rigorosa. <span class="pp">|</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> version <span class="pp">|</span> Caractere. Versão do conjunto de dados da FFB a comparar. Padrão <span class="in">`&quot;latest&quot;`</span>. Passado para <span class="in">`funga_download`</span>. <span class="pp">|</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), imprime mensagens de progresso. <span class="pp">|</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), o resultado é salvo em disco como uma planilha <span class="in">`.xlsx`</span>. <span class="pp">|</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Caractere. Diretório onde a planilha é salva quando <span class="in">`save = TRUE`</span>. O padrão é <span class="in">`&quot;gbif_gap&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Caractere. Nome do arquivo <span class="in">`.xlsx`</span> (sem extensão) a salvar. O padrão é <span class="in">`&quot;gbif_gap_&lt;taxon&gt;&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> html_report <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), também grava um relatório HTML autocontido (<span class="in">`&lt;dir&gt;/&lt;filename&gt;.html`</span>) resumindo os resultados: contagens-chave (KPIs) e a tabela completa de candidatos como um widget DT ordenável e filtrável, com botões para copiar ou baixar em CSV/Excel. Requer os pacotes rmarkdown, DT, e htmltools; se algum estiver ausente, o relatório é ignorado com uma mensagem (a planilha <span class="in">`.xlsx`</span> não é afetada). <span class="pp">|</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> open_report <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão em sessões interativas), abre o relatório HTML no navegador assim que renderizado. <span class="pp">|</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valor</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>Um <span class="in">`data.frame`</span>, uma linha por nome do GBIF em nível de espécie no gênero</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>solicitado que tem espécimes-tipo coletados no Brasil e está ausente da</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>lista de espécies atual da FFB, com colunas:</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**GBIF_Key** — A chave do nome no backbone do GBIF.</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Taxon_name** — O nome como registrado no GBIF.</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Authors** — Citação de autor.</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Taxonomic_status** — Status taxonômico no GBIF (ex.: <span class="in">`&quot;ACCEPTED&quot;`</span>, <span class="in">`&quot;SYNONYM&quot;`</span>, <span class="in">`&quot;DOUBTFUL&quot;`</span>).</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Accepted_name, Accepted_full_name** — Espécie aceita pelo GBIF para este nome, sem e com autores (o próprio nome quando ele é aceito).</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**N_type_specimens** — Número de espécimes-tipo coletados no Brasil no GBIF.</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Type_statuses** — Os status de tipo entre eles (ex.: <span class="in">`&quot;Holotype; Isotype&quot;`</span>).</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Type_specimens** — Até dez espécimes como herbário/fungário e número de catálogo, com status de tipo (ex.: <span class="in">`&quot;URM 80362 (Holotype)&quot;`</span>).</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Specimen_names** — Os nomes sob os quais os espécimes-tipo estão arquivados no GBIF - geralmente o nome tipificado, que para um sinônimo difere de <span class="in">`Taxon_name`</span> (ex.: os tipos do basiônimo de uma espécie).</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Collectors, Years, States** — Coletores, anos de coleta, e estados brasileiros desses espécimes.</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**GBIF_Published_in** — Citação do protólogo, quando o GBIF a possui.</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**GBIF_URL** — Link para a página do nome no GBIF.</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**In_FFB** — Sempre <span class="in">`FALSE`</span> (mantido para clareza ao combinar com outras tabelas).</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exemplos</span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="co"># Espécies de Trichoderma com espécimes-tipo brasileiros que estão ausentes da FFB</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> <span class="fu">gbif_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>)</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="co"># Evidência mais rigorosa: apenas holótipos e isótipos</span></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>gap_strict <span class="ot">&lt;-</span> <span class="fu">gbif_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>, <span class="at">type_status =</span> <span class="fu">c</span>(<span class="st">&quot;Holotype&quot;</span>, <span class="st">&quot;Isotype&quot;</span>))</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

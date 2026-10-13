@@ -56,6 +56,7 @@ Estes artigos práticos percorrem as funções do `fungaR` na ordem em que norma
 ::: {style="display: block;"}
 :::
 ### Curar novos registros
-- [Curar e descrever novos registros](/pt/articles/curate_ffb_descriptions.qmd)
+- [Encontrar espécies e registros estaduais ausentes na FFB](/pt/articles/curate_ffb_new_records.qmd)
+- [Recuperar registros de um táxon brasileiro](/pt/articles/retrieve_taxon_records.qmd)
 :::
 :::

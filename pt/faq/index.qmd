@@ -28,60 +28,68 @@ format:
 
 ### O que é a Flora e Funga do Brasil?
 
-A Flora e Funga do Brasil (FFB) é a lista de espécies taxonômica que documenta a diversidade de plantas, algas e fungos do Brasil — a mais rica do mundo. Mantida pelo Jardim Botânico do Rio de Janeiro e curada colaborativamente por centenas de taxonomistas, ela registra nomes aceitos, sinônimos, classificação taxonômica, distribuição geográfica, endemismo, forma de vida, hábitat e tipo de vegetação para cada espécie documentada.
+A Flora e Funga do Brasil (FFB) é a lista de espécies taxonômica que documenta a diversidade de plantas, algas e fungos do Brasil — a mais rica do mundo. Mantida pelo Jardim Botânico do Rio de Janeiro e curada colaborativamente por centenas de taxonomistas e micologistas, ela registra nomes aceitos, sinônimos, classificação taxonômica, distribuição geográfica, endemismo, modo nutricional/ecológico, e informações de substrato/hospedeiro para cada espécie fúngica documentada.
 
-### Para que posso usar o floraR?
+### Para que posso usar o fungaR?
 
-O pacote `floraR` permite que pesquisadores e taxonomistas baixem, analisem, filtrem e explorem a lista de espécies da [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/) diretamente do R. Você pode navegar pela lista de espécies por critérios taxonômicos, geográficos ou de atributos, resolver sua própria lista de nomes de espécies em relação a ela (com correspondência aproximada para erros de digitação), explorar a hierarquia taxonômica e curar novos registros para contribuir de volta à FFB.
+O pacote `fungaR` permite que pesquisadores e taxonomistas baixem, analisem, filtrem, e explorem a porção fúngica da lista de espécies da [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/) diretamente a partir do R. Você pode navegar pela lista de espécies por critérios taxonômicos, geográficos, ou de atributos, resolver sua própria lista de nomes de espécies em relação a ela (com correspondência aproximada para erros de digitação), explorar a hierarquia taxonômica, e cruzar dados com o MycoBank, o Index Fungorum, e repositórios de ocorrência brasileiros para curar novas espécies e registros estaduais para contribuição de volta à FFB.
 
-### Preciso de uma lista de nomes de espécies para usar o floraR?
+### Preciso de uma lista de nomes de espécies para usar o fungaR?
 
-Não. A função `flora_records()` permite navegar e filtrar a lista de espécies da FFB diretamente (por exemplo, todas as espécies aceitas de uma família, ou todos os endemismos de um determinado estado) sem fornecer nenhum nome de entrada. Se você já tem sua própria lista de espécies — de um herbário, levantamento de campo ou colaborador — as funções `flora_search()` e `flora_match()` resolvem esses nomes em relação à lista de espécies, com correspondência exata primeiro e correspondência aproximada (distância de Levenshtein) como alternativa para erros de digitação.
+Não. A função `funga_records()` permite navegar e filtrar a lista de espécies fúngicas da FFB diretamente (por exemplo, todas as espécies aceitas de uma família, ou todos os endemismos de um determinado estado) sem fornecer nenhum nome de entrada. Se você já tem sua própria lista de espécies — de um fungário, levantamento de campo, ou colaborador — as funções `funga_search()` e `funga_match()` resolvem esses nomes em relação à lista de espécies, com correspondência exata primeiro e correspondência aproximada (distância de Levenshtein) como alternativa para erros de digitação.
 
-### O floraR requer conexão com a internet?
+### O fungaR requer conexão com a internet?
 
-Apenas na primeira vez que você consultar uma determinada versão do conjunto de dados. As funções `flora_download()` e `flora_parse()` baixam e armazenam localmente o Arquivo Darwin Core versionado, e todas as demais funções reutilizam esse cache automaticamente, de modo que consultas repetidas e análises offline funcionam sem um novo download.
+Apenas na primeira vez que você consultar uma determinada versão do conjunto de dados, ou a lista de nomes em lote do MycoBank. As funções `funga_download()`/`funga_parse()` e `mycobank_gap()`/`mycobank_records()` baixam e armazenam localmente seus respectivos conjuntos de dados, e todas as demais funções reutilizam esse cache automaticamente, de modo que consultas repetidas e análises offline funcionam sem um novo download. `spfungorum_gap()`/`spfungorum_records()` consultam o serviço web do Index Fungorum diretamente a cada vez, já que não há exportação em lote para armazenar em cache.
 
-### Como instalo o floraR?
+### Como instalo o fungaR?
 
-Visite o [guia de primeiros passos](/pt/get-started/index.qmd) para instruções de instalação a partir do GitHub.
+Visite o [guia de Instalação](/pt/get-started/index.qmd) para instruções de instalação a partir do GitHub.
 
-### O floraR é gratuito?
+### O fungaR é gratuito?
 
-Sim. `floraR` é de código aberto, licenciado sob a [Licença MIT](https://opensource.org/license/mit/).
+Sim. `fungaR` é de código aberto, licenciado sob a [Licença MIT](https://opensource.org/license/mit/).
 
 ### Este site está disponível em português?
 
-Sim. Cada página tem um botão de alternância EN/PT na barra de navegação. Depois de trocar de idioma, a escolha é lembrada pelo resto da sua visita — você não precisará trocar novamente ao navegar entre as páginas.
+Sim. Toda página tem um alternador EN/PT na barra de navegação. Depois que você muda de idioma, a escolha é lembrada pelo restante da sua visita — você não precisará alternar novamente ao navegar entre páginas.
 
-### Quais saídas o floraR pode gerar?
+### Quais saídas o fungaR pode gerar?
 
-O `floraR` retorna data frames organizados (e, no caso de `flora_parse()`, uma lista estruturada de tabelas DwC-A) prontos para análise. As funções `flora_records()` e `flora_get_children_taxa()` também podem salvar resultados diretamente em CSV, e `flora_build_matrix()` produz uma matriz de caracteres por táxon para análises comparativas ou filogenéticas.
+O `fungaR` retorna data frames organizados (e, no caso de `funga_parse()`, uma lista estruturada de tabelas DwC-A) prontos para análise. A função `funga_records()` pode salvar resultados diretamente em CSV, enquanto `mycobank_gap()`, `mycobank_records()`, `spfungorum_gap()`, `spfungorum_records()`, e `funga_distribution_gap()` produzem planilhas `.xlsx` estruturadas — incluindo a URL original de cada nome — projetadas para a revisão manual de um taxonomista.
 
-### Quem é o desenvolvedor do floraR?
+### Por que a FFB usa "Divisão" em vez de "Classe" para fungos, e não tem registro de nível família?
+
+A FFB classifica fungos por Divisão (equivalente a filo, ex.: Ascomycota, Basidiomycota) em vez de Classe, e não registra um táxon autônomo de nível família para Fungi — família é armazenada apenas como uma coluna de classificação nos registros de gênero/espécie. A `funga_get_children_taxa()` trata isso automaticamente: `rank = "family"` continua funcionando, comparado diretamente com essa coluna em vez de percorrer uma linha de nível família que não existe.
+
+### O que o campo `habitat` significa para fungos em `funga_records()`?
+
+Para fungos, o campo `habitat` da FFB registra o substrato/hospedeiro em que o espécime foi coletado (ex.: `"Planta viva - raiz"`, `"Tronco em decomposição"`, `"Solo"`, `"Outro fungo"`) em vez de um hábito de crescimento vegetal, já que a FFB não publica um campo de táxon-hospedeiro nomeado separadamente. Use-o para navegar a lista de espécies por tipo de substrato/hospedeiro.
+
+### Quem é o desenvolvedor do fungaR?
 
 O desenvolvimento é liderado pelo [JBRJ](https://www.gov.br/jbrj/pt-br), com apoio financeiro do [CNPq](https://www.gov.br/cnpq/pt-br) e da [FINEP](http://www.finep.gov.br). Desenvolvedor principal:
 
 - Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab))
 
-Veja o código e contribua no GitHub: [https://github.com/DBOSlab/floraR](https://github.com/DBOSlab/floraR)
+Veja o código e contribua no GitHub: [https://github.com/DBOSlab/fungaR](https://github.com/DBOSlab/fungaR)
 
-### Por que o nome floraR?
+### Por que o nome fungaR?
 
-O nome combina "Flora" — referência à Flora e Funga do Brasil, a lista de espécies com a qual o pacote interage — com a linguagem de programação R, refletindo o objetivo do pacote de tornar a lista de espécies nacional acessível de forma direta e reprodutível a partir do R.
+O nome combina "Funga" — para o componente fúngico da Flora e Funga do Brasil, a lista de espécies com a qual o pacote interage — com a linguagem de programação R, refletindo o objetivo do pacote de tornar a lista nacional de fungos direta e reprodutivelmente acessível a partir do R.
 
 ### Onde posso reportar bugs ou solicitar funcionalidades?
 
-Envie issues no GitHub: [floraR Issues](https://github.com/DBOSlab/floraR/issues).
+Envie issues no GitHub: [fungaR Issues](https://github.com/DBOSlab/fungaR/issues).
 
-### Onde posso fazer perguntas e discutir sobre o floraR?
+### Onde posso fazer perguntas e discutir sobre o fungaR?
 
-Participe da nossa comunidade nas [Discussões do GitHub](https://github.com/DBOSlab/floraR/discussions) para fazer perguntas, sugerir ideias ou ajudar outros usuários.
+Participe da nossa comunidade nas [Discussões do GitHub](https://github.com/DBOSlab/fungaR/discussions) para fazer perguntas, sugerir ideias, ou ajudar outros usuários.
 
-### Como o floraR se relaciona com a Flora e Funga do Brasil?
+### Como o fungaR se relaciona com a Flora e Funga do Brasil?
 
-O pacote `floraR` é uma interface programática para o portal de dados IPT da Flora e Funga do Brasil: ele baixa, analisa e consulta os mesmos dados da lista de espécies publicados na plataforma, e também ajuda especialistas taxonômicos a preparar novos nomes e registros para contribuição de volta a ela.
+O pacote `fungaR` é uma interface programática para o lado fúngico do portal de dados IPT da Flora e Funga do Brasil: ele baixa, analisa, e consulta os mesmos dados da lista de espécies publicados na plataforma, e também ajuda especialistas taxonomistas a preparar novos nomes e registros fúngicos para contribuição de volta a ela.
 
-### Posso contribuir com novos nomes ou registros para a Flora e Funga do Brasil?
+### Posso contribuir com novos nomes ou registros fúngicos para a Flora e Funga do Brasil?
 
-Sim. O `floraR` inclui as funções `flora_get_descriptions()` e `flora_build_matrix()` especificamente para ajudar especialistas taxonômicos a reunir e curar novos registros — extraindo descrições de campos controlados e texto livre de páginas de táxons já existentes na FFB e transformando-as em uma matriz de caracteres comparável. Para submeter novos nomes ou correções à própria plataforma, consulte as diretrizes de contribuição em [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) ou entre em contato com a equipe de coordenação da FFB pelo e-mail **floraefungadobrasil\@jbrj.gov.br**.
+Sim. O `fungaR` inclui `mycobank_gap()`, `spfungorum_gap()`, e `funga_distribution_gap()` especificamente para ajudar especialistas taxonomistas a encontrar candidatos que valem a pena submeter — cruzando as bases de nomes globais do MycoBank e do Index Fungorum, e repositórios de ocorrência brasileiros (GBIF, speciesLink, REFLORA), com a lista de espécies atual da FFB para sinalizar espécies e registros estaduais que são plausivelmente brasileiros mas ainda estão ausentes. Se você já tem um táxon em mente em vez de precisar de uma comparação com a FFB, `mycobank_records()`/`spfungorum_records()` recuperam diretamente tudo o que esses repositórios têm registrado sobre ele. Para submeter novos nomes ou correções à própria plataforma, consulte as diretrizes de contribuição em [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) ou entre em contato com a equipe de coordenação da FFB pelo e-mail **floraefungadobrasil\@jbrj.gov.br**.

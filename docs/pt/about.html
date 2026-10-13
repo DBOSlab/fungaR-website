@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Sobre o floraR – fungaR</title>
+<title>Sobre o fungaR – fungaR</title>
 <style>
 
 code{white-space: pre-wrap;}
@@ -4538,8 +4538,8 @@ height: 400px;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Sobre o floraR</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
-<p class="subtitle lead">Ferramentas de código aberto para acessar, analisar e curar dados da plataforma Flora e Funga do Brasil</p>
+<div class="quarto-title-block"><div><h1 class="title">Sobre o fungaR</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Ferramentas de código aberto para acessar, analisar e curar dados fúngicos da plataforma Flora e Funga do Brasil</p>
 </div>
 
 
@@ -4577,8 +4577,8 @@ z-index: -1;
 </style>
 <section id="visão-geral" class="level2">
 <h2 class="anchored" data-anchor-id="visão-geral">Visão Geral</h2>
-<p><code>floraR</code> é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição da plataforma <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil (FFB)</a>, mantida pelo <a href="https://www.gov.br/jbrj/pt-br">Jardim Botânico do Rio de Janeiro</a>. Ele oferece uma interface completa para o <a href="https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil">portal de dados IPT da FFB</a>: baixando, analisando, filtrando e explorando dados versionados de Arquivo Darwin Core (DwC-A) — desde a navegação por critérios taxonômicos, geográficos ou de atributos até a resolução da sua própria lista de nomes de espécies em relação a ela.</p>
-<p>Além da recuperação de dados, o <code>floraR</code> também auxilia especialistas taxonômicos que contribuem para a FFB, simplificando a integração de novos nomes de espécies e registros de repositórios globais de biodiversidade, como IPNI, REFLORA e GBIF.</p>
+<p><code>fungaR</code> é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição fúngica da plataforma <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil (FFB)</a>, mantida pelo <a href="https://www.gov.br/jbrj/pt-br">Jardim Botânico do Rio de Janeiro</a>. Ele oferece uma interface completa para o <a href="https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil">portal de dados IPT da FFB</a>: baixando, analisando, filtrando e explorando dados versionados de Arquivo Darwin Core (DwC-A) — desde a navegação por critérios taxonômicos, geográficos ou de atributos (incluindo atributos específicos de fungos, como modo nutricional e substrato/hospedeiro) até a resolução da sua própria lista de nomes de espécies em relação a ela.</p>
+<p>Além da recuperação de dados, o <code>fungaR</code> também auxilia especialistas taxonomistas que contribuem para a FFB, cruzando dados com o <a href="https://www.mycobank.org">MycoBank</a>, o <a href="https://www.speciesfungorum.org">Species Fungorum</a> (Index Fungorum), e repositórios de ocorrência brasileiros — <a href="https://www.gbif.org">GBIF</a>, <a href="https://specieslink.net">speciesLink</a>, e o <a href="https://ipt.jbrj.gov.br/reflora/">Herbário Virtual Reflora</a> — para sinalizar espécies e registros estaduais fúngicos que são plausivelmente brasileiros mas ainda estão ausentes da plataforma.</p>
 </section>
 <section id="flora-e-funga-do-brasil" class="level2">
 <h2 class="anchored" data-anchor-id="flora-e-funga-do-brasil">Flora e Funga do Brasil</h2>
@@ -4591,7 +4591,7 @@ z-index: -1;
 </section>
 <section id="descrição-do-pacote" class="level2">
 <h2 class="anchored" data-anchor-id="descrição-do-pacote">Descrição do Pacote</h2>
-<p>Pacote: <code>floraR</code> Tipo: Pacote R Versão: 1.0.0</p>
+<p>Pacote: <code>fungaR</code> Tipo: Pacote R Versão: 1.0.0</p>
 <p>Autor: Domingos Cardoso (<a href="https://github.com/DBOSlab">@DBOSlab</a> <a href="https://orcid.org/0000-0001-7072-2656">ORCID</a>)</p>
 <p>Mantenedor: Domingos Cardoso (<a href="mailto:domingoscardoso@jbrj.gov.br" class="email">domingoscardoso@jbrj.gov.br</a>)</p>
 <section id="funcionalidades" class="level3">
@@ -4599,17 +4599,17 @@ z-index: -1;
 <ul>
 <li>Interface completa para o portal de dados IPT da Flora e Funga do Brasil</li>
 <li>Controle de versões e análise de conjuntos de dados DwC-A baixados, com suporte a uso offline</li>
-<li>Filtragem da lista de espécies por critérios taxonômicos, geográficos e de atributos</li>
+<li>Filtragem da lista de espécies por critérios taxonômicos, geográficos e de atributos (incluindo substrato/hospedeiro)</li>
 <li>Resolução de nomes exata e aproximada (distância de Levenshtein) em relação à lista de espécies</li>
-<li>Navegação pela hierarquia taxonômica em qualquer nível, da classe até a espécie</li>
-<li>Ferramentas para curadoria de dados e integração com repositórios globais de biodiversidade</li>
+<li>Navegação pela hierarquia taxonômica em qualquer nível, da divisão até a espécie, seguindo a hierarquia real de fungos da FFB</li>
+<li>Cruzamento de dados com o MycoBank, o Index Fungorum, o GBIF, o speciesLink, e o REFLORA para sinalizar espécies e registros estaduais ausentes da FFB, ou recuperação direta de registros do MycoBank/Index Fungorum para um táxon brasileiro</li>
 <li>Fluxos de trabalho integrados ao tidyverse</li>
 </ul>
 </section>
 </section>
 <section id="contribua" class="level2">
 <h2 class="anchored" data-anchor-id="contribua">Contribua</h2>
-<p>Você pode contribuir com o <code>floraR</code>:</p>
+<p>Você pode contribuir com o <code>fungaR</code>:</p>
 <ul>
 <li>Abrindo issues para feedback ou relatos de bugs</li>
 <li>Enviando pull requests com correções ou melhorias</li>
@@ -4618,11 +4618,11 @@ z-index: -1;
 </section>
 <section id="licença" class="level2">
 <h2 class="anchored" data-anchor-id="licença">Licença</h2>
-<p><code>floraR</code> é um <a href="../LICENSE.html">software de código aberto</a>. Ferramentas abertas fortalecem a ciência por meio da reprodutibilidade, acessibilidade e compartilhamento equitativo do conhecimento.</p>
+<p><code>fungaR</code> é um <a href="../LICENSE.html">software de código aberto</a>. Ferramentas abertas fortalecem a ciência por meio da reprodutibilidade, acessibilidade e compartilhamento equitativo do conhecimento.</p>
 </section>
 <section id="agradecimentos" class="level2">
 <h2 class="anchored" data-anchor-id="agradecimentos">Agradecimentos</h2>
-<p>O desenvolvimento do <code>floraR</code> é liderado pelo <a href="https://www.gov.br/jbrj">Jardim Botânico do Rio de Janeiro (JBRJ)</a>, em colaboração com as comunidades de biodiversidade e informática. Agradecemos também o apoio financeiro do <a href="https://www.gov.br/cnpq/pt-br">CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico</a> e da <a href="https://www.gov.br/finep/pt-br">FINEP - Financiadora de Estudos e Projetos</a>.</p>
+<p>O desenvolvimento do <code>fungaR</code> é liderado pelo <a href="https://www.gov.br/jbrj">Jardim Botânico do Rio de Janeiro (JBRJ)</a>, em colaboração com as comunidades de micologia, biodiversidade e informática — incluindo a expertise taxonômica de colegas como Elisandro Ricardo Drechsler-Santos. Agradecemos também o apoio financeiro do <a href="https://www.gov.br/cnpq/pt-br">CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico</a> e da <a href="https://www.gov.br/finep/pt-br">FINEP - Financiadora de Estudos e Projetos</a>.</p>
 
 
 <!-- -->
@@ -5095,8 +5095,8 @@ z-index: -1;
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Sobre o floraR&quot;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> &quot;Ferramentas de código aberto para acessar, analisar e curar dados da plataforma Flora e Funga do Brasil&quot;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Sobre o fungaR&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> &quot;Ferramentas de código aberto para acessar, analisar e curar dados fúngicos da plataforma Flora e Funga do Brasil&quot;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
@@ -5125,9 +5125,9 @@ z-index: -1;
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visão Geral</span></span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="in">`floraR`</span> é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição da plataforma <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span>, mantida pelo <span class="co">[</span><span class="ot">Jardim Botânico do Rio de Janeiro</span><span class="co">](https://www.gov.br/jbrj/pt-br)</span>. Ele oferece uma interface completa para o <span class="co">[</span><span class="ot">portal de dados IPT da FFB</span><span class="co">](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)</span>: baixando, analisando, filtrando e explorando dados versionados de Arquivo Darwin Core (DwC-A) — desde a navegação por critérios taxonômicos, geográficos ou de atributos até a resolução da sua própria lista de nomes de espécies em relação a ela.</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="in">`fungaR`</span> é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição fúngica da plataforma <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span>, mantida pelo <span class="co">[</span><span class="ot">Jardim Botânico do Rio de Janeiro</span><span class="co">](https://www.gov.br/jbrj/pt-br)</span>. Ele oferece uma interface completa para o <span class="co">[</span><span class="ot">portal de dados IPT da FFB</span><span class="co">](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)</span>: baixando, analisando, filtrando e explorando dados versionados de Arquivo Darwin Core (DwC-A) — desde a navegação por critérios taxonômicos, geográficos ou de atributos (incluindo atributos específicos de fungos, como modo nutricional e substrato/hospedeiro) até a resolução da sua própria lista de nomes de espécies em relação a ela.</span>
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>Além da recuperação de dados, o <span class="in">`floraR`</span> também auxilia especialistas taxonômicos que contribuem para a FFB, simplificando a integração de novos nomes de espécies e registros de repositórios globais de biodiversidade, como IPNI, REFLORA e GBIF.</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>Além da recuperação de dados, o <span class="in">`fungaR`</span> também auxilia especialistas taxonomistas que contribuem para a FFB, cruzando dados com o <span class="co">[</span><span class="ot">MycoBank</span><span class="co">](https://www.mycobank.org)</span>, o <span class="co">[</span><span class="ot">Species Fungorum</span><span class="co">](https://www.speciesfungorum.org)</span> (Index Fungorum), e repositórios de ocorrência brasileiros — <span class="co">[</span><span class="ot">GBIF</span><span class="co">](https://www.gbif.org)</span>, <span class="co">[</span><span class="ot">speciesLink</span><span class="co">](https://specieslink.net)</span>, e o <span class="co">[</span><span class="ot">Herbário Virtual Reflora</span><span class="co">](https://ipt.jbrj.gov.br/reflora/)</span> — para sinalizar espécies e registros estaduais fúngicos que são plausivelmente brasileiros mas ainda estão ausentes da plataforma.</span>
 <span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## Flora e Funga do Brasil</span></span>
 <span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
@@ -5141,7 +5141,7 @@ z-index: -1;
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## Descrição do Pacote</span></span>
 <span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>Pacote: <span class="in">`floraR`</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>Pacote: <span class="in">`fungaR`</span></span>
 <span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>Tipo: Pacote R</span>
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>Versão: 1.0.0</span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
@@ -5153,15 +5153,15 @@ z-index: -1;
 <span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interface completa para o portal de dados IPT da Flora e Funga do Brasil</span>
 <span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Controle de versões e análise de conjuntos de dados DwC-A baixados, com suporte a uso offline</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Filtragem da lista de espécies por critérios taxonômicos, geográficos e de atributos</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Filtragem da lista de espécies por critérios taxonômicos, geográficos e de atributos (incluindo substrato/hospedeiro)</span>
 <span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Resolução de nomes exata e aproximada (distância de Levenshtein) em relação à lista de espécies</span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Navegação pela hierarquia taxonômica em qualquer nível, da classe até a espécie</span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ferramentas para curadoria de dados e integração com repositórios globais de biodiversidade</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Navegação pela hierarquia taxonômica em qualquer nível, da divisão até a espécie, seguindo a hierarquia real de fungos da FFB</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Cruzamento de dados com o MycoBank, o Index Fungorum, o GBIF, o speciesLink, e o REFLORA para sinalizar espécies e registros estaduais ausentes da FFB, ou recuperação direta de registros do MycoBank/Index Fungorum para um táxon brasileiro</span>
 <span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Fluxos de trabalho integrados ao tidyverse</span>
 <span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## Contribua</span></span>
 <span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>Você pode contribuir com o <span class="in">`floraR`</span>:</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>Você pode contribuir com o <span class="in">`fungaR`</span>:</span>
 <span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Abrindo issues para feedback ou relatos de bugs</span>
 <span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Enviando pull requests com correções ou melhorias</span>
@@ -5169,11 +5169,11 @@ z-index: -1;
 <span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="fu">## Licença</span></span>
 <span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="in">`floraR`</span> é um <span class="co">[</span><span class="ot">software de código aberto</span><span class="co">](/LICENSE.md)</span>. Ferramentas abertas fortalecem a ciência por meio da reprodutibilidade, acessibilidade e compartilhamento equitativo do conhecimento.</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="in">`fungaR`</span> é um <span class="co">[</span><span class="ot">software de código aberto</span><span class="co">](/LICENSE.md)</span>. Ferramentas abertas fortalecem a ciência por meio da reprodutibilidade, acessibilidade e compartilhamento equitativo do conhecimento.</span>
 <span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="fu">## Agradecimentos</span></span>
 <span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>O desenvolvimento do <span class="in">`floraR`</span> é liderado pelo <span class="co">[</span><span class="ot">Jardim Botânico do Rio de Janeiro (JBRJ)</span><span class="co">](https://www.gov.br/jbrj)</span>, em colaboração com as comunidades de biodiversidade e informática. Agradecemos também o apoio financeiro do <span class="co">[</span><span class="ot">CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico</span><span class="co">](https://www.gov.br/cnpq/pt-br)</span> e da <span class="co">[</span><span class="ot">FINEP - Financiadora de Estudos e Projetos</span><span class="co">](https://www.gov.br/finep/pt-br)</span>.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>O desenvolvimento do <span class="in">`fungaR`</span> é liderado pelo <span class="co">[</span><span class="ot">Jardim Botânico do Rio de Janeiro (JBRJ)</span><span class="co">](https://www.gov.br/jbrj)</span>, em colaboração com as comunidades de micologia, biodiversidade e informática — incluindo a expertise taxonômica de colegas como Elisandro Ricardo Drechsler-Santos. Agradecemos também o apoio financeiro do <span class="co">[</span><span class="ot">CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico</span><span class="co">](https://www.gov.br/cnpq/pt-br)</span> e da <span class="co">[</span><span class="ot">FINEP - Financiadora de Estudos e Projetos</span><span class="co">](https://www.gov.br/finep/pt-br)</span>.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

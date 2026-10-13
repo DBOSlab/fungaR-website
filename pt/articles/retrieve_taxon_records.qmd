@@ -1,0 +1,111 @@
+---
+title: "Recuperar registros de um táxon brasileiro"
+format: html
+---
+
+Aqui apresentamos um guia prático para `mycobank_records()` e `spfungorum_records()`, duas funções do `fungaR` para recuperar informações nomenclaturais sobre um táxon fúngico brasileiro a partir do [MycoBank](https://www.mycobank.org) e do [Species Fungorum](https://www.speciesfungorum.org) (Index Fungorum, mantido pelos Royal Botanic Gardens, Kew), respectivamente. Diferente de [`mycobank_gap()`](/pt/articles/curate_ffb_new_records.qmd) e [`spfungorum_gap()`](/pt/articles/curate_ffb_new_records.qmd), estas **não** são comparações com a lista de espécies da [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) — não importa se o táxon já está registrado na FFB. São ferramentas de recuperação diretas: forneça a qualquer uma delas uma espécie ou gênero, e ela retorna tudo o que aquele repositório tem registrado sobre ele, filtrado por padrão apenas aos nomes com localidade no Brasil.
+
+Ambas as funções gravam seus resultados em três formas complementares: o `data.frame` retornado, uma planilha `.xlsx` para download e — por padrão (`html_report = TRUE`) — um **relatório HTML** autocontido com contagens-chave (KPIs) e a tabela completa de registros como um widget [`DT`](https://rstudio.github.io/DT/) ordenável e filtrável, com botões de um clique para copiar ou baixar em CSV/Excel, aberto automaticamente no navegador em sessões interativas (`open_report = interactive()`).
+
+## Quando usar estas em vez de `mycobank_gap()`/`spfungorum_gap()`
+
+- Use **`mycobank_records()`**/**`spfungorum_records()`** quando você já tem um táxon em mente — uma única espécie, ou todas as espécies de um gênero — e quer ver tudo o que aquele repositório sabe sobre a(s) ocorrência(s) no Brasil, independentemente do status na FFB.
+- Use **[`mycobank_gap()`/`spfungorum_gap()`](/pt/articles/curate_ffb_new_records.qmd)** quando você quer encontrar *candidatos que a FFB está perdendo* — elas adicionam a etapa de comparação com a FFB e retornam apenas nomes ausentes da lista de espécies.
+
+## `mycobank_records()`: recuperar registros do MycoBank para um táxon
+
+O MycoBank não possui uma API pública de busca adequada para automação em lote, então em vez de raspar sua interface de busca ao vivo baseada em JavaScript, `mycobank_records()` baixa e armazena em cache a própria exportação em lote de nomes do MycoBank (`MBList.zip`, atualizada regularmente pelo MycoBank, compartilhada com o cache de `mycobank_gap()`), e então a filtra para a espécie, gênero ou ordem solicitado.
+
+A exportação em lote não carrega informação de localidade, então determinar a evidência de ocorrência no Brasil requer visitar a própria página de cada nome correspondente no MycoBank (`check_locality = TRUE`, o padrão, via [`chromote`](https://rstudio.github.io/chromote/), um driver headless do Chrome — as páginas de nome do MycoBank são um aplicativo JavaScript sem alternativa HTML estática) para ler os "Location details" relatados do espécime-tipo, além de vários outros campos disponíveis apenas nessa página individual: substrato/hospedeiro, etimologia, tipo de nome (ex.: Basiônimo/Combinação), o próprio voucher do espécime-tipo, seu coletor, e a citação da publicação original (protólogo). Quando `require_brazil_evidence = TRUE` (o padrão), o resultado é então filtrado apenas para os nomes cuja localidade menciona o Brasil; defina como `FALSE` para obter em vez disso todo nome do MycoBank correspondente independentemente da localidade, com as colunas de evidência ao lado para revisão manual.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `taxon` | Caractere. Um único nome de espécie, gênero ou ordem (ex.: `"Trichoderma harzianum"`, `"Trichoderma"`, ou `"Xylariales"`). |
+| `rank` | `"species"` (padrão), `"genus"`, ou `"order"`. |
+| `check_locality` | Se `TRUE` (padrão), a própria página de cada nome correspondente no MycoBank é visitada para ler sua localidade/substrato relatados. Requer o pacote `chromote` e uma instalação local do Chrome/Chromium; é ignorado com uma mensagem se indisponível. |
+| `require_brazil_evidence` | Se `TRUE` (padrão), a tabela retornada é filtrada apenas para nomes cuja localidade no MycoBank menciona o Brasil. Defina `FALSE` para retornar todo nome correspondente independentemente da localidade. Só tem efeito quando `check_locality = TRUE`. |
+| `max_check` | Limite de segurança para quantos nomes correspondentes passam pela verificação de localidade (um carregamento de página por nome). Padrão `200`. |
+| `mycobank_dir` | Diretório local usado para armazenar em cache a exportação baixada do MycoBank (~140MB). Padrão `"mycobank_download"`. |
+| `save` | Se `TRUE` (padrão), salva o resultado como uma planilha `.xlsx`. |
+| `html_report` | Se `TRUE` (padrão), também grava o relatório HTML interativo descrito acima. |
+
+### Valor
+
+Um data frame, uma linha por nome do MycoBank correspondente e, por padrão, com localidade brasileira no MycoBank, com seu número no MycoBank, autor, ano, status do nome, classificação, nome atual, texto completo de sinonímia, **URL original do MycoBank** (renderizada como link clicável no relatório HTML), e — quando `check_locality = TRUE` — vários campos extraídos da própria página do nome no MycoBank: `MycoBank_Locality`, `MycoBank_Substrate`, `MycoBank_Etymology`, `MycoBank_Name_Type`, `MycoBank_Type_Specimen`, `MycoBank_Collector`, `MycoBank_Protolog`, e um sinalizador `MycoBank_Brazil_Evidence`.
+
+### Exemplo
+
+```r
+library(fungaR)
+
+# Todas as informações do MycoBank para uma única espécie, apenas se o
+# MycoBank a situa no Brasil
+sp <- mycobank_records(taxon = "Trichoderma harzianum")
+
+# Todo nome do MycoBank em nível de espécie no gênero Trichoderma com
+# localidade brasileira no MycoBank
+genus_records <- mycobank_records(taxon = "Trichoderma", rank = "genus")
+
+# Todo nome correspondente independentemente da localidade, para revisão manual
+all_records <- mycobank_records(taxon = "Trichoderma", rank = "genus",
+                                require_brazil_evidence = FALSE)
+
+# Mais rápido, sem a verificação de localidade por candidato (sem filtro de Brasil possível)
+fast_records <- mycobank_records(taxon = "Trichoderma", rank = "genus",
+                                 check_locality = FALSE)
+```
+
+## `spfungorum_records()`: recuperar registros do Index Fungorum para um táxon
+
+O Species Fungorum/Index Fungorum não tem exportação em lote, mas publica um serviço web público e documentado (`fungus.asmx`, uma API HTTP GET/XML simples - sem necessidade de cliente SOAP, navegador headless, ou autenticação) que `spfungorum_records()` consulta diretamente. Uma única requisição retorna todo nome correspondente a `taxon`, incluindo, para muitos registros, a própria `LOCATION` e `HOST` relatadas do espécime-tipo.
+
+O campo `LOCATION` do Index Fungorum frequentemente nomeia diretamente um estado brasileiro (ex.: `"Pernambuco"`) em vez do próprio país, então `Fungorum_Brazil_Evidence` verifica a localização contra o nome do país e todos os nomes dos estados brasileiros (com ou sem acentuação, e comparados como palavras inteiras, de modo que, por exemplo, "Paraguay" nunca é confundido com o estado "Pará"), não apenas a palavra literal "Brazil".
+
+Por padrão (`fetch_details = TRUE`), a própria página de cada nome retornado no Species Fungorum também é visitada - uma requisição HTTP simples e rápida, sem necessidade de navegador headless, diferente do MycoBank - para ler o periódico em que foi publicado, a citação completa formatada, os detalhes de basiônimo/tipificação, e o LSID do Index Fungorum. Isso também corrige `Current_name`: a resposta da busca em lote armazena esse campo na linha do nome *original*, que pode ficar desatualizado em relação ao próprio registro do nome atual, então o valor recém-extraído é preferido sempre que disponível.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `taxon` | Caractere. Um único nome de espécie ou gênero (ex.: `"Phellinotus neoaridus"` ou `"Phellinotus"`). |
+| `rank` | `"species"` (padrão) ou `"genus"`. O serviço web do Index Fungorum não tem operação para busca por classificação superior, então buscas em nível de ordem não são suportadas. |
+| `require_brazil_evidence` | Se `TRUE` (padrão), a tabela retornada é filtrada apenas para nomes cuja localização no Index Fungorum menciona o Brasil. Defina `FALSE` para retornar todo nome correspondente independentemente da localidade. |
+| `fetch_details` | Se `TRUE` (padrão), visita a própria página de cada nome no Species Fungorum para obter seu periódico, citação completa, detalhes de basiônimo/tipificação, e LSID, e para atualizar `Current_name`. Defina `FALSE` para pular isso e usar apenas os campos próprios da resposta da busca em lote. |
+| `max_number` | Número máximo de nomes correspondentes solicitados ao serviço web em uma única chamada. Padrão `1000`, generoso para qualquer gênero. |
+| `save` | Se `TRUE` (padrão), salva o resultado como uma planilha `.xlsx`. |
+| `html_report` | Se `TRUE` (padrão), também grava o relatório HTML interativo descrito acima. |
+
+### Valor
+
+Um data frame, uma linha por nome do Index Fungorum correspondente e, por padrão, com localidade brasileira relatada, com seu número no Fungorum, autor, epíteto específico, ano, status do nome, nome atual, volume/parte/página, autores da publicação, **URL original do Species Fungorum** (renderizada como link clicável no relatório HTML), `Fungorum_Location`, `Fungorum_Host`, um sinalizador `Fungorum_Brazil_Evidence`, e — quando `fetch_details = TRUE` — `Fungorum_Journal`, `Fungorum_Citation`, `Fungorum_Basionym`, `Fungorum_Current_Name_Citation`, e `Fungorum_LSID`.
+
+### Exemplo
+
+```r
+library(fungaR)
+
+# Todas as informações do Index Fungorum para uma única espécie, apenas se
+# relatar uma localidade brasileira
+sp <- spfungorum_records(taxon = "Phellinotus neoaridus")
+
+# Todo nome do Index Fungorum em nível de espécie no gênero Phellinotus com
+# localidade brasileira relatada
+genus_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus")
+
+# Todo nome correspondente independentemente da localidade, para revisão manual
+all_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus",
+                                  require_brazil_evidence = FALSE)
+
+# Mais rápido, sem a visita à página por registro (periódico/citação/basiônimo/LSID
+# omitidos, e Current_name usa o valor da resposta em lote como está)
+fast_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus",
+                                   fetch_details = FALSE)
+```
+
+## Dicas Adicionais
+
+- Instale o pacote [`chromote`](https://rstudio.github.io/chromote/) (e tenha uma instalação local do Chrome/Chromium) para incluir a verificação de localidade de `mycobank_records()`; sem ele, essa etapa (e a filtragem de evidência no Brasil que depende dela) é ignorada com uma mensagem, e todo nome correspondente é retornado sem filtro. `spfungorum_records()` não precisa dessa dependência extra para sua verificação de evidência no Brasil especificamente - a localidade de país/estado sempre vem na requisição inicial em lote, independentemente de `fetch_details`.
+- `mycobank_dir` é compartilhado entre `mycobank_records()` e `mycobank_gap()` - apontar ambas as funções para o mesmo diretório evita baixar a exportação em lote do MycoBank duas vezes.
+- Para gêneros maiores, a verificação de localidade por candidato de `mycobank_records()` pode levar um tempo - comece com `check_locality = FALSE` para dimensionar quantos nomes correspondem antes de rodar a verificação completa de evidência no Brasil. A filtragem de evidência no Brasil de `spfungorum_records()` é sempre uma única requisição independentemente do tamanho do gênero, mas `fetch_details = TRUE` (o padrão) adiciona uma requisição HTTP simples e rápida por nome *retornado* para os campos de periódico/citação/basiônimo/LSID - defina `fetch_details = FALSE` para pular isso em conjuntos de resultados muito grandes.

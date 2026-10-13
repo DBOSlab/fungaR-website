@@ -1,0 +1,98 @@
+---
+title: 'spfungorum_records'
+description: 'Recuperar registros do Species Fungorum (Index Fungorum) para um táxon, filtrados por evidência no Brasil'
+toc: true
+toc-depth: 3
+---
+
+```{r}
+#| eval: false
+fungaR::spfungorum_records()
+```
+
+### Descrição
+
+Dada uma espécie ou gênero fúngico, recupera todo nome correspondente no
+[Species Fungorum](https://www.speciesfungorum.org) (a base de dados
+nomenclatural mantida pelos Royal Botanic Gardens, Kew, também conhecida
+como Index Fungorum) e, por padrão, filtra o resultado apenas para os
+nomes cuja própria localidade relatada os situa no Brasil - retornando uma
+planilha estruturada com informações do Index Fungorum (incluindo a URL
+original no Species Fungorum de cada nome) para esses registros
+brasileiros. Assim como `mycobank_records`, esta é uma ferramenta
+direta de recuperação, não uma de comparação/lacuna - ela não cruza dados
+com a FFB de forma alguma.
+
+### Detalhes
+
+O Species Fungorum/Index Fungorum não tem exportação em lote, mas publica
+um serviço web público e documentado
+(https://www.indexfungorum.org/ixfwebservice/fungus.asmx) que responde a
+requisições HTTP GET simples com XML - sem necessidade de cliente SOAP,
+navegador headless, ou autenticação. Uma única requisição retorna todo
+nome correspondente a `taxon`, incluindo, para muitos registros, os
+próprios campos `LOCATION` e `HOST` relatados do espécime-tipo - os
+dados que esta função usa como seu sinal de evidência no Brasil. Diferente
+do MycoBank, nenhuma visita a página individual por registro é necessária:
+tudo retorna em uma única resposta.
+
+O campo `LOCATION` do Index Fungorum frequentemente nomeia diretamente
+um estado brasileiro (ex.: `"Pernambuco"`) em vez do próprio país, então
+`Fungorum_Brazil_Evidence` verifica `Fungorum_Location` contra o
+nome do país e todos os nomes dos estados brasileiros (com ou sem
+acentuação), não apenas a palavra literal "Brazil".
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| taxon | Caractere. Um único nome de espécie ou gênero fúngico (ex.: `"Phellinotus neoaridus"` ou `"Phellinotus"`). |
+| rank | Caractere. Se `taxon` é uma `"species"` (padrão) ou um `"genus"`. O serviço web do Species Fungorum não tem operação para busca por classificação superior (ordem/família), então `rank = "order"` não é suportado. |
+| require_brazil_evidence | Lógico. Se `TRUE` (padrão), a tabela retornada é filtrada apenas para os nomes cuja `Location` no Index Fungorum menciona o Brasil (o nome do país ou qualquer estado brasileiro). Defina como `FALSE` para retornar em vez disso todo nome correspondente independentemente da localidade, para revisão manual. |
+| fetch_details | Lógico. Se `TRUE` (padrão), a própria página de cada nome retornado no Species Fungorum é visitada (uma requisição HTTP simples e rápida - sem navegador headless, diferente do MycoBank) para ler o periódico em que foi publicado, a citação completa formatada, os detalhes de basiônimo ou tipificação, a citação completa do próprio nome atual, e o LSID do Index Fungorum - nenhum dos quais está na resposta em lote `NameSearch`. Defina como `FALSE` para pular isso e retornar apenas os campos já presentes nessa resposta. |
+| max_number | Numérico. Número máximo de nomes correspondentes solicitados ao serviço web em uma única chamada. O padrão é `1000`, generoso para qualquer gênero. |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens de progresso. |
+| save | Lógico. Se `TRUE` (padrão), o resultado é salvo em disco como uma planilha `.xlsx`. |
+| dir | Caractere. Diretório onde a planilha é salva quando `save = TRUE`. O padrão é `"spfungorum_records"`. |
+| filename | Caractere. Nome do arquivo `.xlsx` (sem extensão) a salvar. O padrão é `"spfungorum_records_<taxon>"`. |
+| html_report | Lógico. Se `TRUE` (padrão), também grava um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: contagens-chave (KPIs) e a tabela completa de registros como um widget DT ordenável e filtrável, com botões para copiar ou baixar em CSV/Excel. Requer os pacotes rmarkdown, DT, e htmltools; se algum estiver ausente, o relatório é ignorado com uma mensagem (a planilha `.xlsx` não é afetada). |
+| open_report | Lógico. Se `TRUE` (padrão em sessões interativas), abre o relatório HTML no navegador assim que renderizado. |
+
+### Valor
+
+Um `data.frame`, uma linha por nome correspondente do Index Fungorum e,
+por padrão, com localidade brasileira relatada, com colunas:
+
+- **Fungorum_Number** — Identificador numérico de registro do Index Fungorum para o nome.
+- **Taxon_name** — O binômio como registrado no Index Fungorum.
+- **Authors** — Citação de autor.
+- **SpecificEpithet** — O epíteto específico isolado.
+- **Year** — Ano de publicação.
+- **Name_status** — Status nomenclatural do Index Fungorum (ex.: `"Legitimate"`).
+- **Current_name** — Nome atualmente aceito pelo Index Fungorum para esta entrada, quando diferente (ou seja, quando `Taxon_name` é em si um sinônimo). Quando `fetch_details = TRUE`, este é o valor recém-extraído da própria página do nome, em vez do campo (ocasionalmente desatualizado) da resposta da busca em lote.
+- **Fungorum_Location, Fungorum_Host** — Localidade e hospedeiro do espécime-tipo, conforme relatado no próprio registro do Index Fungorum (podem ser `NA` - nem todo registro os possui).
+- **Volume, Part, Page** — Volume, parte/número, e página da publicação.
+- **PublishingAuthors** — Lista completa de autores da publicação em que o nome apareceu, que pode diferir de `Authors` (a citação de autor do próprio nome).
+- **Fungorum_URL** — Link direto para a página do nome no Species Fungorum.
+- **Fungorum_Journal** — O periódico em que o nome foi publicado (apenas quando `fetch_details = TRUE`; não disponível na resposta da busca em lote).
+- **Fungorum_Citation** — A citação completa formatada, como mostrada na própria página do nome no Species Fungorum (apenas quando `fetch_details = TRUE`).
+- **Fungorum_Basionym** — Os detalhes de basiônimo ou tipificação, quando presentes (apenas quando `fetch_details = TRUE`).
+- **Fungorum_Current_Name_Citation** — A citação completa do nome atualmente aceito (apenas quando `fetch_details = TRUE`).
+- **Fungorum_LSID** — O Life Science Identifier do Index Fungorum (apenas quando `fetch_details = TRUE`).
+- **Fungorum_Brazil_Evidence** — Lógico; `TRUE` quando `Fungorum_Location` menciona o Brasil (o país ou qualquer estado brasileiro).
+
+### Exemplos
+
+```r
+# Todas as informações do Index Fungorum para uma única espécie, apenas se
+# ela reporta uma localidade brasileira
+sp <- spfungorum_records(taxon = "Phellinotus neoaridus")
+
+# Todo nome do Index Fungorum em nível de espécie no gênero Phellinotus com
+# localidade brasileira relatada
+genus_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus")
+
+# Todo nome correspondente independentemente da localidade, para revisão manual
+all_records <- spfungorum_records(taxon = "Phellinotus", rank = "genus",
+                                      require_brazil_evidence = FALSE)
+```

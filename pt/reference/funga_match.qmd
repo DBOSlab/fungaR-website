@@ -1,0 +1,99 @@
+---
+title: 'funga_match'
+description: 'Comparar duas listas de nomes fúngicos usando a base de dados da Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+```{r}
+#| eval: false
+fungaR::funga_match()
+```
+
+### Descrição
+
+Compara duas listas de nomes fúngicos com base em sua resolução taxonômica
+na base de dados da Flora e Funga do Brasil (FFB). Ambas as listas são
+buscadas independentemente com `funga_search`, e nomes que resolvem
+para o mesmo táxon aceito são considerados uma correspondência. A função
+retorna um data frame mesclado que alinha nomes entre as duas listas.
+
+### Detalhes
+
+Cada lista é buscada independentemente via `funga_search`. Os IDs de
+táxon aceito (`Accepted.taxon.ID`) são então usados para determinar
+quais nomes em `splist2` correspondem a nomes em `splist1`. Dois
+nomes correspondem quando resolvem para o mesmo táxon aceito — independente
+de um ou ambos serem sinônimos.
+
+O data frame resultante é ordenado por `splist1`. Quando
+`include_all = TRUE`, nomes presentes apenas em `splist2` são
+adicionados ao final com `NA` na coluna `Species.List.1`.
+
+A coluna `Match.Position.2to1` fornece o índice de linha do nome
+correspondido em `splist2`; use-a para reordenar `splist2` e
+alinhá-la com `splist1`:
+`splist2[result$Match.Position.2to1]`.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| splist1 | Um vetor de caracteres com nomes fúngicos — a lista de referência. Cada elemento deve incluir pelo menos um gênero e um epíteto específico, e opcionalmente nível infraespecífico, epíteto infraespecífico, e nome de autor. Apenas caracteres válidos são permitidos (veja `base::validEnc`). |
+| splist2 | Um vetor de caracteres com nomes fúngicos — a lista a comparar com `splist1`. Mesmos requisitos de formato que `splist1`. |
+| version | Caractere. Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. Passado para `funga_download` e `funga_parse`. |
+| max_distance | Numérico. Distância de string máxima para correspondência aproximada. Pode ser um número inteiro positivo (ex.: `2` permite até 2 edições) ou uma fração do tamanho do nome (ex.: `0.1` permite 1 edição a cada 10 caracteres). O padrão é `0.2`. |
+| genus_fuzzy | Lógico. Se `TRUE`, a correspondência aproximada também se aplica ao gênero (mais lento). Se `FALSE` (padrão), o gênero deve corresponder exatamente e apenas o epíteto é comparado de forma aproximada. |
+| include_all | Lógico. Se `TRUE` (padrão), nomes encontrados apenas em `splist2` são adicionados ao resultado com `NA` na coluna `Species.List.1`. Se `FALSE`, apenas nomes de `splist1` aparecem na saída. |
+| identify_dups | Lógico. Se `TRUE` (padrão), uma coluna `Duplicated.Output.Position` é adicionada indicando a posição de linha da primeira outra ocorrência do mesmo `Accepted.taxon.Name`. Isso ocorre quando dois nomes de entrada são sinônimos do mesmo táxon aceito. `NA` é retornado quando não há duplicata. |
+| show_correct | Lógico. Se `TRUE`, uma coluna `Correct` é adicionada indicando se a entrada foi correspondida exatamente (`TRUE`) ou de forma aproximada (`FALSE`) nos resultados de `funga_search` para `splist1`. O padrão é `TRUE`. |
+| progress_bar | Lógico. Se `TRUE`, uma barra de progresso é exibida durante as buscas de nomes. O padrão é `TRUE`. |
+| rm_funga_database | Lógico. Se `TRUE`, a pasta do banco de dados da FFB baixado (`"funga_download"`) é excluída após a busca ser concluída. Se `FALSE` (padrão), o banco de dados é mantido em disco. Manter o banco de dados é **recomendado** porque buscas subsequentes reutilizarão o download existente, verificando se a versão armazenada corresponde à versão solicitada. Se a versão armazenada estiver desatualizada ou for diferente da versão solicitada, a função baixa automaticamente a versão correta. Esse comportamento de cache acelera significativamente buscas repetidas. |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens informativas de progresso durante a análise e o download. Se `FALSE`, executa silenciosamente. |
+
+### Valor
+
+Um data frame com uma linha por nome de entrada (primeiro de `splist1`,
+depois quaisquer nomes não correspondidos de `splist2` quando
+`include_all = TRUE`) e as seguintes colunas:
+
+- **Species.List.1** — Nomes de `splist1` (`NA` para linhas vindas apenas de `splist2`).
+- **Species.List.2** — O nome correspondido de `splist2`, ou `NA` se nenhuma correspondência foi encontrada.
+- **FFB.taxon.ID** — ID do táxon na base de dados da FFB.
+- **Input.Genus** — Gênero extraído do nome de entrada.
+- **Input.Epithet** — Epíteto específico extraído do nome de entrada.
+- **taxonRank** — Nível taxonômico (ex.: `"ESPECIE"`, `"VARIEDADE"`).
+- **Input.InfraspecificEpithet** — Epíteto infraespecífico, se presente.
+- **scientificNameAuthorship** — Citação de autor do táxon correspondido.
+- **taxonomicStatus** — Status taxonômico na FFB: `"NOME_ACEITO"` (aceito), `"SINONIMO"` (sinônimo), ou `"NOME_DUVIDOSO"`.
+- **Accepted.taxon.ID** — ID do nome aceito.
+- **Accepted.taxon.Name** — Nome do táxon aceito resolvido a partir da base de dados da FFB.
+- **family** — Família fúngica.
+- **order** — Ordem fúngica (quando disponível nos dados da FFB).
+- **Correct** — (Somente quando `show_correct = TRUE`) Lógico indicando uma correspondência exata (`TRUE`) vs. aproximada (`FALSE`) para `splist1`.
+- **Match.Position.2to1** — Índice de linha do nome correspondido em `splist2`.
+- **Duplicated.Output.Position** — (Somente quando `identify_dups = TRUE`) Índice de linha da primeira outra ocorrência do mesmo `Accepted.taxon.Name`, ou `NA` se único.
+
+### Exemplos
+
+```r
+# Duas listas que podem se sobrepor ou conter sinônimos dos mesmos nomes aceitos
+splist1 <- c("Trichoderma harzianum", "Xylaria polymorpha", "Cookeina tricholoma")
+splist2 <- c("Hypocrea lixii", "Xylaria polymorpha",
+              "Cookeina sulcipes")
+
+# Comparar incluindo todos os nomes de ambas as listas (baixa + analisa automaticamente)
+result <- funga_match(splist1, splist2, include_all = TRUE)
+
+# Comparar incluindo apenas nomes de splist1
+result2 <- funga_match(splist1, splist2, include_all = FALSE)
+
+# Reordenar splist2 para alinhar com splist1
+splist2[result2$Match.Position.2to1]
+
+# Usar uma versão específica da FFB armazenada em uma pasta personalizada
+funga_match(splist1, splist2, version = "393.418")
+
+# Forçar um novo download removendo o banco de dados em cache após a comparação
+funga_match(splist1, splist2, rm_funga_database = TRUE)
+```

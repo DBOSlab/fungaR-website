@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Comparar duas listas de nomes de plantas usando o banco de dados da Flora e Funga do Brasil">
+<meta name="description" content="Recuperar registros de táxons da base de dados da Flora e Funga do Brasil">
 
-<title>flora_match – fungaR</title>
+<title>funga_records – fungaR</title>
 <style>
 
 code{white-space: pre-wrap;}
@@ -4534,12 +4534,12 @@ height: 400px;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">flora_match</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">funga_records</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 <div>
   <div class="description">
-    Comparar duas listas de nomes de plantas usando o banco de dados da Flora e Funga do Brasil
+    Recuperar registros de táxons da base de dados da Flora e Funga do Brasil
   </div>
 </div>
 
@@ -4557,17 +4557,22 @@ height: 400px;
 
 
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>floraR<span class="sc">::</span><span class="fu">flora_match</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fungaR<span class="sc">::</span><span class="fu">funga_records</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="descrição" class="level3">
 <h3 class="anchored" data-anchor-id="descrição">Descrição</h3>
-<p>Compara e alinha duas listas de nomes de plantas com base na sua resolução taxonômica no banco de dados da Flora e Funga do Brasil (FFB). Ambas as listas são buscadas independentemente com <code>flora_search</code>, e nomes que resolvem para o mesmo táxon aceito são considerados uma correspondência. A função retorna um data frame combinado que alinha os nomes das duas listas.</p>
+<p>Recupera e filtra registros de táxons fúngicos da base de dados taxonômica da <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil (FFB)</a> analisada localmente, hospedada pelo <a href="https://www.gov.br/jbrj/pt-br">Jardim Botânico do Rio de Janeiro</a>. Diferente de <code>funga_search</code>, que resolve uma lista de nomes de espécies que você já possui em relação à base de dados da FFB, <code>funga_records()</code> navega e filtra a própria lista de espécies da FFB por critérios taxonômicos, geográficos, e de atributos; nenhuma lista de nomes de entrada é necessária.</p>
 </section>
 <section id="detalhes" class="level3">
 <h3 class="anchored" data-anchor-id="detalhes">Detalhes</h3>
-<p>Cada lista é buscada independentemente via <code>flora_search</code>. Os IDs de táxon aceito (<code>Accepted.taxon.ID</code>) são então usados para determinar quais nomes em <code>splist2</code> correspondem a nomes em <code>splist1</code>. Dois nomes correspondem quando resolvem para o mesmo táxon aceito — independentemente de um ou ambos serem sinônimos.</p>
-<p>O data frame resultante é ordenado por <code>splist1</code>. Quando <code>include_all = TRUE</code>, nomes presentes apenas em <code>splist2</code> são adicionados ao final com <code>NA</code> na coluna <code>Species.List.1</code>.</p>
-<p>A coluna <code>Match.Position.2to1</code> fornece o índice da linha do nome correspondente em <code>splist2</code>; use-a para reordenar <code>splist2</code> de modo a alinhá-la com <code>splist1</code>: <code>splist2[result$Match.Position.2to1]</code>.</p>
+<p>A função baixa (se necessário) e analisa o conjunto de dados da FFB exatamente como <code>funga_search</code>, e então aplica os filtros solicitados:</p>
+<ul>
+<li><code>taxon</code> é comparado com as colunas <code>family</code>, <code>genus</code>, e <code>taxonName</code> da tabela de táxons da FFB (nomes de família terminados em <code>&quot;aceae&quot;</code>, nomes de gênero de uma palavra, e nomes de espécie de múltiplas palavras são detectados automaticamente).</li>
+<li><code>taxonRank</code> e <code>taxonomicStatus</code> são comparados diretamente com a tabela de táxons.</li>
+<li><code>state</code>, <code>phytogeographicDomain</code>, e <code>endemism</code> são comparados com a tabela de distribuição da FFB (<code>distribution.txt</code>).</li>
+<li><code>lifeForm</code>, <code>habitat</code>, e <code>vegetationType</code> são comparados com a tabela de perfil de espécie da FFB (<code>speciesprofile.txt</code>).</li>
+</ul>
+<p>Todos os filtros são combinados com um E lógico. O resultado sempre tem uma linha por táxon correspondente (filtros geográficos/de atributos restringem <em>quais</em> táxons são retornados, não multiplicam linhas).</p>
 </section>
 <section id="argumentos" class="level3">
 <h3 class="anchored" data-anchor-id="argumentos">Argumentos</h3>
@@ -4584,95 +4589,88 @@ height: 400px;
 </thead>
 <tbody>
 <tr class="odd">
-<td>splist1</td>
-<td>Um vetor de caracteres com nomes de plantas — a lista de referência. Cada elemento deve incluir pelo menos um gênero e um epíteto específico, e opcionalmente nível infraespecífico, epíteto infraespecífico e nome de autor. Apenas caracteres válidos são permitidos (veja <code>base::validEnc</code>).</td>
+<td>taxon</td>
+<td>Vetor de caracteres. Um ou mais nomes de família, gênero, ou espécie para filtrar (ex.: <code>c(&quot;Hymenochaetaceae&quot;, &quot;Trichoderma&quot;, &quot;Xylaria hypoxylon&quot;)</code>). <code>NULL</code> (padrão) não filtra por táxon.</td>
 </tr>
 <tr class="even">
-<td>splist2</td>
-<td>Um vetor de caracteres com nomes de plantas — a lista a ser comparada com <code>splist1</code>. Mesmos requisitos de formato de <code>splist1</code>.</td>
+<td>taxonRank</td>
+<td>Vetor de caracteres. Nível(is) taxonômico(s) a manter (ex.: <code>&quot;ESPECIE&quot;</code>, <code>&quot;VARIEDADE&quot;</code>, <code>&quot;SUBESPECIE&quot;</code>, <code>&quot;FORMA&quot;</code>, <code>&quot;GENERO&quot;</code>, <code>&quot;ORDEM&quot;</code>, <code>&quot;DIVISAO&quot;</code> - fungos são classificados na FFB por Divisão/filo em vez de Classe). <code>NULL</code> (padrão) mantém todos os níveis.</td>
 </tr>
 <tr class="odd">
+<td>taxonomicStatus</td>
+<td>Vetor de caracteres. Status taxonômico na FFB a manter: <code>&quot;NOME_ACEITO&quot;</code> (aceito), <code>&quot;SINONIMO&quot;</code> (sinônimo), ou <code>&quot;NOME_DUVIDOSO&quot;</code> (duvidoso). <code>NULL</code> (padrão) mantém todos os status.</td>
+</tr>
+<tr class="even">
+<td>state</td>
+<td>Vetor de caracteres. Estado(s) brasileiro(s) - nome completo ou sigla, insensível a acentuação (ex.: <code>&quot;Bahia&quot;</code> ou <code>&quot;BA&quot;</code>) - para filtrar por ocorrência, baseado na tabela de distribuição da FFB. <code>NULL</code> (padrão) não filtra por estado.</td>
+</tr>
+<tr class="odd">
+<td>phytogeographicDomain</td>
+<td>Vetor de caracteres. Domínio(s) fitogeográfico(s) para filtrar (ex.: <code>&quot;Caatinga&quot;</code>, <code>&quot;Mata Atlantica&quot;</code>). <code>NULL</code> (padrão) não filtra por domínio.</td>
+</tr>
+<tr class="even">
+<td>endemism</td>
+<td>Lógico. Se <code>TRUE</code>, mantém apenas táxons sinalizados como endêmicos do Brasil; se <code>FALSE</code>, mantém apenas não endêmicos. <code>NULL</code> (padrão) não filtra por endemismo.</td>
+</tr>
+<tr class="odd">
+<td>lifeForm, habitat, vegetationType</td>
+<td>Vetores de caracteres, baseados na tabela de perfil de espécie da FFB. <code>NULL</code> (padrão) não filtra. - <code>lifeForm</code>: modo nutricional/ecológico, ex.: <code>&quot;Saprobio&quot;</code>, <code>&quot;Parasita&quot;</code>, <code>&quot;Liquenizado&quot;</code>, <code>&quot;Micorrizico&quot;</code>, <code>&quot;Endofitico&quot;</code>, <code>&quot;Entomogeno&quot;</code>. - <code>habitat</code>: para fungos, este campo registra o <strong>substrato/hospedeiro</strong> em que o fungo foi coletado, em vez de um hábito de crescimento vegetal, ex.: <code>&quot;Planta viva - raiz&quot;</code>, <code>&quot;Planta viva - folha&quot;</code>, <code>&quot;Planta viva - cortex do caule&quot;</code>, <code>&quot;Tronco em decomposicao&quot;</code>, <code>&quot;Folhedo&quot;</code>, <code>&quot;Solo&quot;</code>, <code>&quot;Esterco ou Fezes&quot;</code>, <code>&quot;Outro fungo&quot;</code>, <code>&quot;Animal morto&quot;</code>. Use este argumento para navegar a lista de espécies por tipo de hospedeiro/substrato (a FFB atualmente não publica um campo de táxon-hospedeiro nomeado separadamente). - <code>vegetationType</code>: tipo de vegetação onde o registro foi feito, ex.: <code>&quot;Floresta Ombrofila (= Floresta Pluvial)&quot;</code>, <code>&quot;Cerrado (lato sensu)&quot;</code>, <code>&quot;Manguezal&quot;</code>.</td>
+</tr>
+<tr class="even">
 <td>version</td>
-<td>Caractere. Versão do conjunto de dados da FFB a usar. Padrão <code>&quot;latest&quot;</code>. Passado para <code>flora_download</code> e <code>flora_parse</code>.</td>
-</tr>
-<tr class="even">
-<td>max_distance</td>
-<td>Numérico. Distância máxima de string para correspondência aproximada. Pode ser um número inteiro positivo (ex.: <code>2</code> permite até 2 edições) ou uma fração do comprimento do nome (ex.: <code>0.1</code> permite 1 edição a cada 10 caracteres). Padrão <code>0.2</code>.</td>
+<td>Caractere. Versão do conjunto de dados da FFB a usar. Padrão <code>&quot;latest&quot;</code>. Passado para <code>funga_download</code> e <code>funga_parse</code>.</td>
 </tr>
 <tr class="odd">
-<td>genus_fuzzy</td>
-<td>Lógico. Se <code>TRUE</code>, a correspondência aproximada também se aplica ao gênero (mais lento). Se <code>FALSE</code> (padrão), o gênero deve corresponder exatamente e apenas o epíteto é comparado de forma aproximada.</td>
+<td>rm_funga_database</td>
+<td>Lógico. Se <code>TRUE</code>, a pasta do banco de dados da FFB baixado (<code>&quot;funga_download&quot;</code>) é excluída após a busca ser concluída. Se <code>FALSE</code> (padrão), o banco de dados é mantido em disco e reutilizado em chamadas subsequentes, o que acelera significativamente consultas repetidas.</td>
 </tr>
 <tr class="even">
-<td>include_all</td>
-<td>Lógico. Se <code>TRUE</code> (padrão), nomes encontrados apenas em <code>splist2</code> são adicionados ao resultado com <code>NA</code> na coluna <code>Species.List.1</code>. Se <code>FALSE</code>, apenas nomes de <code>splist1</code> aparecem na saída.</td>
-</tr>
-<tr class="odd">
-<td>identify_dups</td>
-<td>Lógico. Se <code>TRUE</code> (padrão), uma coluna <code>Duplicated.Output.Position</code> é adicionada indicando a posição da linha da primeira outra ocorrência do mesmo <code>Accepted.taxon.Name</code>. Isso ocorre quando dois nomes de entrada são sinônimos do mesmo táxon aceito. <code>NA</code> é retornado quando não há duplicata.</td>
-</tr>
-<tr class="even">
-<td>show_correct</td>
-<td>Lógico. Se <code>TRUE</code>, uma coluna <code>Correct</code> é adicionada indicando se a entrada foi correspondida exatamente (<code>TRUE</code>) ou de forma aproximada (<code>FALSE</code>) nos resultados de <code>flora_search</code> para <code>splist1</code>. Padrão <code>TRUE</code>.</td>
-</tr>
-<tr class="odd">
-<td>progress_bar</td>
-<td>Lógico. Se <code>TRUE</code>, uma barra de progresso é exibida durante as buscas de nomes. Padrão <code>TRUE</code>.</td>
-</tr>
-<tr class="even">
-<td>rm_flora_database</td>
-<td>Lógico. Se <code>TRUE</code>, a pasta do banco de dados da FFB baixado (<code>&quot;flora_download&quot;</code>) é excluída após a busca ser concluída. Se <code>FALSE</code> (padrão), o banco de dados é mantido em disco. Manter o banco de dados é <strong>recomendado</strong> porque buscas subsequentes reutilizarão o download existente, verificando se a versão armazenada corresponde à versão solicitada. Se a versão armazenada estiver desatualizada ou for diferente da versão solicitada, a função baixa automaticamente a versão correta. Esse comportamento de cache acelera significativamente buscas repetidas.</td>
-</tr>
-<tr class="odd">
 <td>verbose</td>
-<td>Lógico. Se <code>TRUE</code> (padrão), imprime mensagens informativas de progresso durante a análise e o download. Se <code>FALSE</code>, executa silenciosamente.</td>
+<td>Lógico. Se <code>TRUE</code> (padrão), imprime mensagens informativas de progresso durante o download e a análise. Se <code>FALSE</code>, executa silenciosamente.</td>
+</tr>
+<tr class="odd">
+<td>save</td>
+<td>Lógico. Se <code>TRUE</code>, os registros filtrados são salvos em disco como um arquivo CSV. O padrão é <code>FALSE</code>.</td>
+</tr>
+<tr class="even">
+<td>dir</td>
+<td>Caractere. Diretório onde o arquivo CSV será salvo quando <code>save = TRUE</code>. O padrão é <code>&quot;funga_records&quot;</code>.</td>
+</tr>
+<tr class="odd">
+<td>filename</td>
+<td>Caractere. Nome do arquivo CSV (sem extensão) a salvar quando <code>save = TRUE</code>. O padrão é <code>&quot;funga_records_search&quot;</code>.</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="valor" class="level3">
 <h3 class="anchored" data-anchor-id="valor">Valor</h3>
-<p>Um data frame com uma linha por nome de entrada (de <code>splist1</code> primeiro, depois quaisquer nomes não correspondidos de <code>splist2</code> quando <code>include_all = TRUE</code>) e as seguintes colunas:</p>
-<ul>
-<li><code>Species.List.1</code>: Nomes de <code>splist1</code> (<code>NA</code> para linhas que vêm apenas de <code>splist2</code>).</li>
-<li><code>Species.List.2</code>: O nome correspondente de <code>splist2</code>, ou <code>NA</code> se nenhuma correspondência foi encontrada.</li>
-<li><code>FFB.taxon.ID</code>: ID do táxon no banco de dados da FFB.</li>
-<li><code>Input.Genus</code>: Gênero extraído do nome de entrada.</li>
-<li><code>Input.Epithet</code>: Epíteto específico extraído do nome de entrada.</li>
-<li><code>taxonRank</code>: Nível taxonômico (ex.: <code>&quot;ESPECIE&quot;</code>, <code>&quot;VARIEDADE&quot;</code>).</li>
-<li><code>Input.InfraspecificEpithet</code>: Epíteto infraespecífico, se presente.</li>
-<li><code>scientificNameAuthorship</code>: Citação de autor do táxon correspondido.</li>
-<li><code>taxonomicStatus</code>: Status taxonômico da FFB: <code>&quot;NOME_ACEITO&quot;</code> (aceito), <code>&quot;SINONIMO&quot;</code> (sinônimo), ou <code>&quot;NOME_DUVIDOSO&quot;</code>.</li>
-<li><code>Accepted.taxon.ID</code>: ID do nome aceito.</li>
-<li><code>Accepted.taxon.Name</code>: Nome do táxon aceito resolvido a partir do banco de dados da FFB.</li>
-<li><code>family</code>: Família da planta.</li>
-<li><code>order</code>: Ordem da planta (quando disponível nos dados da FFB).</li>
-<li><code>Correct</code>: (Apenas quando <code>show_correct = TRUE</code>) Lógico indicando uma correspondência exata (<code>TRUE</code>) vs. uma correspondência aproximada (<code>FALSE</code>) para <code>splist1</code>.</li>
-<li><code>Match.Position.2to1</code>: Índice da linha do nome correspondente em <code>splist2</code>.</li>
-<li><code>Duplicated.Output.Position</code>: (Apenas quando <code>identify_dups = TRUE</code>) Índice da linha da primeira outra ocorrência do mesmo <code>Accepted.taxon.Name</code>, ou <code>NA</code> se único.</li>
-</ul>
+<p>Um <code>data.frame</code> de registros de táxons da FFB correspondentes aos filtros solicitados, com uma linha por táxon, acrescido das informações de distribuição e perfil de espécie correspondentes para esse táxon: <code>state</code>, <code>phytogeographicDomain</code>, <code>endemism</code>, <code>lifeForm</code>, <code>habitat</code>, e <code>vegetationType</code>. Como um mesmo táxon pode ter vários registros de distribuição/perfil de espécie (ex.: ocorrendo em múltiplos estados, ou registrado em múltiplos substratos), cada uma dessas colunas concatena todos os valores distintos para esse táxon com <code>&quot; | &quot;</code> em vez de multiplicar linhas. Se <code>save = TRUE</code>, o resultado também é gravado em <code>&lt;dir&gt;/&lt;filename&gt;.csv</code>.</p>
 </section>
 <section id="exemplos" class="level3">
 <h3 class="anchored" data-anchor-id="exemplos">Exemplos</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Duas listas que podem se sobrepor ou conter sinônimos dos mesmos nomes aceitos</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>splist1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Mimosa sensitiva&quot;</span>, <span class="st">&quot;Swartzia simplex&quot;</span>, <span class="st">&quot;Inga edulis&quot;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>splist2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Swartzia simplex var. grandiflora&quot;</span>, <span class="st">&quot;Inga edulis&quot;</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;Mimosa pyrenea&quot;</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparar incluindo todos os nomes de ambas as listas (baixa + analisa automaticamente)</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">flora_match</span>(splist1, splist2, <span class="at">include_all =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparar incluindo apenas nomes de splist1</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>result2 <span class="ot">&lt;-</span> <span class="fu">flora_match</span>(splist1, splist2, <span class="at">include_all =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Reordenar splist2 para alinhar com splist1</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>splist2[result2<span class="sc">$</span>Match.Position<span class="fl">.2</span>to1]</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Usar uma versão específica da FFB armazenada em uma pasta personalizada</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_match</span>(splist1, splist2, <span class="at">version =</span> <span class="st">&quot;393.418&quot;</span>)</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Forçar um novo download removendo o banco de dados em cache após a comparação</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_match</span>(splist1, splist2, <span class="at">rm_flora_database =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Todas as espécies aceitas de Hymenochaetaceae (baixa + analisa automaticamente, armazena em cache)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>hymeno <span class="ot">&lt;-</span> <span class="fu">funga_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Hymenochaetaceae&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Espécies aceitas endêmicas da Bahia</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>bahia_endemics <span class="ot">&lt;-</span> <span class="fu">funga_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                                <span class="at">endemism =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Fungos liquenizados registrados na Caatinga</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>caatinga_lichens <span class="ot">&lt;-</span> <span class="fu">funga_records</span>(<span class="at">phytogeographicDomain =</span> <span class="st">&quot;Caatinga&quot;</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">lifeForm =</span> <span class="st">&quot;Liquenizado&quot;</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Fungos registrados crescendo em raízes de plantas vivas (habitat = substrato/hospedeiro)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>root_associates <span class="ot">&lt;-</span> <span class="fu">funga_records</span>(<span class="at">habitat =</span> <span class="st">&quot;Planta viva - raiz&quot;</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Usar uma versão específica da FFB armazenada em uma pasta personalizada, e salvar o resultado</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">version =</span> <span class="st">&quot;393.418&quot;</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>             <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">dir =</span> <span class="st">&quot;funga_records&quot;</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>             <span class="at">filename =</span> <span class="st">&quot;trichoderma_records&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 <!-- -->
@@ -5145,104 +5143,99 @@ height: 400px;
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &#39;flora_match&#39;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> &#39;Comparar duas listas de nomes de plantas usando o banco de dados da Flora e Funga do Brasil&#39;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &#39;funga_records&#39;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> &#39;Recuperar registros de táxons da base de dados da Flora e Funga do Brasil&#39;</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> true</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="an">toc-depth:</span><span class="co"> 3</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>floraR<span class="sc">::</span><span class="fu">flora_match</span>()</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descrição</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Compara e alinha duas listas de nomes de plantas com base na sua resolução</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>taxonômica no banco de dados da Flora e Funga do Brasil (FFB). Ambas as</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>listas são buscadas independentemente com <span class="in">`flora_search`</span>, e nomes que</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>resolvem para o mesmo táxon aceito são considerados uma correspondência.</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>A função retorna um data frame combinado que alinha os nomes das duas listas.</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="fu">### Detalhes</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>fungaR<span class="sc">::</span><span class="fu">funga_records</span>()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descrição</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>Recupera e filtra registros de táxons fúngicos da base de dados taxonômica</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>da <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>analisada localmente, hospedada pelo <span class="co">[</span><span class="ot">Jardim Botânico do Rio de Janeiro</span><span class="co">](https://www.gov.br/jbrj/pt-br)</span>.</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>Diferente de <span class="in">`funga_search`</span>, que resolve uma lista de nomes de espécies</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>que você já possui em relação à base de dados da FFB, <span class="in">`funga_records()`</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>navega e filtra a própria lista de espécies da FFB por critérios</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>taxonômicos, geográficos, e de atributos; nenhuma lista de nomes de entrada</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>é necessária.</span>
 <span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>Cada lista é buscada independentemente via <span class="in">`flora_search`</span>. Os IDs de</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>táxon aceito (<span class="in">`Accepted.taxon.ID`</span>) são então usados para determinar quais</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>nomes em <span class="in">`splist2`</span> correspondem a nomes em <span class="in">`splist1`</span>. Dois nomes</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>correspondem quando resolvem para o mesmo táxon aceito — independentemente</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>de um ou ambos serem sinônimos.</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>O data frame resultante é ordenado por <span class="in">`splist1`</span>. Quando</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="in">`include_all = TRUE`</span>, nomes presentes apenas em <span class="in">`splist2`</span> são adicionados</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>ao final com <span class="in">`NA`</span> na coluna <span class="in">`Species.List.1`</span>.</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="fu">### Detalhes</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>A função baixa (se necessário) e analisa o conjunto de dados da FFB</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>exatamente como <span class="in">`funga_search`</span>, e então aplica os filtros solicitados:</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`taxon`</span> é comparado com as colunas <span class="in">`family`</span>, <span class="in">`genus`</span>, e <span class="in">`taxonName`</span> da tabela de táxons da FFB (nomes de família terminados em <span class="in">`&quot;aceae&quot;`</span>, nomes de gênero de uma palavra, e nomes de espécie de múltiplas palavras são detectados automaticamente).</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`taxonRank`</span> e <span class="in">`taxonomicStatus`</span> são comparados diretamente com a tabela de táxons.</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`state`</span>, <span class="in">`phytogeographicDomain`</span>, e <span class="in">`endemism`</span> são comparados com a tabela de distribuição da FFB (<span class="in">`distribution.txt`</span>).</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`lifeForm`</span>, <span class="in">`habitat`</span>, e <span class="in">`vegetationType`</span> são comparados com a tabela de perfil de espécie da FFB (<span class="in">`speciesprofile.txt`</span>).</span>
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>A coluna <span class="in">`Match.Position.2to1`</span> fornece o índice da linha do nome</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>correspondente em <span class="in">`splist2`</span>; use-a para reordenar <span class="in">`splist2`</span> de modo a</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>alinhá-la com <span class="in">`splist1`</span>: <span class="in">`splist2[result$Match.Position.2to1]`</span>.</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>Todos os filtros são combinados com um E lógico. O resultado sempre tem</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>uma linha por táxon correspondente (filtros geográficos/de atributos</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>restringem *quais* táxons são retornados, não multiplicam linhas).</span>
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="fu">### Argumentos</span></span>
 <span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Descrição <span class="pp">|</span></span>
 <span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> splist1 <span class="pp">|</span> Um vetor de caracteres com nomes de plantas — a lista de referência. Cada elemento deve incluir pelo menos um gênero e um epíteto específico, e opcionalmente nível infraespecífico, epíteto infraespecífico e nome de autor. Apenas caracteres válidos são permitidos (veja <span class="in">`base::validEnc`</span>). <span class="pp">|</span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> splist2 <span class="pp">|</span> Um vetor de caracteres com nomes de plantas — a lista a ser comparada com <span class="in">`splist1`</span>. Mesmos requisitos de formato de <span class="in">`splist1`</span>. <span class="pp">|</span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> version <span class="pp">|</span> Caractere. Versão do conjunto de dados da FFB a usar. Padrão <span class="in">`&quot;latest&quot;`</span>. Passado para <span class="in">`flora_download`</span> e <span class="in">`flora_parse`</span>. <span class="pp">|</span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> max_distance <span class="pp">|</span> Numérico. Distância máxima de string para correspondência aproximada. Pode ser um número inteiro positivo (ex.: <span class="in">`2`</span> permite até 2 edições) ou uma fração do comprimento do nome (ex.: <span class="in">`0.1`</span> permite 1 edição a cada 10 caracteres). Padrão <span class="in">`0.2`</span>. <span class="pp">|</span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> genus_fuzzy <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span>, a correspondência aproximada também se aplica ao gênero (mais lento). Se <span class="in">`FALSE`</span> (padrão), o gênero deve corresponder exatamente e apenas o epíteto é comparado de forma aproximada. <span class="pp">|</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> include_all <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), nomes encontrados apenas em <span class="in">`splist2`</span> são adicionados ao resultado com <span class="in">`NA`</span> na coluna <span class="in">`Species.List.1`</span>. Se <span class="in">`FALSE`</span>, apenas nomes de <span class="in">`splist1`</span> aparecem na saída. <span class="pp">|</span></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> identify_dups <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), uma coluna <span class="in">`Duplicated.Output.Position`</span> é adicionada indicando a posição da linha da primeira outra ocorrência do mesmo <span class="in">`Accepted.taxon.Name`</span>. Isso ocorre quando dois nomes de entrada são sinônimos do mesmo táxon aceito. <span class="in">`NA`</span> é retornado quando não há duplicata. <span class="pp">|</span></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> show_correct <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span>, uma coluna <span class="in">`Correct`</span> é adicionada indicando se a entrada foi correspondida exatamente (<span class="in">`TRUE`</span>) ou de forma aproximada (<span class="in">`FALSE`</span>) nos resultados de <span class="in">`flora_search`</span> para <span class="in">`splist1`</span>. Padrão <span class="in">`TRUE`</span>. <span class="pp">|</span></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> progress_bar <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span>, uma barra de progresso é exibida durante as buscas de nomes. Padrão <span class="in">`TRUE`</span>. <span class="pp">|</span></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> rm_flora_database <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span>, a pasta do banco de dados da FFB baixado (<span class="in">`&quot;flora_download&quot;`</span>) é excluída após a busca ser concluída. Se <span class="in">`FALSE`</span> (padrão), o banco de dados é mantido em disco. Manter o banco de dados é **recomendado** porque buscas subsequentes reutilizarão o download existente, verificando se a versão armazenada corresponde à versão solicitada. Se a versão armazenada estiver desatualizada ou for diferente da versão solicitada, a função baixa automaticamente a versão correta. Esse comportamento de cache acelera significativamente buscas repetidas. <span class="pp">|</span></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), imprime mensagens informativas de progresso durante a análise e o download. Se <span class="in">`FALSE`</span>, executa silenciosamente. <span class="pp">|</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valor</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxon <span class="pp">|</span> Vetor de caracteres. Um ou mais nomes de família, gênero, ou espécie para filtrar (ex.: <span class="in">`c(&quot;Hymenochaetaceae&quot;, &quot;Trichoderma&quot;, &quot;Xylaria hypoxylon&quot;)`</span>). <span class="in">`NULL`</span> (padrão) não filtra por táxon. <span class="pp">|</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxonRank <span class="pp">|</span> Vetor de caracteres. Nível(is) taxonômico(s) a manter (ex.: <span class="in">`&quot;ESPECIE&quot;`</span>, <span class="in">`&quot;VARIEDADE&quot;`</span>, <span class="in">`&quot;SUBESPECIE&quot;`</span>, <span class="in">`&quot;FORMA&quot;`</span>, <span class="in">`&quot;GENERO&quot;`</span>, <span class="in">`&quot;ORDEM&quot;`</span>, <span class="in">`&quot;DIVISAO&quot;`</span> - fungos são classificados na FFB por Divisão/filo em vez de Classe). <span class="in">`NULL`</span> (padrão) mantém todos os níveis. <span class="pp">|</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxonomicStatus <span class="pp">|</span> Vetor de caracteres. Status taxonômico na FFB a manter: <span class="in">`&quot;NOME_ACEITO&quot;`</span> (aceito), <span class="in">`&quot;SINONIMO&quot;`</span> (sinônimo), ou <span class="in">`&quot;NOME_DUVIDOSO&quot;`</span> (duvidoso). <span class="in">`NULL`</span> (padrão) mantém todos os status. <span class="pp">|</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> state <span class="pp">|</span> Vetor de caracteres. Estado(s) brasileiro(s) - nome completo ou sigla, insensível a acentuação (ex.: <span class="in">`&quot;Bahia&quot;`</span> ou <span class="in">`&quot;BA&quot;`</span>) - para filtrar por ocorrência, baseado na tabela de distribuição da FFB. <span class="in">`NULL`</span> (padrão) não filtra por estado. <span class="pp">|</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> phytogeographicDomain <span class="pp">|</span> Vetor de caracteres. Domínio(s) fitogeográfico(s) para filtrar (ex.: <span class="in">`&quot;Caatinga&quot;`</span>, <span class="in">`&quot;Mata Atlantica&quot;`</span>). <span class="in">`NULL`</span> (padrão) não filtra por domínio. <span class="pp">|</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> endemism <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span>, mantém apenas táxons sinalizados como endêmicos do Brasil; se <span class="in">`FALSE`</span>, mantém apenas não endêmicos. <span class="in">`NULL`</span> (padrão) não filtra por endemismo. <span class="pp">|</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> lifeForm, habitat, vegetationType <span class="pp">|</span> Vetores de caracteres, baseados na tabela de perfil de espécie da FFB. <span class="in">`NULL`</span> (padrão) não filtra. - <span class="in">`lifeForm`</span>: modo nutricional/ecológico, ex.: <span class="in">`&quot;Saprobio&quot;`</span>, <span class="in">`&quot;Parasita&quot;`</span>, <span class="in">`&quot;Liquenizado&quot;`</span>, <span class="in">`&quot;Micorrizico&quot;`</span>, <span class="in">`&quot;Endofitico&quot;`</span>, <span class="in">`&quot;Entomogeno&quot;`</span>. - <span class="in">`habitat`</span>: para fungos, este campo registra o **substrato/hospedeiro** em que o fungo foi coletado, em vez de um hábito de crescimento vegetal, ex.: <span class="in">`&quot;Planta viva - raiz&quot;`</span>, <span class="in">`&quot;Planta viva - folha&quot;`</span>, <span class="in">`&quot;Planta viva - cortex do caule&quot;`</span>, <span class="in">`&quot;Tronco em decomposicao&quot;`</span>, <span class="in">`&quot;Folhedo&quot;`</span>, <span class="in">`&quot;Solo&quot;`</span>, <span class="in">`&quot;Esterco ou Fezes&quot;`</span>, <span class="in">`&quot;Outro fungo&quot;`</span>, <span class="in">`&quot;Animal morto&quot;`</span>. Use este argumento para navegar a lista de espécies por tipo de hospedeiro/substrato (a FFB atualmente não publica um campo de táxon-hospedeiro nomeado separadamente). - <span class="in">`vegetationType`</span>: tipo de vegetação onde o registro foi feito, ex.: <span class="in">`&quot;Floresta Ombrofila (= Floresta Pluvial)&quot;`</span>, <span class="in">`&quot;Cerrado (lato sensu)&quot;`</span>, <span class="in">`&quot;Manguezal&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> version <span class="pp">|</span> Caractere. Versão do conjunto de dados da FFB a usar. Padrão <span class="in">`&quot;latest&quot;`</span>. Passado para <span class="in">`funga_download`</span> e <span class="in">`funga_parse`</span>. <span class="pp">|</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> rm_funga_database <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span>, a pasta do banco de dados da FFB baixado (<span class="in">`&quot;funga_download&quot;`</span>) é excluída após a busca ser concluída. Se <span class="in">`FALSE`</span> (padrão), o banco de dados é mantido em disco e reutilizado em chamadas subsequentes, o que acelera significativamente consultas repetidas. <span class="pp">|</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), imprime mensagens informativas de progresso durante o download e a análise. Se <span class="in">`FALSE`</span>, executa silenciosamente. <span class="pp">|</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span>, os registros filtrados são salvos em disco como um arquivo CSV. O padrão é <span class="in">`FALSE`</span>. <span class="pp">|</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Caractere. Diretório onde o arquivo CSV será salvo quando <span class="in">`save = TRUE`</span>. O padrão é <span class="in">`&quot;funga_records&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Caractere. Nome do arquivo CSV (sem extensão) a salvar quando <span class="in">`save = TRUE`</span>. O padrão é <span class="in">`&quot;funga_records_search&quot;`</span>. <span class="pp">|</span></span>
 <span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>Um data frame com uma linha por nome de entrada (de <span class="in">`splist1`</span> primeiro,</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>depois quaisquer nomes não correspondidos de <span class="in">`splist2`</span> quando</span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="in">`include_all = TRUE`</span>) e as seguintes colunas:</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Species.List.1`</span>: Nomes de <span class="in">`splist1`</span> (<span class="in">`NA`</span> para linhas que vêm apenas de <span class="in">`splist2`</span>).</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Species.List.2`</span>: O nome correspondente de <span class="in">`splist2`</span>, ou <span class="in">`NA`</span> se nenhuma correspondência foi encontrada.</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`FFB.taxon.ID`</span>: ID do táxon no banco de dados da FFB.</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Input.Genus`</span>: Gênero extraído do nome de entrada.</span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Input.Epithet`</span>: Epíteto específico extraído do nome de entrada.</span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`taxonRank`</span>: Nível taxonômico (ex.: <span class="in">`&quot;ESPECIE&quot;`</span>, <span class="in">`&quot;VARIEDADE&quot;`</span>).</span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Input.InfraspecificEpithet`</span>: Epíteto infraespecífico, se presente.</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`scientificNameAuthorship`</span>: Citação de autor do táxon correspondido.</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`taxonomicStatus`</span>: Status taxonômico da FFB: <span class="in">`&quot;NOME_ACEITO&quot;`</span> (aceito), <span class="in">`&quot;SINONIMO&quot;`</span> (sinônimo), ou <span class="in">`&quot;NOME_DUVIDOSO&quot;`</span>.</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Accepted.taxon.ID`</span>: ID do nome aceito.</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Accepted.taxon.Name`</span>: Nome do táxon aceito resolvido a partir do banco de dados da FFB.</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`family`</span>: Família da planta.</span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`order`</span>: Ordem da planta (quando disponível nos dados da FFB).</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Correct`</span>: (Apenas quando <span class="in">`show_correct = TRUE`</span>) Lógico indicando uma correspondência exata (<span class="in">`TRUE`</span>) vs. uma correspondência aproximada (<span class="in">`FALSE`</span>) para <span class="in">`splist1`</span>.</span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Match.Position.2to1`</span>: Índice da linha do nome correspondente em <span class="in">`splist2`</span>.</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Duplicated.Output.Position`</span>: (Apenas quando <span class="in">`identify_dups = TRUE`</span>) Índice da linha da primeira outra ocorrência do mesmo <span class="in">`Accepted.taxon.Name`</span>, ou <span class="in">`NA`</span> se único.</span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exemplos</span></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="co"># Duas listas que podem se sobrepor ou conter sinônimos dos mesmos nomes aceitos</span></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>splist1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Mimosa sensitiva&quot;</span>, <span class="st">&quot;Swartzia simplex&quot;</span>, <span class="st">&quot;Inga edulis&quot;</span>)</span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>splist2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Swartzia simplex var. grandiflora&quot;</span>, <span class="st">&quot;Inga edulis&quot;</span>,</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;Mimosa pyrenea&quot;</span>)</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valor</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>Um <span class="in">`data.frame`</span> de registros de táxons da FFB correspondentes aos filtros</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>solicitados, com uma linha por táxon, acrescido das informações de</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>distribuição e perfil de espécie correspondentes para esse táxon:</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="in">`state`</span>, <span class="in">`phytogeographicDomain`</span>, <span class="in">`endemism`</span>, <span class="in">`lifeForm`</span>,</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="in">`habitat`</span>, e <span class="in">`vegetationType`</span>. Como um mesmo táxon pode ter</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>vários registros de distribuição/perfil de espécie (ex.: ocorrendo em</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>múltiplos estados, ou registrado em múltiplos substratos), cada uma dessas</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>colunas concatena todos os valores distintos para esse táxon com <span class="in">`&quot; | &quot;`</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>em vez de multiplicar linhas. Se <span class="in">`save = TRUE`</span>, o resultado também é</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>gravado em <span class="in">`&lt;dir&gt;/&lt;filename&gt;.csv`</span>.</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exemplos</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="co"># Todas as espécies aceitas de Hymenochaetaceae (baixa + analisa automaticamente, armazena em cache)</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>hymeno <span class="ot">&lt;-</span> <span class="fu">funga_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Hymenochaetaceae&quot;</span>,</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>                        <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="co"># Espécies aceitas endêmicas da Bahia</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>bahia_endemics <span class="ot">&lt;-</span> <span class="fu">funga_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>                                <span class="at">endemism =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>                                <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="co"># Fungos liquenizados registrados na Caatinga</span></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>caatinga_lichens <span class="ot">&lt;-</span> <span class="fu">funga_records</span>(<span class="at">phytogeographicDomain =</span> <span class="st">&quot;Caatinga&quot;</span>,</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">lifeForm =</span> <span class="st">&quot;Liquenizado&quot;</span>)</span>
 <span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparar incluindo todos os nomes de ambas as listas (baixa + analisa automaticamente)</span></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">flora_match</span>(splist1, splist2, <span class="at">include_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="co"># Fungos registrados crescendo em raízes de plantas vivas (habitat = substrato/hospedeiro)</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>root_associates <span class="ot">&lt;-</span> <span class="fu">funga_records</span>(<span class="at">habitat =</span> <span class="st">&quot;Planta viva - raiz&quot;</span>)</span>
 <span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparar incluindo apenas nomes de splist1</span></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>result2 <span class="ot">&lt;-</span> <span class="fu">flora_match</span>(splist1, splist2, <span class="at">include_all =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="co"># Reordenar splist2 para alinhar com splist1</span></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>splist2[result2<span class="sc">$</span>Match.Position<span class="fl">.2</span>to1]</span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="co"># Usar uma versão específica da FFB armazenada em uma pasta personalizada</span></span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_match</span>(splist1, splist2, <span class="at">version =</span> <span class="st">&quot;393.418&quot;</span>)</span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="co"># Forçar um novo download removendo o banco de dados em cache após a comparação</span></span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_match</span>(splist1, splist2, <span class="at">rm_flora_database =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="co"># Usar uma versão específica da FFB armazenada em uma pasta personalizada, e salvar o resultado</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>,</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>             <span class="at">version =</span> <span class="st">&quot;393.418&quot;</span>,</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>             <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>             <span class="at">dir =</span> <span class="st">&quot;funga_records&quot;</span>,</span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>             <span class="at">filename =</span> <span class="st">&quot;trichoderma_records&quot;</span>)</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

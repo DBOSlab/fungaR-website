@@ -1,0 +1,93 @@
+---
+title: 'funga_get_children_taxa'
+description: 'Obter táxons filhos da Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+```{r}
+#| eval: false
+fungaR::funga_get_children_taxa()
+```
+
+### Descrição
+
+Retorna todos os táxons filhos (espécies, subespécies, variedades, etc.)
+para um nome taxonômico especificado em um nível determinado. Útil para
+obter todas as espécies de um gênero, todos os gêneros de uma ordem, todas
+as espécies de uma família, etc.
+
+### Detalhes
+
+Para `rank %in% c("division", "order", "genus", "species")`, a função
+primeiro encontra a linha do táxon pai, e então retorna todos os filhos que
+têm o `taxonID` do pai em sua linhagem (`parentNameUsageID`),
+percorrendo a hierarquia real da FFB para fungos: Divisão -> Ordem -> Gênero
+-> Espécie -> Subespécie/Variedade/Forma.
+
+Para `rank = "family"`, não existe tal linha para percorrer (a FFB não
+fornece registros de táxon em nível de família para Fungi), então os
+registros de gênero/espécie/infraespecíficos são comparados diretamente
+com sua coluna de classificação `family`. Da mesma forma, solicitar
+`child_rank = "family"` a partir de uma divisão ou ordem retorna um
+pequeno data frame de resumo *derivado* (uma linha por família única
+encontrada entre os descendentes de nível gênero, com a contagem de
+gêneros em cada uma), em vez de linhas reais de táxons da FFB, já que
+tais linhas não existem.
+
+**Comportamento do nível filho:**
+
+- Se `child_rank = NULL`: Retorna TODOS os níveis descendentes
+- Se `child_rank = "species"`: Retorna apenas espécies (filhos diretos)
+- Se `child_rank = "subspecies"`: Retorna apenas subespécies
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| taxon_name | Caractere. Nome científico a buscar (ex., "Trichoderma", "Xylariaceae", "Agaricales"). |
+| rank | Caractere. O nível taxonômico do nome de entrada. Opções: `"division"`, `"order"`, `"family"`, `"genus"`, `"species"`. O padrão é `"genus"`. Os fungos são classificados na FFB por Divisão (equivalente a filo, ex. Ascomycota, Basidiomycota) em vez de Classe, e a FFB não registra um táxon autônomo para família (ou classe) no reino Fungi - `family` é armazenado apenas como uma coluna de classificação nos registros de gênero/espécie. `rank = "family"` continua sendo suportado aqui, mas internamente compara diretamente com essa coluna em vez de percorrer a hierarquia pai-filho (veja Detalhes). |
+| child_rank | Caractere ou NULL. O(s) nível(is) taxonômico(s) a retornar como filhos. Se um único nível for fornecido (ex., `"species"`), retorna apenas esse nível. Se `NULL` (padrão), retorna TODOS os níveis descendentes (ex., para um gênero: espécie, subespécie, variedades, etc.). Opções: `"division"`, `"order"`, `"family"`, `"genus"`, `"species"`, `"subspecies"`, `"variety"`, `"form"`. |
+| include_synonyms | Lógico. Se `TRUE`, inclui nomes sinônimos (`taxonomicStatus == "SINONIMO"`) além dos aceitos. O padrão é `FALSE`. |
+| version | Caractere. Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. Passado para `funga_download` e `funga_parse`. |
+| rm_funga_database | Lógico. Se `TRUE`, a pasta do banco de dados da FFB baixado (`"funga_download"`) é excluída após a busca ser concluída. Se `FALSE` (padrão), o banco de dados é mantido em disco. Manter o banco de dados é **recomendado** porque buscas subsequentes reutilizarão o download existente, verificando se a versão armazenada corresponde à versão solicitada. Se a versão armazenada estiver desatualizada ou for diferente da versão solicitada, a função baixa automaticamente a versão correta. Esse comportamento de cache acelera significativamente buscas repetidas. |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens informativas de progresso durante a análise. Se `FALSE`, executa silenciosamente. |
+
+### Valor
+
+Um data frame contendo os táxons filhos que correspondem ao táxon pai
+solicitado após os filtros aplicados.
+
+### Exemplos
+
+```r
+# Obter todas as espécies de um gênero (filhos diretos)
+species <- funga_get_children_taxa(
+  taxon_name = "Trichoderma",
+  rank = "genus",
+  child_rank = "species"
+)
+
+# Obter TODOS os descendentes (espécies, subespécies, variedades)
+all_descendants <- funga_get_children_taxa(
+  taxon_name = "Trichoderma",
+  rank = "genus",
+  child_rank = NULL
+)
+
+# Obter todos os gêneros de uma família (incluindo sinônimos) -- comparados via
+# a coluna de classificação 'family', já que a FFB não tem linha de nível família para Fungi
+genera <- funga_get_children_taxa(
+  taxon_name = "Xylariaceae",
+  rank = "family",
+  child_rank = "genus",
+  include_synonyms = TRUE
+)
+
+# Obter todos os gêneros de uma ordem
+genera_in_order <- funga_get_children_taxa(
+  taxon_name = "Agaricales",
+  rank = "order",
+  child_rank = "genus"
+)
+```

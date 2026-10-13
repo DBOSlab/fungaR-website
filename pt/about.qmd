@@ -1,6 +1,6 @@
 ---
-title: "Sobre o floraR"
-subtitle: "Ferramentas de código aberto para acessar, analisar e curar dados da plataforma Flora e Funga do Brasil"
+title: "Sobre o fungaR"
+subtitle: "Ferramentas de código aberto para acessar, analisar e curar dados fúngicos da plataforma Flora e Funga do Brasil"
 format:
   html:
     toc: true
@@ -29,9 +29,9 @@ format:
 
 ## Visão Geral
 
-`floraR` é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), mantida pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br). Ele oferece uma interface completa para o [portal de dados IPT da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil): baixando, analisando, filtrando e explorando dados versionados de Arquivo Darwin Core (DwC-A) — desde a navegação por critérios taxonômicos, geográficos ou de atributos até a resolução da sua própria lista de nomes de espécies em relação a ela.
+`fungaR` é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição fúngica da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), mantida pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br). Ele oferece uma interface completa para o [portal de dados IPT da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil): baixando, analisando, filtrando e explorando dados versionados de Arquivo Darwin Core (DwC-A) — desde a navegação por critérios taxonômicos, geográficos ou de atributos (incluindo atributos específicos de fungos, como modo nutricional e substrato/hospedeiro) até a resolução da sua própria lista de nomes de espécies em relação a ela.
 
-Além da recuperação de dados, o `floraR` também auxilia especialistas taxonômicos que contribuem para a FFB, simplificando a integração de novos nomes de espécies e registros de repositórios globais de biodiversidade, como IPNI, REFLORA e GBIF.
+Além da recuperação de dados, o `fungaR` também auxilia especialistas taxonomistas que contribuem para a FFB, cruzando dados com o [MycoBank](https://www.mycobank.org), o [Species Fungorum](https://www.speciesfungorum.org) (Index Fungorum), e repositórios de ocorrência brasileiros — [GBIF](https://www.gbif.org), [speciesLink](https://specieslink.net), e o [Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora/) — para sinalizar espécies e registros estaduais fúngicos que são plausivelmente brasileiros mas ainda estão ausentes da plataforma.
 
 ## Flora e Funga do Brasil
 
@@ -45,7 +45,7 @@ A [Rede de Taxonomistas da Funga do Brasil (RTFB)](https://redefunga.com.br/site
 
 ## Descrição do Pacote
 
-Pacote: `floraR`
+Pacote: `fungaR`
 Tipo: Pacote R
 Versão: 1.0.0
 
@@ -57,15 +57,15 @@ Mantenedor: Domingos Cardoso (<domingoscardoso@jbrj.gov.br>)
 
 - Interface completa para o portal de dados IPT da Flora e Funga do Brasil
 - Controle de versões e análise de conjuntos de dados DwC-A baixados, com suporte a uso offline
-- Filtragem da lista de espécies por critérios taxonômicos, geográficos e de atributos
+- Filtragem da lista de espécies por critérios taxonômicos, geográficos e de atributos (incluindo substrato/hospedeiro)
 - Resolução de nomes exata e aproximada (distância de Levenshtein) em relação à lista de espécies
-- Navegação pela hierarquia taxonômica em qualquer nível, da classe até a espécie
-- Ferramentas para curadoria de dados e integração com repositórios globais de biodiversidade
+- Navegação pela hierarquia taxonômica em qualquer nível, da divisão até a espécie, seguindo a hierarquia real de fungos da FFB
+- Cruzamento de dados com o MycoBank, o Index Fungorum, o GBIF, o speciesLink, e o REFLORA para sinalizar espécies e registros estaduais ausentes da FFB, ou recuperação direta de registros do MycoBank/Index Fungorum para um táxon brasileiro
 - Fluxos de trabalho integrados ao tidyverse
 
 ## Contribua
 
-Você pode contribuir com o `floraR`:
+Você pode contribuir com o `fungaR`:
 
 - Abrindo issues para feedback ou relatos de bugs
 - Enviando pull requests com correções ou melhorias
@@ -73,8 +73,8 @@ Você pode contribuir com o `floraR`:
 
 ## Licença
 
-`floraR` é um [software de código aberto](/LICENSE.md). Ferramentas abertas fortalecem a ciência por meio da reprodutibilidade, acessibilidade e compartilhamento equitativo do conhecimento.
+`fungaR` é um [software de código aberto](/LICENSE.md). Ferramentas abertas fortalecem a ciência por meio da reprodutibilidade, acessibilidade e compartilhamento equitativo do conhecimento.
 
 ## Agradecimentos
 
-O desenvolvimento do `floraR` é liderado pelo [Jardim Botânico do Rio de Janeiro (JBRJ)](https://www.gov.br/jbrj), em colaboração com as comunidades de biodiversidade e informática. Agradecemos também o apoio financeiro do [CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico](https://www.gov.br/cnpq/pt-br) e da [FINEP - Financiadora de Estudos e Projetos](https://www.gov.br/finep/pt-br).
+O desenvolvimento do `fungaR` é liderado pelo [Jardim Botânico do Rio de Janeiro (JBRJ)](https://www.gov.br/jbrj), em colaboração com as comunidades de micologia, biodiversidade e informática — incluindo a expertise taxonômica de colegas como Elisandro Ricardo Drechsler-Santos. Agradecemos também o apoio financeiro do [CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico](https://www.gov.br/cnpq/pt-br) e da [FINEP - Financiadora de Estudos e Projetos](https://www.gov.br/finep/pt-br).

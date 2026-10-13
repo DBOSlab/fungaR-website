@@ -1,0 +1,97 @@
+---
+title: 'gbif_gap'
+description: 'Encontrar espécies fúngicas com espécimes-tipo brasileiros no GBIF ausentes da FFB'
+toc: true
+toc-depth: 3
+---
+
+```{r}
+#| eval: false
+fungaR::gbif_gap()
+```
+
+### Descrição
+
+Dado um gênero fúngico, encontra os nomes em nível de espécie cujos
+espécimes-tipo - holótipos, isótipos, lectótipos, sintipos, parátipos, e
+assim por diante - foram coletados no Brasil de acordo com o
+[Global Biodiversity Information Facility](https://www.gbif.org) (GBIF), mas
+que não estão atualmente registrados na Flora e Funga do Brasil (FFB). Um
+espécime-tipo coletado no Brasil é evidência direta de que o táxon ocorre
+no país, então todo nome retornado é um candidato à inclusão na FFB.
+
+### Detalhes
+
+O GBIF agrega os espécimes-tipo digitalizados por herbários e fungários do
+mundo todo (ex.: RB, K, NY, URM). A busca ocorre em três etapas, cada uma
+cobrindo o gênero inteiro de uma vez em vez de uma requisição por espécie,
+de modo que até gêneros grandes retornam em segundos:
+
+1. uma única busca de ocorrência facetada lista todo nome no gênero com espécimes-tipo coletados no Brasil, e quantos;
+2. esses nomes são resolvidos contra o backbone taxonômico do GBIF, que também fornece a espécie aceita de cada nome;
+3. para os nomes ausentes da FFB apenas, os próprios espécimes-tipo são recuperados (muitos nomes por requisição) para resumir seu status de tipo, herbário/fungário, número de catálogo, e estado.
+
+Os espécimes-tipo são arquivados no GBIF sob sua identificação atual, que
+para um tipo geralmente é o próprio nome tipificado ou, quando esse nome
+agora é um sinônimo, seu nome aceito. Apenas nomes em nível de espécie são
+reportados.
+
+Um candidato conta como "já na FFB" se o seu nome no GBIF OU seu nome
+*aceito* no GBIF corresponder a qualquer nome da FFB (aceito ou sinônimo,
+em qualquer lugar da lista de espécies, já que o GBIF e a FFB podem
+discordar sobre a qual gênero uma espécie pertence). Os nomes são
+comparados ignorando maiúsculas/minúsculas, acentuação, hífens, e a
+terminação genitiva *-ii*/*-i*, de modo que variantes ortográficas não
+são reportadas como ausentes.
+
+Apenas Fungi são buscados: o gênero é procurado no reino Fungi do GBIF, de
+modo que um nome de gênero compartilhado com uma planta, alga, ou animal
+nunca resolve para o grupo errado.
+
+O lado da FFB da comparação usa o mesmo conjunto de dados da FFB em cache
+local que `funga_download` e `funga_parse` (na pasta
+`"funga_download"`), baixando-o apenas quando necessário.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| taxon | Caractere. Um único nome de gênero fúngico (ex.: `"Trichoderma"`, `"Phellinotus"`). |
+| type_status | Caractere ou `NULL`. Status de tipo do GBIF contados como evidência (vocabulário atual do GBIF, ex.: `"Holotype"`, `"Isotype"`). `NULL` (padrão) usa todas as categorias de tipo primárias e secundárias: Type, Holotype, Isotype, Lectotype, Isolectotype, Syntype, Isosyntype, Neotype, Isoneotype, Epitype, Isoepitype, Paratype, Isoparatype, Paralectotype, OriginalMaterial, e TypeSeries. Use, por exemplo, `c("Holotype", "Isotype")` para uma busca mais rigorosa. |
+| version | Caractere. Versão do conjunto de dados da FFB a comparar. Padrão `"latest"`. Passado para `funga_download`. |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens de progresso. |
+| save | Lógico. Se `TRUE` (padrão), o resultado é salvo em disco como uma planilha `.xlsx`. |
+| dir | Caractere. Diretório onde a planilha é salva quando `save = TRUE`. O padrão é `"gbif_gap"`. |
+| filename | Caractere. Nome do arquivo `.xlsx` (sem extensão) a salvar. O padrão é `"gbif_gap_<taxon>"`. |
+| html_report | Lógico. Se `TRUE` (padrão), também grava um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: contagens-chave (KPIs) e a tabela completa de candidatos como um widget DT ordenável e filtrável, com botões para copiar ou baixar em CSV/Excel. Requer os pacotes rmarkdown, DT, e htmltools; se algum estiver ausente, o relatório é ignorado com uma mensagem (a planilha `.xlsx` não é afetada). |
+| open_report | Lógico. Se `TRUE` (padrão em sessões interativas), abre o relatório HTML no navegador assim que renderizado. |
+
+### Valor
+
+Um `data.frame`, uma linha por nome do GBIF em nível de espécie no gênero
+solicitado que tem espécimes-tipo coletados no Brasil e está ausente da
+lista de espécies atual da FFB, com colunas:
+
+- **GBIF_Key** — A chave do nome no backbone do GBIF.
+- **Taxon_name** — O nome como registrado no GBIF.
+- **Authors** — Citação de autor.
+- **Taxonomic_status** — Status taxonômico no GBIF (ex.: `"ACCEPTED"`, `"SYNONYM"`, `"DOUBTFUL"`).
+- **Accepted_name, Accepted_full_name** — Espécie aceita pelo GBIF para este nome, sem e com autores (o próprio nome quando ele é aceito).
+- **N_type_specimens** — Número de espécimes-tipo coletados no Brasil no GBIF.
+- **Type_statuses** — Os status de tipo entre eles (ex.: `"Holotype; Isotype"`).
+- **Type_specimens** — Até dez espécimes como herbário/fungário e número de catálogo, com status de tipo (ex.: `"URM 80362 (Holotype)"`).
+- **Specimen_names** — Os nomes sob os quais os espécimes-tipo estão arquivados no GBIF - geralmente o nome tipificado, que para um sinônimo difere de `Taxon_name` (ex.: os tipos do basiônimo de uma espécie).
+- **Collectors, Years, States** — Coletores, anos de coleta, e estados brasileiros desses espécimes.
+- **GBIF_Published_in** — Citação do protólogo, quando o GBIF a possui.
+- **GBIF_URL** — Link para a página do nome no GBIF.
+- **In_FFB** — Sempre `FALSE` (mantido para clareza ao combinar com outras tabelas).
+
+### Exemplos
+
+```r
+# Espécies de Trichoderma com espécimes-tipo brasileiros que estão ausentes da FFB
+gap <- gbif_gap(taxon = "Trichoderma")
+
+# Evidência mais rigorosa: apenas holótipos e isótipos
+gap_strict <- gbif_gap(taxon = "Trichoderma", type_status = c("Holotype", "Isotype"))
+```

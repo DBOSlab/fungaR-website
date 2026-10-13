@@ -4568,14 +4568,14 @@ z-index: -1;
 </style>
 <section id="instalar-o-pacote" class="level2">
 <h2 class="anchored" data-anchor-id="instalar-o-pacote">Instalar o pacote</h2>
-<p>Você pode instalar a versão de desenvolvimento mais recente do pacote <code>floraR</code> a partir do <a href="https://github.com/DBOSlab/floraR">GitHub</a> da seguinte forma:</p>
+<p>Você pode instalar a versão de desenvolvimento mais recente do pacote <code>fungaR</code> a partir do <a href="https://github.com/DBOSlab/fungaR">GitHub</a> da seguinte forma:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;BiocManager&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;BiocManager&quot;</span>) </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;BiocManager&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;BiocManager&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Instale a versão de desenvolvimento do floraR a partir do GitHub,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Instale a versão de desenvolvimento do fungaR a partir do GitHub,</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># juntamente com as dependências necessárias</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">&quot;DBOSlab/floraR&quot;</span>, <span class="at">dependencies =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">&quot;DBOSlab/fungaR&quot;</span>, <span class="at">dependencies =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -4587,21 +4587,21 @@ Caution
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><code>floraR</code> requer R (&gt;= 4.1.0). Se você já tem uma instalação recente do R, pode ir direto para o passo de instalação acima.</p>
+<p><code>fungaR</code> requer R (&gt;= 4.1.0). Se você já tem uma instalação recente do R, pode ir direto para o passo de instalação acima.</p>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(floraR)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fungaR)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="primeiros-passos" class="level2">
 <h2 class="anchored" data-anchor-id="primeiros-passos">Primeiros Passos</h2>
 <p>Após a instalação, um bom primeiro passo é verificar quais versões do conjunto de dados da Flora e Funga do Brasil estão atualmente publicadas:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_version</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_version</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>A maioria das funções — incluindo <code>flora_records()</code>, <code>flora_search()</code> e <code>flora_get_children_taxa()</code> — baixa e analisa o conjunto de dados da FFB automaticamente na primeira chamada, e reutiliza o mesmo cache local nas chamadas seguintes, então raramente é preciso chamar <code>flora_download()</code>/<code>flora_parse()</code> diretamente, a menos que você queira inspecionar os dados brutos.</p>
-<p>A partir daí, navegue pelos <a href="../../pt/articles/index.html">Artigos práticos</a> para aprender a baixar e analisar dados da lista de espécies, filtrar registros por critérios taxonômicos ou geográficos, resolver sua própria lista de nomes de espécies em relação à lista de espécies, explorar a hierarquia taxonômica e curar novos registros.</p>
+<p>A maioria das funções — incluindo <code>funga_records()</code>, <code>funga_search()</code> e <code>funga_get_children_taxa()</code> — baixa e analisa o conjunto de dados da FFB automaticamente na primeira chamada, e reutiliza o mesmo cache local nas chamadas seguintes, então raramente é preciso chamar <code>funga_download()</code>/<code>funga_parse()</code> diretamente, a menos que você queira inspecionar os dados brutos. Note que a FFB publica plantas e fungos juntos em um único lançamento combinado; <code>funga_parse()</code> é o que reduz tudo ao reino Fungi.</p>
+<p>A partir daí, navegue pelos <a href="../../pt/articles/index.html">Artigos práticos</a> para aprender a baixar e analisar dados da lista de espécies, filtrar registros por critérios taxonômicos ou geográficos, resolver sua própria lista de nomes de espécies em relação à lista de espécies, explorar a hierarquia taxonômica e encontrar espécies e registros estaduais ausentes na FFB.</p>
 
 
 <!-- -->
@@ -5103,27 +5103,27 @@ Caution
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## Instalar o pacote</span></span>
 <span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>Você pode instalar a versão de desenvolvimento mais recente do pacote <span class="in">`floraR`</span> a partir do <span class="co">[</span><span class="ot">GitHub</span><span class="co">](https://github.com/DBOSlab/floraR)</span> da seguinte forma:</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>Você pode instalar a versão de desenvolvimento mais recente do pacote <span class="in">`fungaR`</span> a partir do <span class="co">[</span><span class="ot">GitHub</span><span class="co">](https://github.com/DBOSlab/fungaR)</span> da seguinte forma:</span>
 <span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
 <span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;BiocManager&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) </span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;BiocManager&quot;</span>) </span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;BiocManager&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;BiocManager&quot;</span>)</span>
 <span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Instale a versão de desenvolvimento do floraR a partir do GitHub,</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Instale a versão de desenvolvimento do fungaR a partir do GitHub,</span></span>
 <span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="co"># juntamente com as dependências necessárias</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">&quot;DBOSlab/floraR&quot;</span>, <span class="at">dependencies =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">&quot;DBOSlab/fungaR&quot;</span>, <span class="at">dependencies =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>:::{.callout-caution}</span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="in">`floraR`</span> requer R (&gt;= 4.1.0). Se você já tem uma instalação recente do R, pode ir direto para o passo de instalação acima.</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="in">`fungaR`</span> requer R (&gt;= 4.1.0). Se você já tem uma instalação recente do R, pode ir direto para o passo de instalação acima.</span>
 <span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
 <span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(floraR)</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fungaR)</span>
 <span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="fu">## Primeiros Passos</span></span>
@@ -5133,12 +5133,12 @@ Caution
 <span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
 <span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_version</span>()</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="fu">funga_version</span>()</span>
 <span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>A maioria das funções — incluindo <span class="in">`flora_records()`</span>, <span class="in">`flora_search()`</span> e <span class="in">`flora_get_children_taxa()`</span> — baixa e analisa o conjunto de dados da FFB automaticamente na primeira chamada, e reutiliza o mesmo cache local nas chamadas seguintes, então raramente é preciso chamar <span class="in">`flora_download()`</span>/<span class="in">`flora_parse()`</span> diretamente, a menos que você queira inspecionar os dados brutos.</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>A maioria das funções — incluindo <span class="in">`funga_records()`</span>, <span class="in">`funga_search()`</span> e <span class="in">`funga_get_children_taxa()`</span> — baixa e analisa o conjunto de dados da FFB automaticamente na primeira chamada, e reutiliza o mesmo cache local nas chamadas seguintes, então raramente é preciso chamar <span class="in">`funga_download()`</span>/<span class="in">`funga_parse()`</span> diretamente, a menos que você queira inspecionar os dados brutos. Note que a FFB publica plantas e fungos juntos em um único lançamento combinado; <span class="in">`funga_parse()`</span> é o que reduz tudo ao reino Fungi.</span>
 <span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>A partir daí, navegue pelos <span class="co">[</span><span class="ot">Artigos práticos</span><span class="co">](/pt/articles/index.qmd)</span> para aprender a baixar e analisar dados da lista de espécies, filtrar registros por critérios taxonômicos ou geográficos, resolver sua própria lista de nomes de espécies em relação à lista de espécies, explorar a hierarquia taxonômica e curar novos registros.</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>A partir daí, navegue pelos <span class="co">[</span><span class="ot">Artigos práticos</span><span class="co">](/pt/articles/index.qmd)</span> para aprender a baixar e analisar dados da lista de espécies, filtrar registros por critérios taxonômicos ou geográficos, resolver sua própria lista de nomes de espécies em relação à lista de espécies, explorar a hierarquia taxonômica e encontrar espécies e registros estaduais ausentes na FFB.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

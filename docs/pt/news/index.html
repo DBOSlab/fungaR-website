@@ -4516,7 +4516,7 @@ height: 400px;
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#florar-1.0.0" id="toc-florar-1.0.0" class="nav-link active" data-scroll-target="#florar-1.0.0">floraR 1.0.0</a>
+  <li><a href="#fungar-1.0.0" id="toc-fungar-1.0.0" class="nav-link active" data-scroll-target="#fungar-1.0.0">fungaR 1.0.0</a>
   <ul class="collapse">
   <li><a href="#lançamento-inicial" id="toc-lançamento-inicial" class="nav-link" data-scroll-target="#lançamento-inicial">Lançamento Inicial</a>
   <ul class="collapse">
@@ -4573,26 +4573,29 @@ background-color: rgba(255, 255, 255, 0.85);
 z-index: -1;
 }
 </style>
-<section id="florar-1.0.0" class="level1">
-<h1>floraR 1.0.0</h1>
+<section id="fungar-1.0.0" class="level1">
+<h1>fungaR 1.0.0</h1>
 <section id="lançamento-inicial" class="level2">
 <h2 class="anchored" data-anchor-id="lançamento-inicial">Lançamento Inicial</h2>
-<p>Primeira versão oficial do pacote R <code>floraR</code>, desenvolvido para oferecer ferramentas completas de acesso, análise e curadoria de dados da plataforma <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil (FFB)</a>, hospedada pelo <a href="https://www.gov.br/jbrj/pt-br">Jardim Botânico do Rio de Janeiro</a>.</p>
+<p>O primeiro lançamento oficial do pacote R <code>fungaR</code>, projetado para fornecer ferramentas abrangentes de acesso, análise, e curadoria de dados fúngicos da plataforma <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil (FFB)</a>, hospedada pelo <a href="https://www.gov.br/jbrj/pt-br">Jardim Botânico do Rio de Janeiro</a>.</p>
 <section id="funcionalidades" class="level3">
 <h3 class="anchored" data-anchor-id="funcionalidades">Funcionalidades</h3>
 <ul>
-<li><code>flora_version()</code>: Recupera metadados e verifica as versões disponíveis do conjunto de dados no portal IPT da FFB.</li>
-<li><code>flora_download()</code>: Baixa dados taxonômicos e de distribuição em formato Darwin Core Archive (DwC-A) para versões específicas ou todas as disponíveis.</li>
-<li><code>flora_parse()</code>: Analisa e organiza conjuntos de dados da FFB baixados localmente em uma lista de tabelas pronta para uso.</li>
-<li><code>flora_records()</code>: Navega e filtra a lista de espécies da FFB diretamente por critérios taxonômicos, geográficos e de atributos, sem exigir uma lista de nomes de entrada.</li>
-<li><code>flora_search()</code>: Resolve sua própria lista de nomes de espécies em relação à lista de espécies da FFB, com correspondência exata primeiro e correspondência aproximada (distância de Levenshtein) como alternativa para erros de digitação, incluindo resolução de sinônimos.</li>
-<li><code>flora_match()</code>: Compara duas listas independentes de nomes de espécies, alinhando nomes que resolvem para o mesmo táxon aceito.</li>
-<li><code>flora_get_children_taxa()</code>: Recupera todos os táxons filhos (espécies, subespécies, variedades etc.) abaixo de um nome e nível taxonômico especificados.</li>
-<li><code>flora_get_descriptions()</code>: Extrai descrições de campos controlados e texto livre de páginas de táxons da FFB, para auxiliar especialistas na curadoria de novos registros.</li>
-<li><code>flora_build_matrix()</code>: Transforma as descrições de táxons extraídas em uma matriz de caracteres por táxon.</li>
-<li>A maioria das funções baixa e analisa o conjunto de dados da FFB automaticamente e o armazena em cache local, de modo que consultas repetidas e análises offline funcionam sem a necessidade de novo download.</li>
-<li>Integração completa com fluxos de trabalho do tidyverse para análises posteriores.</li>
-<li>Conjunto abrangente de testes com testthat, integração contínua via GitHub Actions.</li>
+<li><code>funga_version()</code>: Recupera metadados e verifica as versões disponíveis do conjunto de dados no portal IPT da FFB.</li>
+<li><code>funga_download()</code>: Baixa dados taxonômicos e de distribuição em formato Darwin Core Archive (DwC-A) para versões específicas ou todas as disponíveis.</li>
+<li><code>funga_parse()</code>: Analisa e organiza conjuntos de dados da FFB baixados localmente em uma lista de tabelas pronta para uso, reduzindo o arquivo combinado de plantas/fungos ao reino Fungi.</li>
+<li><code>funga_records()</code>: Navega e filtra a lista de espécies fúngicas da FFB diretamente por critérios taxonômicos, geográficos, e de atributos, sem exigir uma lista de nomes de entrada. Retorna as informações de distribuição e perfil de espécie de cada táxon (estado, domínio fitogeográfico, endemismo, forma de vida, habitat/substrato, tipo de vegetação) concatenadas por coluna.</li>
+<li><code>funga_search()</code>: Resolve sua própria lista de nomes de espécies em relação à lista de espécies da FFB, com correspondência exata primeiro e correspondência aproximada (distância de Levenshtein) como alternativa para erros de digitação, incluindo resolução de sinônimos.</li>
+<li><code>funga_match()</code>: Compara duas listas independentes de nomes de espécies, alinhando nomes que resolvem para o mesmo táxon aceito.</li>
+<li><code>funga_get_children_taxa()</code>: Recupera todos os táxons filhos (espécies, subespécies, variedades, gêneros, etc.) abaixo de um nome e nível taxonômico especificados, seguindo a hierarquia real de fungos da FFB (Divisão &gt; Ordem &gt; Gênero &gt; Espécie).</li>
+<li><code>mycobank_gap()</code>: Cruza a base de nomes global do MycoBank com a lista de espécies da FFB para um determinado gênero ou ordem, retornando por padrão apenas nomes em nível de espécie cuja própria localidade no MycoBank os situa no Brasil mas que ainda estão ausentes da FFB.</li>
+<li><code>mycobank_records()</code>: Recupera todo nome do MycoBank correspondente a uma determinada espécie, gênero, ou ordem, filtrado por padrão para aqueles com evidência brasileira no MycoBank, independentemente de já estar registrado na FFB.</li>
+<li><code>spfungorum_gap()</code>: Cruza o Species Fungorum (Index Fungorum, Kew) com a lista de espécies da FFB para um determinado gênero, via o próprio serviço web público do Index Fungorum, retornando por padrão apenas nomes em nível de espécie cuja própria localidade relatada os situa no Brasil mas que ainda estão ausentes da FFB.</li>
+<li><code>spfungorum_records()</code>: Recupera todo nome do Index Fungorum correspondente a uma determinada espécie ou gênero, filtrado por padrão para aqueles com localidade brasileira relatada, independentemente de já estar registrado na FFB.</li>
+<li><code>funga_distribution_gap()</code>: Cruza dados do GBIF, speciesLink, e REFLORA em busca de evidência de espécime de um táxon em estados brasileiros ainda não listados na distribuição oficial da FFB.</li>
+<li>A maioria das funções baixa e analisa o conjunto de dados da FFB automaticamente e o armazena em cache localmente, de modo que consultas repetidas e análises offline funcionam sem um novo download.</li>
+<li>Integração perfeita com fluxos de trabalho do tidyverse para análises subsequentes.</li>
+<li>Conjunto abrangente de testes testthat, integração contínua via GitHub Actions.</li>
 </ul>
 </section>
 <section id="infraestrutura" class="level3">
@@ -4600,12 +4603,12 @@ z-index: -1;
 <ul>
 <li>Licença MIT.</li>
 <li>GitHub Actions: R-CMD-check e cobertura de testes.</li>
-<li>Documentação hospedada: <a href="https://dboslab.github.io/floraR-website/">floraR-website</a>, com artigos práticos para cada função e tradução completa para o português (alternância de idioma EN/PT).</li>
+<li>Documentação hospedada: <a href="https://dboslab.github.io/fungaR-website/">fungaR-website</a>, com artigos práticos para cada função e tradução completa para o português (alternância de idioma EN/PT).</li>
 </ul>
 </section>
 <section id="feedback" class="level3">
 <h3 class="anchored" data-anchor-id="feedback">Feedback</h3>
-<p>Por favor, reporte bugs ou problemas em: <a href="https://github.com/DBOSlab/floraR/issues" class="uri">https://github.com/DBOSlab/floraR/issues</a></p>
+<p>Por favor, reporte bugs ou problemas em: <a href="https://github.com/DBOSlab/fungaR/issues" class="uri">https://github.com/DBOSlab/fungaR/issues</a></p>
 
 
 <!-- -->
@@ -5108,37 +5111,43 @@ z-index: -1;
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">style</span><span class="dt">&gt;</span></span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu"># floraR 1.0.0</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu"># fungaR 1.0.0</span></span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Lançamento Inicial</span></span>
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>Primeira versão oficial do pacote R <span class="in">`floraR`</span>, desenvolvido para oferecer ferramentas completas de acesso, análise e curadoria de dados da plataforma <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span>, hospedada pelo <span class="co">[</span><span class="ot">Jardim Botânico do Rio de Janeiro</span><span class="co">](https://www.gov.br/jbrj/pt-br)</span>.</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">### Funcionalidades</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`flora_version()`</span>: Recupera metadados e verifica as versões disponíveis do conjunto de dados no portal IPT da FFB.</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`flora_download()`</span>: Baixa dados taxonômicos e de distribuição em formato Darwin Core Archive (DwC-A) para versões específicas ou todas as disponíveis.</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`flora_parse()`</span>: Analisa e organiza conjuntos de dados da FFB baixados localmente em uma lista de tabelas pronta para uso.</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`flora_records()`</span>: Navega e filtra a lista de espécies da FFB diretamente por critérios taxonômicos, geográficos e de atributos, sem exigir uma lista de nomes de entrada.</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`flora_search()`</span>: Resolve sua própria lista de nomes de espécies em relação à lista de espécies da FFB, com correspondência exata primeiro e correspondência aproximada (distância de Levenshtein) como alternativa para erros de digitação, incluindo resolução de sinônimos.</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`flora_match()`</span>: Compara duas listas independentes de nomes de espécies, alinhando nomes que resolvem para o mesmo táxon aceito.</span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`flora_get_children_taxa()`</span>: Recupera todos os táxons filhos (espécies, subespécies, variedades etc.) abaixo de um nome e nível taxonômico especificados.</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`flora_get_descriptions()`</span>: Extrai descrições de campos controlados e texto livre de páginas de táxons da FFB, para auxiliar especialistas na curadoria de novos registros.</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`flora_build_matrix()`</span>: Transforma as descrições de táxons extraídas em uma matriz de caracteres por táxon.</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A maioria das funções baixa e analisa o conjunto de dados da FFB automaticamente e o armazena em cache local, de modo que consultas repetidas e análises offline funcionam sem a necessidade de novo download.</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Integração completa com fluxos de trabalho do tidyverse para análises posteriores.</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Conjunto abrangente de testes com testthat, integração contínua via GitHub Actions.</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">### Infraestrutura</span></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Licença MIT.</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GitHub Actions: R-CMD-check e cobertura de testes.</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Documentação hospedada: <span class="co">[</span><span class="ot">floraR-website</span><span class="co">](https://dboslab.github.io/floraR-website/)</span>, com artigos práticos para cada função e tradução completa para o português (alternância de idioma EN/PT).</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>O primeiro lançamento oficial do pacote R <span class="in">`fungaR`</span>, projetado para fornecer</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>ferramentas abrangentes de acesso, análise, e curadoria de dados fúngicos da</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>plataforma <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span>,</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>hospedada pelo <span class="co">[</span><span class="ot">Jardim Botânico do Rio de Janeiro</span><span class="co">](https://www.gov.br/jbrj/pt-br)</span>.</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">### Funcionalidades</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_version()`</span>: Recupera metadados e verifica as versões disponíveis do conjunto de dados no portal IPT da FFB.</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_download()`</span>: Baixa dados taxonômicos e de distribuição em formato Darwin Core Archive (DwC-A) para versões específicas ou todas as disponíveis.</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_parse()`</span>: Analisa e organiza conjuntos de dados da FFB baixados localmente em uma lista de tabelas pronta para uso, reduzindo o arquivo combinado de plantas/fungos ao reino Fungi.</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_records()`</span>: Navega e filtra a lista de espécies fúngicas da FFB diretamente por critérios taxonômicos, geográficos, e de atributos, sem exigir uma lista de nomes de entrada. Retorna as informações de distribuição e perfil de espécie de cada táxon (estado, domínio fitogeográfico, endemismo, forma de vida, habitat/substrato, tipo de vegetação) concatenadas por coluna.</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_search()`</span>: Resolve sua própria lista de nomes de espécies em relação à lista de espécies da FFB, com correspondência exata primeiro e correspondência aproximada (distância de Levenshtein) como alternativa para erros de digitação, incluindo resolução de sinônimos.</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_match()`</span>: Compara duas listas independentes de nomes de espécies, alinhando nomes que resolvem para o mesmo táxon aceito.</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_get_children_taxa()`</span>: Recupera todos os táxons filhos (espécies, subespécies, variedades, gêneros, etc.) abaixo de um nome e nível taxonômico especificados, seguindo a hierarquia real de fungos da FFB (Divisão &gt; Ordem &gt; Gênero &gt; Espécie).</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`mycobank_gap()`</span>: Cruza a base de nomes global do MycoBank com a lista de espécies da FFB para um determinado gênero ou ordem, retornando por padrão apenas nomes em nível de espécie cuja própria localidade no MycoBank os situa no Brasil mas que ainda estão ausentes da FFB.</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`mycobank_records()`</span>: Recupera todo nome do MycoBank correspondente a uma determinada espécie, gênero, ou ordem, filtrado por padrão para aqueles com evidência brasileira no MycoBank, independentemente de já estar registrado na FFB.</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`spfungorum_gap()`</span>: Cruza o Species Fungorum (Index Fungorum, Kew) com a lista de espécies da FFB para um determinado gênero, via o próprio serviço web público do Index Fungorum, retornando por padrão apenas nomes em nível de espécie cuja própria localidade relatada os situa no Brasil mas que ainda estão ausentes da FFB.</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`spfungorum_records()`</span>: Recupera todo nome do Index Fungorum correspondente a uma determinada espécie ou gênero, filtrado por padrão para aqueles com localidade brasileira relatada, independentemente de já estar registrado na FFB.</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`funga_distribution_gap()`</span>: Cruza dados do GBIF, speciesLink, e REFLORA em busca de evidência de espécime de um táxon em estados brasileiros ainda não listados na distribuição oficial da FFB.</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A maioria das funções baixa e analisa o conjunto de dados da FFB automaticamente e o armazena em cache localmente, de modo que consultas repetidas e análises offline funcionam sem um novo download.</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Integração perfeita com fluxos de trabalho do tidyverse para análises subsequentes.</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Conjunto abrangente de testes testthat, integração contínua via GitHub Actions.</span>
 <span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### Infraestrutura</span></span>
 <span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>Por favor, reporte bugs ou problemas em:</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ot">&lt;https://github.com/DBOSlab/floraR/issues&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Licença MIT.</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GitHub Actions: R-CMD-check e cobertura de testes.</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Documentação hospedada: <span class="co">[</span><span class="ot">fungaR-website</span><span class="co">](https://dboslab.github.io/fungaR-website/)</span>, com artigos práticos para cada função e tradução completa para o português (alternância de idioma EN/PT).</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>Por favor, reporte bugs ou problemas em:</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="ot">&lt;https://github.com/DBOSlab/fungaR/issues&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

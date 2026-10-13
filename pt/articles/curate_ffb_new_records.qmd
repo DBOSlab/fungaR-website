@@ -1,0 +1,143 @@
+---
+title: "Encontrar espécies e registros estaduais ausentes na FFB"
+format: html
+---
+
+Aqui apresentamos um guia prático para as funções `mycobank_gap()`, `spfungorum_gap()` e `funga_distribution_gap()` do pacote `fungaR`. Juntas, elas apoiam especialistas taxonomistas na curadoria e ampliação da cobertura fúngica da [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), cruzando dados com repositórios micológicos e de biodiversidade globais e sinalizando candidatos que merecem revisão manual.
+
+Procurando informações do MycoBank ou do Index Fungorum sobre um táxon que você já tem em mente, em vez de uma comparação com a FFB? Veja [Recuperar registros de um táxon brasileiro](/pt/articles/retrieve_taxon_records.qmd) para `mycobank_records()`/`spfungorum_records()`.
+
+As três funções gravam seus resultados em três formas complementares: o `data.frame` retornado, uma planilha `.xlsx` para download e — por padrão (`html_report = TRUE`) — um **relatório HTML** autocontido com contagens-chave (KPIs), tabelas de resumo, e a tabela completa de candidatos/registros como um widget [`DT`](https://rstudio.github.io/DT/) ordenável e filtrável, com botões de um clique para copiar ou baixar em CSV/Excel, aberto automaticamente no navegador em sessões interativas (`open_report = interactive()`).
+
+## `mycobank_gap()`: encontrar espécies do MycoBank com evidência no Brasil ausentes da FFB
+
+Dado um gênero ou ordem, `mycobank_gap()` cruza a base de nomes global do [MycoBank](https://www.mycobank.org) com a lista de espécies atual da FFB. Esta **não é uma comparação geral entre as duas bases**: por padrão, apenas nomes do MycoBank em nível de espécie que os próprios dados de localidade do MycoBank já situam no Brasil — mas que ainda estão ausentes da FFB — são retornados, de modo que o especialista taxonomista recebe uma lista curta de candidatos genuinamente plausíveis a novos registros nacionais, em vez de todo nome do MycoBank no gênero/ordem sem relação alguma.
+
+O MycoBank não possui uma API pública de busca adequada para automação em lote, então em vez de raspar sua interface de busca ao vivo baseada em JavaScript, a função baixa e armazena em cache a própria exportação em lote de nomes do MycoBank (`MBList.zip`, atualizada regularmente pelo MycoBank), e então a filtra para o gênero ou ordem solicitado usando a coluna `Classification` do MycoBank. Os nomes são comparados com a FFB pelo seu nome *atualmente aceito* no MycoBank (não pelo nome bruto em si), de modo que um sinônimo histórico obscuro de uma espécie que a FFB já lista sob outro nome não é sinalizado como ausente.
+
+Determinar a evidência de ocorrência no Brasil requer visitar a própria página de nome de cada candidato ausente no MycoBank (`check_locality = TRUE`, o padrão, via [`chromote`](https://rstudio.github.io/chromote/), um driver headless do Chrome — as páginas de nome do MycoBank são um aplicativo JavaScript sem alternativa HTML estática) para ler os "Location details" relatados do espécime-tipo, além de vários outros campos disponíveis apenas nessa página individual: substrato/hospedeiro, etimologia, tipo de nome (ex.: Basiônimo/Combinação), o próprio voucher do espécime-tipo, seu coletor, e a citação da publicação original (protólogo) — além do que a exportação em lote do MycoBank fornece sozinha. Quando `require_brazil_evidence = TRUE` (o padrão), o resultado é então filtrado apenas para os candidatos cuja localidade menciona o Brasil; defina como `FALSE` para obter em vez disso todo nome do MycoBank ausente da FFB independentemente da localidade, com as colunas de evidência ao lado para revisão manual. Isso intencionalmente não cruza dados com o GBIF/speciesLink aqui — veja `funga_distribution_gap()` abaixo para isso.
+
+Um candidato conta como "já na FFB" se o seu nome bruto no MycoBank OU seu nome *atualmente aceito* no MycoBank corresponder a uma espécie da FFB — não apenas o nome atual — porque o MycoBank e a FFB às vezes discordam sobre a qual gênero um nome atualmente pertence.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `taxon` | Caractere. Um único nome de gênero ou ordem (ex.: `"Trichoderma"` ou `"Xylariales"`). |
+| `rank` | `"genus"` (padrão) ou `"order"`. |
+| `check_locality` | Se `TRUE` (padrão), a própria página de nome de cada candidato no MycoBank é visitada para ler sua localidade/substrato relatados. Requer o pacote `chromote` e uma instalação local do Chrome/Chromium; é ignorado com uma mensagem se indisponível. |
+| `require_brazil_evidence` | Se `TRUE` (padrão), a tabela retornada é filtrada apenas para candidatos cuja localidade no MycoBank menciona o Brasil. Defina `FALSE` para retornar todo nome ausente independentemente da localidade. Só tem efeito quando `check_locality = TRUE`. |
+| `max_check` | Limite de segurança para quantos candidatos passam pela verificação de localidade (um carregamento de página por nome). Padrão `200`. |
+| `version` | Versão do conjunto de dados da FFB a comparar. Padrão `"latest"`. |
+| `mycobank_dir` | Diretório local usado para armazenar em cache a exportação baixada do MycoBank (~140MB). Padrão `"mycobank_download"`. |
+| `save` | Se `TRUE` (padrão), salva o resultado como uma planilha `.xlsx`. |
+| `html_report` | Se `TRUE` (padrão), também grava o relatório HTML interativo descrito acima. |
+
+### Valor
+
+Um data frame, uma linha por nome do MycoBank em nível de espécie ausente da FFB e, por padrão, com localidade brasileira no MycoBank, com seu número no MycoBank, autor, ano, status do nome, classificação, nome atual, texto completo de sinonímia, **URL original do MycoBank** (renderizada como link clicável no relatório HTML), e — quando `check_locality = TRUE` — vários campos extraídos da própria página do nome no MycoBank: `MycoBank_Locality`, `MycoBank_Substrate`, `MycoBank_Etymology`, `MycoBank_Name_Type`, `MycoBank_Type_Specimen`, `MycoBank_Collector`, `MycoBank_Protolog`, e um sinalizador `MycoBank_Brazil_Evidence` — prontos para revisão manual de um taxonomista.
+
+### Exemplo
+
+```r
+library(fungaR)
+
+# Espécies do MycoBank no gênero Trichoderma com localidade brasileira no
+# MycoBank que ainda estão ausentes da FFB
+gap <- mycobank_gap(taxon = "Trichoderma", rank = "genus")
+
+# Todo nome do MycoBank ausente da FFB independentemente da localidade, para revisão manual
+gap_all <- mycobank_gap(taxon = "Trichoderma", rank = "genus",
+                        require_brazil_evidence = FALSE)
+
+# Mais rápido, sem a verificação de localidade por candidato (sem filtro de Brasil possível)
+gap_fast <- mycobank_gap(taxon = "Trichoderma", rank = "genus",
+                         check_locality = FALSE)
+```
+
+## `spfungorum_gap()`: encontrar espécies do Index Fungorum com evidência no Brasil ausentes da FFB
+
+Dado um gênero, `spfungorum_gap()` cruza o [Species Fungorum](https://www.speciesfungorum.org) (Index Fungorum, Kew) com a lista de espécies atual da FFB — a mesma filosofia de "não é um diff geral" de `mycobank_gap()`, mas usando a localidade reportada pelo próprio Index Fungorum em vez da do MycoBank.
+
+Diferente do MycoBank, o Index Fungorum publica um serviço web público e documentado (`fungus.asmx`, uma API HTTP GET/XML simples — sem necessidade de cliente SOAP ou navegador headless) que já retorna a localidade e o hospedeiro relatados de cada nome correspondente em uma única requisição por gênero. O campo `LOCATION` do Index Fungorum frequentemente nomeia diretamente um estado brasileiro (ex.: `"Pernambuco"`) em vez do próprio país, então a verificação de evidência no Brasil cobre o nome do país e todos os estados brasileiros (comparados como palavras inteiras, de modo que, por exemplo, "Paraguay" nunca é confundido com o estado "Pará"), não apenas a palavra literal "Brazil". Assim como em `mycobank_gap()`, um candidato conta como "já na FFB" se o seu nome bruto no Index Fungorum OU seu nome atualmente aceito corresponder a uma espécie da FFB.
+
+Por padrão (`fetch_details = TRUE`), a própria página de cada candidato ausente no Species Fungorum também é visitada — uma requisição HTTP simples e rápida, sem necessidade de navegador headless — para ler o periódico em que foi publicado, a citação completa formatada, os detalhes de basiônimo/tipificação, e o LSID do Index Fungorum, e para corrigir `Current_name` com o valor recém-extraído sempre que o campo (ocasionalmente desatualizado) da resposta da busca em lote divergir.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `taxon` | Caractere. Um único nome de gênero (ex.: `"Phellinotus"`). O serviço web do Index Fungorum não tem operação para busca por classificação superior, então buscas em nível de ordem não são suportadas. |
+| `require_brazil_evidence` | Se `TRUE` (padrão), a tabela retornada é filtrada apenas para candidatos cuja localização no Index Fungorum menciona o Brasil. Defina `FALSE` para retornar todo nome ausente independentemente da localidade. |
+| `fetch_details` | Se `TRUE` (padrão), visita a própria página de cada candidato ausente no Species Fungorum para obter seu periódico, citação completa, detalhes de basiônimo/tipificação, e LSID, e para atualizar `Current_name`. Defina `FALSE` para pular isso e usar apenas os campos próprios da resposta da busca em lote. |
+| `max_number` | Número máximo de nomes correspondentes solicitados ao serviço web em uma única chamada. Padrão `1000`, generoso para qualquer gênero. |
+| `version` | Versão do conjunto de dados da FFB a comparar. Padrão `"latest"`. |
+| `save` | Se `TRUE` (padrão), salva o resultado como uma planilha `.xlsx`. |
+| `html_report` | Se `TRUE` (padrão), também grava o relatório HTML interativo descrito acima. |
+
+### Valor
+
+Um data frame, uma linha por nome do Index Fungorum em nível de espécie ausente da FFB e, por padrão, com localidade brasileira relatada, com seu número no Fungorum, autor, epíteto específico, ano, status do nome, nome atual, volume/parte/página, autores da publicação, **URL original do Species Fungorum** (renderizada como link clicável no relatório HTML), `Fungorum_Location`, `Fungorum_Host`, um sinalizador `Fungorum_Brazil_Evidence`, e — quando `fetch_details = TRUE` — `Fungorum_Journal`, `Fungorum_Citation`, `Fungorum_Basionym`, `Fungorum_Current_Name_Citation`, e `Fungorum_LSID`.
+
+### Exemplo
+
+```r
+library(fungaR)
+
+# Espécies do Index Fungorum no gênero Phellinotus com localidade brasileira
+# relatada que ainda estão ausentes da FFB
+gap <- spfungorum_gap(taxon = "Phellinotus")
+
+# Todo nome do Index Fungorum ausente da FFB independentemente da localidade, para revisão manual
+gap_all <- spfungorum_gap(taxon = "Phellinotus", require_brazil_evidence = FALSE)
+
+# Mais rápido, sem a visita à página por candidato
+gap_fast <- spfungorum_gap(taxon = "Phellinotus", fetch_details = FALSE)
+```
+
+## `funga_distribution_gap()`: encontrar candidatos a novos registros estaduais
+
+Dado um gênero ou espécie fúngica, `funga_distribution_gap()` verifica o GBIF, o speciesLink e o Herbário Virtual Reflora (via o pacote [`refloraR`](https://github.com/DBOSlab/refloraR)) em busca de evidência de espécimes em estados brasileiros que *não* estão atualmente listados na distribuição oficial desse táxon na FFB — sinalizando candidatos a novos registros estaduais.
+
+Seu relatório HTML vai um passo além do resumo em nível estadual: ele também lista os **registros de ocorrência individuais** (não agregados) encontrados nos estados candidatos a novo registro, cada um ligando diretamente à própria página desse registro no GBIF ou no Reflora — exatamente a evidência que um taxonomista precisa para verificar o candidato.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `taxon` | Caractere. Um único nome de gênero ou espécie (ex.: `"Trichoderma harzianum"`). |
+| `state` | Vetor de caracteres opcional restringindo a verificação a estados específicos. `NULL` (padrão) verifica todos os estados com qualquer evidência. |
+| `sources` | Quais fontes consultar: qualquer uma de `"gbif"`, `"speciesLink"`, `"reflora"`. Padrão todas as três. |
+| `version` | Versão do conjunto de dados da FFB a comparar. Padrão `"latest"`. |
+| `save` | Se `TRUE` (padrão), salva o resultado como uma planilha `.xlsx`. |
+| `html_report` | Se `TRUE` (padrão), também grava o relatório HTML interativo, incluindo a tabela de registros individuais. |
+
+### Valor
+
+Um data frame, uma linha por estado brasileiro com qualquer evidência de ocorrência, sinalizando `New_state_record_candidate = TRUE` sempre que um estado tem evidência externa mas não está na distribuição oficial da FFB.
+
+### Exemplo
+
+```r
+library(fungaR)
+
+gap <- funga_distribution_gap(taxon = "Trichoderma harzianum")
+
+# Restringir a verificação a dois estados, usando apenas o GBIF
+gap_ba_pe <- funga_distribution_gap(taxon = "Trichoderma harzianum",
+                                    state = c("Bahia", "Pernambuco"),
+                                    sources = "gbif")
+```
+
+## Dicas Adicionais
+
+- A API pública do speciesLink tem, no momento desta escrita, um problema conhecido de confiabilidade de SSL/endpoint; `funga_distribution_gap()` trata a evidência do speciesLink como estritamente best-effort e recorre graciosamente ao GBIF (e ao Reflora) quando ele está inacessível.
+- Instale o pacote [`refloraR`](https://github.com/DBOSlab/refloraR) para incluir evidência de espécimes do Reflora em `funga_distribution_gap()`; sem ele, essa fonte é ignorada com uma mensagem.
+- Instale o pacote [`chromote`](https://rstudio.github.io/chromote/) (e tenha uma instalação local do Chrome/Chromium) para incluir a verificação de localidade do MycoBank em `mycobank_gap()`; sem ele, essa etapa (e a filtragem de evidência no Brasil que depende dela) é ignorada com uma mensagem, e todo nome ausente é retornado sem filtro. `spfungorum_gap()` não precisa dessa dependência extra.
+- Combine com [`funga_get_children_taxa()`](/pt/articles/explore_taxonomic_hierarchy.qmd) para montar a lista de gêneros candidatos que você quer verificar com o MycoBank ou o Index Fungorum.
+- `mycobank_gap()`, para gêneros ou ordens maiores, pode levar um tempo quando as verificações de localidade por candidato estão habilitadas — comece com `check_locality = FALSE` para dimensionar quantos candidatos existem antes de rodar a verificação completa de evidência no Brasil. A filtragem de evidência no Brasil de `spfungorum_gap()` é sempre uma única requisição independentemente do tamanho do gênero, mas `fetch_details = TRUE` (o padrão) adiciona uma requisição HTTP simples e rápida por candidato *ausente* para os campos de periódico/citação/basiônimo/LSID — defina `fetch_details = FALSE` para pular isso em conjuntos de resultados muito grandes.
+
+## Veja Também
+
+- [Explorar a hierarquia taxonômica](/pt/articles/explore_taxonomic_hierarchy.qmd)
+- [Filtrar e recuperar registros da lista de espécies](/pt/articles/filter_ffb_records.qmd)

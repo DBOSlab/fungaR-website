@@ -1,0 +1,105 @@
+---
+title: 'mycobank_records'
+description: 'Recuperar registros do MycoBank para um táxon, filtrados por evidência de ocorrência no Brasil'
+toc: true
+toc-depth: 3
+---
+
+```{r}
+#| eval: false
+fungaR::mycobank_records()
+```
+
+### Descrição
+
+Dada uma espécie, gênero, ou ordem fúngica, recupera todo nome
+correspondente no [MycoBank](https://www.mycobank.org) e, por padrão,
+filtra o resultado apenas para os nomes cujos próprios dados de localidade
+no MycoBank os situam no Brasil - retornando uma planilha estruturada com
+todas as informações do MycoBank disponíveis (incluindo a URL original no
+MycoBank de cada nome) para esses registros brasileiros. Diferente de
+`mycobank_gap`, esta função não cruza dados com a FFB de forma
+alguma: é uma ferramenta direta de recuperação do MycoBank, não uma de
+comparação/lacuna.
+
+### Detalhes
+
+O MycoBank não oferece uma API pública de busca adequada para automação em
+lote, mas publica uma exportação completa e regularmente atualizada de
+todos os nomes em sua base de dados
+(https://www.mycobank.org/images/MBList.zip). Esta função baixa e armazena
+em cache essa exportação localmente (da mesma forma que `funga_download`
+armazena em cache o conjunto de dados da FFB), e então a filtra para a
+espécie, gênero, ou ordem solicitado.
+
+A exportação em lote em si não carrega informação de localidade, então
+determinar a evidência de ocorrência no Brasil requer visitar a própria
+página individual de cada nome correspondente no MycoBank (sua
+`MycoBank_URL`) para ler os "Location details" (e "Host/Substrate")
+relatados para seu espécime-tipo. As páginas de nome do MycoBank são uma
+aplicação JavaScript de página única sem alternativa HTML estática, então
+esta etapa (`check_locality = TRUE`, o padrão) requer o pacote
+chromote (e uma instalação local do Chrome/Chromium) para conduzir um
+navegador headless. Quando `require_brazil_evidence = TRUE` (o
+padrão), a tabela retornada é filtrada apenas para os nomes cuja
+localidade no MycoBank menciona o Brasil; defina como `FALSE` para
+obter em vez disso todo nome do MycoBank correspondente independentemente
+da localidade (com as colunas de evidência ao lado, para revisão manual). A
+filtragem de evidência no Brasil não tem efeito se `check_locality =
+FALSE`, já que nenhum dado de localidade está disponível para filtrar; uma
+mensagem explica isso quando ocorre.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| taxon | Caractere. Um único nome de espécie, gênero, ou ordem fúngica (ex.: `"Trichoderma harzianum"`, `"Trichoderma"`, ou `"Xylariales"`). |
+| rank | Caractere. Se `taxon` é uma `"species"` (padrão), um `"genus"`, ou uma `"order"`. |
+| check_locality | Lógico. Se `TRUE` (padrão), a própria página de cada nome correspondente no MycoBank é visitada (via chromote) para ler a localidade e o substrato/hospedeiro relatados do espécime-tipo, determinando quais nomes o próprio MycoBank já associa ao Brasil. Defina como `FALSE` para pular isso (muito mais rápido, mas sem evidência de localidade, e `require_brazil_evidence` não tem efeito). |
+| require_brazil_evidence | Lógico. Se `TRUE` (padrão), a tabela retornada é filtrada apenas para os nomes cuja localidade no MycoBank menciona o Brasil. Defina como `FALSE` para retornar em vez disso todo nome do MycoBank correspondente independentemente da localidade (com `MycoBank_Brazil_Evidence` ao lado, para revisão manual). Só tem efeito quando `check_locality = TRUE`. |
+| max_check | Numérico. Limite de segurança para quantos nomes correspondentes passam pela verificação de localidade (comparativamente lenta, um carregamento de página por nome) quando `check_locality = TRUE`. O padrão é `200`; se mais nomes forem encontrados, apenas os primeiros `max_check` (em ordem alfabética) são verificados e um aviso é emitido. Ignorado quando `check_locality = FALSE`. |
+| mycobank_dir | Caractere. Diretório local usado para armazenar em cache a exportação em lote baixada do MycoBank. O padrão é `"mycobank_download"`. Reutilizado em chamadas subsequentes para evitar baixar novamente o arquivo (~140MB). |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens de progresso. |
+| save | Lógico. Se `TRUE` (padrão), o resultado é salvo em disco como uma planilha `.xlsx`. |
+| dir | Caractere. Diretório onde a planilha é salva quando `save = TRUE`. O padrão é `"mycobank_records"`. |
+| filename | Caractere. Nome do arquivo `.xlsx` (sem extensão) a salvar. O padrão é `"mycobank_records_<taxon>"`. |
+| html_report | Lógico. Se `TRUE` (padrão), também grava um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: contagens-chave (KPIs), um detalhamento por famílias afetadas, e a tabela completa de registros como um widget DT ordenável e filtrável, com botões para copiar ou baixar em CSV/Excel. Requer os pacotes rmarkdown, DT, e htmltools; se algum estiver ausente, o relatório é ignorado com uma mensagem (a planilha `.xlsx` não é afetada). |
+| open_report | Lógico. Se `TRUE` (padrão em sessões interativas), abre o relatório HTML no navegador assim que renderizado. |
+
+### Valor
+
+Um `data.frame`, uma linha por nome do MycoBank correspondente e, por
+padrão, com localidade brasileira no MycoBank, com colunas:
+
+- **MycoBank_Number** — Identificador numérico do MycoBank para o nome.
+- **Taxon_name** — O binômio como registrado no MycoBank.
+- **Authors** — Citação completa de autor.
+- **Year** — Ano de publicação efetiva.
+- **Name_status** — Status nomenclatural no MycoBank (ex.: `"Legitimate"`).
+- **Classification** — String completa de classificação do MycoBank (Reino até gênero).
+- **Current_name** — Nome atualmente aceito pelo MycoBank para esta entrada, quando diferente (ou seja, quando `Taxon_name` é em si um sinônimo).
+- **Synonymy** — Texto completo de sinonímia do MycoBank (nome atual e/ou basiônimo, cada um com sua citação completa de autor/periódico/ano), da exportação em lote.
+- **MycoBank_URL** — Link direto para a página do nome no MycoBank.
+- **MycoBank_Locality, MycoBank_Substrate** — Localidade do espécime-tipo e hospedeiro/substrato, conforme relatado na própria página do nome no MycoBank (apenas quando `check_locality = TRUE`).
+- **MycoBank_Etymology** — A etimologia do nome, conforme relatado em sua própria página do MycoBank (apenas quando `check_locality = TRUE`).
+- **MycoBank_Name_Type** — Tipo de nome nomenclatural do MycoBank para esta entrada (ex.: `"Basionym"`, `"Combination"`; apenas quando `check_locality = TRUE`).
+- **MycoBank_Type_Specimen** — O voucher do espécime-tipo (ex.: `"URM 80362 holotype"`; apenas quando `check_locality = TRUE`).
+- **MycoBank_Collector** — O coletor do espécime-tipo, conforme relatado na própria página do nome no MycoBank (apenas quando `check_locality = TRUE`).
+- **MycoBank_Protolog** — A citação da publicação original (protólogo), conforme relatado na própria página do nome no MycoBank (apenas quando `check_locality = TRUE`).
+- **MycoBank_Brazil_Evidence** — Lógico; `TRUE` quando `MycoBank_Locality` menciona o Brasil (apenas quando `check_locality = TRUE`).
+
+### Exemplos
+
+```r
+# Todas as informações do MycoBank para uma única espécie, apenas se o
+# MycoBank a situa no Brasil
+sp <- mycobank_records(taxon = "Trichoderma harzianum")
+
+# Todo nome do MycoBank em nível de espécie no gênero Trichoderma com
+# localidade brasileira no MycoBank
+genus_records <- mycobank_records(taxon = "Trichoderma", rank = "genus")
+
+# Todo nome correspondente independentemente da localidade, para revisão manual
+all_records <- mycobank_records(taxon = "Trichoderma", rank = "genus",
+                                      require_brazil_evidence = FALSE)
+```
