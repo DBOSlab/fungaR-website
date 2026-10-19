@@ -95,11 +95,13 @@ gap_all <- spfungorum_gap(taxon = "Phellinotus", require_brazil_evidence = FALSE
 gap_fast <- spfungorum_gap(taxon = "Phellinotus", fetch_details = FALSE)
 ```
 
-## `funga_distribution_gap()`: find candidate new state records
+## `funga_distribution_gap()`: find candidate new state and phytogeographic domain records
 
-Given a fungal genus or species, `funga_distribution_gap()` checks GBIF, speciesLink, and the Reflora Virtual Herbarium (via the [`refloraR`](https://github.com/DBOSlab/refloraR) package) for specimen evidence in Brazilian states that are *not* currently listed in FFB's official distribution for that taxon — flagging candidate new state records.
+Given a fungal genus or species, `funga_distribution_gap()` checks GBIF and, optionally, speciesLink and the Reflora Virtual Herbarium (via the [`refloraR`](https://github.com/DBOSlab/refloraR) package) for specimen evidence in Brazilian states that are *not* currently listed in FFB's official distribution for that taxon — flagging candidate new state records.
 
-Its HTML report goes one step further than the state-level summary: it also lists the actual **individual occurrence records** (not aggregated) found in the new-state-record candidate states, each linking directly to that record's own page on GBIF or Reflora — exactly the evidence a taxonomist needs to verify the candidate.
+By default (`domains = TRUE`), it goes a step further: georeferenced records are also placed in Brazil's six phytogeographic domains (Amazônia, Caatinga, Cerrado, Mata Atlântica, Pampa, Pantanal) using IBGE's biome map bundled with the package, flagging candidate new **domain** records the same way — e.g. a species FFB lists only for the Caatinga, but with GBIF coordinates falling in the Cerrado. This requires the [`sf`](https://r-spatial.github.io/sf/) package.
+
+Its HTML report goes further still than the state- and domain-level tables: it plots the georeferenced records on an interactive map over the phytogeographic domains (colored by candidate status, via the [`leaflet`](https://rstudio.github.io/leaflet/) package), and lists the actual **individual occurrence records** (not aggregated) behind each new-state and new-domain candidate, each linking directly to that record's own page on GBIF or Reflora — exactly the evidence a taxonomist needs to verify the candidate.
 
 ### Arguments
 
@@ -107,14 +109,21 @@ Its HTML report goes one step further than the state-level summary: it also list
 |---|---|
 | `taxon` | Character. A single genus or species name (e.g. `"Trichoderma harzianum"`). |
 | `state` | Optional character vector restricting the check to specific states. `NULL` (default) checks all states with any evidence. |
-| `sources` | Which sources to query: any of `"gbif"`, `"speciesLink"`, `"reflora"`. Defaults to all three. |
+| `sources` | Which sources to query: any of `"gbif"`, `"speciesLink"`, `"reflora"`. Defaults to `"gbif"` alone, the fastest. |
+| `specieslink_key` | speciesLink API key, used when `"speciesLink"` is among `sources`. Defaults to the `SPECIESLINK_KEY` environment variable. |
+| `domains` | If `TRUE` (default), also places georeferenced records in the phytogeographic domains and flags candidate new domain records. Requires `sf`. |
+| `max_coordinates` | Maximum number of georeferenced GBIF records read for the domain analysis. Defaults to `5000`. |
 | `version` | FFB dataset version to compare against. Defaults to `"latest"`. |
-| `save` | If `TRUE` (default), saves the result as an `.xlsx` spreadsheet. |
-| `html_report` | If `TRUE` (default), also writes the interactive HTML report, including the individual-records table. |
+| `save` | If `TRUE` (default), saves the result as an `.xlsx` spreadsheet, one sheet per table. |
+| `html_report` | If `TRUE` (default), also writes the interactive HTML report, including the domain map and the individual-records tables. |
 
 ### Value
 
-A data frame, one row per Brazilian state with any occurrence evidence, flagging `New_state_record_candidate = TRUE` whenever a state has external evidence but is not in FFB's official distribution.
+A **list of three data frames**:
+
+- `states` — one row per Brazilian state with any occurrence evidence, flagging `New_state_record_candidate = TRUE` whenever a state has external evidence but is not in FFB's official distribution.
+- `domains` — one row per phytogeographic domain with any evidence, flagging `New_domain_record_candidate = TRUE` the same way. Empty when `domains = FALSE`.
+- `records` — one row per georeferenced record, with its coordinates, assigned state and domain, and the logical `New_state_record_candidate`/`New_domain_record_candidate` columns. Empty when `domains = FALSE`.
 
 ### Example
 
@@ -122,6 +131,13 @@ A data frame, one row per Brazilian state with any occurrence evidence, flagging
 library(fungaR)
 
 gap <- funga_distribution_gap(taxon = "Trichoderma harzianum")
+
+# Candidate new state records
+gap$states
+
+# Candidate new phytogeographic domain records, and the records behind them
+gap$domains
+gap$records[gap$records$New_domain_record_candidate, ]
 
 # Restrict the check to two states, using only GBIF
 gap_ba_pe <- funga_distribution_gap(taxon = "Trichoderma harzianum",
@@ -131,8 +147,9 @@ gap_ba_pe <- funga_distribution_gap(taxon = "Trichoderma harzianum",
 
 ## Additional Tips
 
-- speciesLink's public API has, at the time of writing, a known SSL/endpoint reliability issue; `funga_distribution_gap()` treats speciesLink evidence as strictly best-effort and falls back gracefully to GBIF (and Reflora) when it is unreachable.
+- `funga_distribution_gap()` only queries GBIF by default; add `"speciesLink"` to `sources` (with a free `specieslink_key`) and/or `"reflora"` for additional evidence.
 - Install the [`refloraR`](https://github.com/DBOSlab/refloraR) package to include Reflora specimen evidence in `funga_distribution_gap()`; without it, that source is skipped with a message.
+- Install the [`sf`](https://r-spatial.github.io/sf/) package to include the phytogeographic domain analysis in `funga_distribution_gap()` (`domains = TRUE`, the default); without it, that step is skipped with a message and `domains`/`records` come back empty. Install [`leaflet`](https://rstudio.github.io/leaflet/) as well to see the interactive domain map in the HTML report.
 - Install the [`chromote`](https://rstudio.github.io/chromote/) package (and have a local Chrome/Chromium install) to include the MycoBank locality check in `mycobank_gap()`; without it, that step (and the Brazil-evidence filtering that depends on it) is skipped with a message, and every missing name is returned unfiltered. `spfungorum_gap()` needs no such extra dependency.
 - Combine with [`funga_get_children_taxa()`](/articles/explore_taxonomic_hierarchy.qmd) to build the candidate genus list you want to check against MycoBank or Index Fungorum.
 - `mycobank_gap()`, for larger genera or orders, can take a while when the per-candidate locality checks are enabled — start with `check_locality = FALSE` to size up how many candidates exist before running the full Brazil-evidence check. `spfungorum_gap()`'s Brazil-evidence filtering is always a single request regardless of genus size, but `fetch_details = TRUE` (the default) adds one fast plain-HTTP request per *missing* candidate for the journal/citation/basionym/LSID fields — set `fetch_details = FALSE` to skip that for very large result sets.

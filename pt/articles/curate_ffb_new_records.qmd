@@ -95,11 +95,13 @@ gap_all <- spfungorum_gap(taxon = "Phellinotus", require_brazil_evidence = FALSE
 gap_fast <- spfungorum_gap(taxon = "Phellinotus", fetch_details = FALSE)
 ```
 
-## `funga_distribution_gap()`: encontrar candidatos a novos registros estaduais
+## `funga_distribution_gap()`: encontrar candidatos a novos registros estaduais e de domínio fitogeográfico
 
-Dado um gênero ou espécie fúngica, `funga_distribution_gap()` verifica o GBIF, o speciesLink e o Herbário Virtual Reflora (via o pacote [`refloraR`](https://github.com/DBOSlab/refloraR)) em busca de evidência de espécimes em estados brasileiros que *não* estão atualmente listados na distribuição oficial desse táxon na FFB — sinalizando candidatos a novos registros estaduais.
+Dado um gênero ou espécie fúngica, `funga_distribution_gap()` verifica o GBIF e, opcionalmente, o speciesLink e o Herbário Virtual Reflora (via o pacote [`refloraR`](https://github.com/DBOSlab/refloraR)) em busca de evidência de espécimes em estados brasileiros que *não* estão atualmente listados na distribuição oficial desse táxon na FFB — sinalizando candidatos a novos registros estaduais.
 
-Seu relatório HTML vai um passo além do resumo em nível estadual: ele também lista os **registros de ocorrência individuais** (não agregados) encontrados nos estados candidatos a novo registro, cada um ligando diretamente à própria página desse registro no GBIF ou no Reflora — exatamente a evidência que um taxonomista precisa para verificar o candidato.
+Por padrão (`domains = TRUE`), a função vai um passo além: registros georreferenciados também são posicionados nos seis domínios fitogeográficos brasileiros (Amazônia, Caatinga, Cerrado, Mata Atlântica, Pampa, Pantanal) usando o mapa de biomas do IBGE empacotado com o pacote, sinalizando candidatos a novos registros de **domínio** da mesma forma — ex.: uma espécie que a FFB lista apenas para a Caatinga, mas com coordenadas do GBIF caindo no Cerrado. Isso requer o pacote [`sf`](https://r-spatial.github.io/sf/).
+
+Seu relatório HTML vai ainda mais além das tabelas em nível de estado e domínio: ele plota os registros georreferenciados em um mapa interativo sobre os domínios fitogeográficos (coloridos por status de candidato, via o pacote [`leaflet`](https://rstudio.github.io/leaflet/)), e lista os **registros de ocorrência individuais** (não agregados) por trás de cada candidato a novo estado e novo domínio, cada um ligando diretamente à própria página desse registro no GBIF ou no Reflora — exatamente a evidência que um taxonomista precisa para verificar o candidato.
 
 ### Argumentos
 
@@ -107,14 +109,21 @@ Seu relatório HTML vai um passo além do resumo em nível estadual: ele também
 |---|---|
 | `taxon` | Caractere. Um único nome de gênero ou espécie (ex.: `"Trichoderma harzianum"`). |
 | `state` | Vetor de caracteres opcional restringindo a verificação a estados específicos. `NULL` (padrão) verifica todos os estados com qualquer evidência. |
-| `sources` | Quais fontes consultar: qualquer uma de `"gbif"`, `"speciesLink"`, `"reflora"`. Padrão todas as três. |
+| `sources` | Quais fontes consultar: qualquer uma de `"gbif"`, `"speciesLink"`, `"reflora"`. O padrão é apenas `"gbif"`, a mais rápida. |
+| `specieslink_key` | Chave de API do speciesLink, usada quando `"speciesLink"` está entre `sources`. O padrão é a variável de ambiente `SPECIESLINK_KEY`. |
+| `domains` | Se `TRUE` (padrão), também posiciona registros georreferenciados nos domínios fitogeográficos e sinaliza candidatos a novos registros de domínio. Requer o `sf`. |
+| `max_coordinates` | Número máximo de registros georreferenciados do GBIF lidos para a análise de domínio. O padrão é `5000`. |
 | `version` | Versão do conjunto de dados da FFB a comparar. Padrão `"latest"`. |
-| `save` | Se `TRUE` (padrão), salva o resultado como uma planilha `.xlsx`. |
-| `html_report` | Se `TRUE` (padrão), também grava o relatório HTML interativo, incluindo a tabela de registros individuais. |
+| `save` | Se `TRUE` (padrão), salva o resultado como uma planilha `.xlsx`, uma aba por tabela. |
+| `html_report` | Se `TRUE` (padrão), também grava o relatório HTML interativo, incluindo o mapa de domínios e as tabelas de registros individuais. |
 
 ### Valor
 
-Um data frame, uma linha por estado brasileiro com qualquer evidência de ocorrência, sinalizando `New_state_record_candidate = TRUE` sempre que um estado tem evidência externa mas não está na distribuição oficial da FFB.
+Uma **lista de três data frames**:
+
+- `states` — uma linha por estado brasileiro com qualquer evidência de ocorrência, sinalizando `New_state_record_candidate = TRUE` sempre que um estado tem evidência externa mas não está na distribuição oficial da FFB.
+- `domains` — uma linha por domínio fitogeográfico com qualquer evidência, sinalizando `New_domain_record_candidate = TRUE` da mesma forma. Vazia quando `domains = FALSE`.
+- `records` — uma linha por registro georreferenciado, com suas coordenadas, estado e domínio atribuídos, e as colunas lógicas `New_state_record_candidate`/`New_domain_record_candidate`. Vazia quando `domains = FALSE`.
 
 ### Exemplo
 
@@ -122,6 +131,13 @@ Um data frame, uma linha por estado brasileiro com qualquer evidência de ocorr�
 library(fungaR)
 
 gap <- funga_distribution_gap(taxon = "Trichoderma harzianum")
+
+# Candidatos a novos registros estaduais
+gap$states
+
+# Candidatos a novos registros de domínio fitogeográfico, e os registros por trás deles
+gap$domains
+gap$records[gap$records$New_domain_record_candidate, ]
 
 # Restringir a verificação a dois estados, usando apenas o GBIF
 gap_ba_pe <- funga_distribution_gap(taxon = "Trichoderma harzianum",
@@ -131,8 +147,9 @@ gap_ba_pe <- funga_distribution_gap(taxon = "Trichoderma harzianum",
 
 ## Dicas Adicionais
 
-- A API pública do speciesLink tem, no momento desta escrita, um problema conhecido de confiabilidade de SSL/endpoint; `funga_distribution_gap()` trata a evidência do speciesLink como estritamente best-effort e recorre graciosamente ao GBIF (e ao Reflora) quando ele está inacessível.
+- `funga_distribution_gap()` consulta apenas o GBIF por padrão; adicione `"speciesLink"` a `sources` (com uma `specieslink_key` gratuita) e/ou `"reflora"` para evidência adicional.
 - Instale o pacote [`refloraR`](https://github.com/DBOSlab/refloraR) para incluir evidência de espécimes do Reflora em `funga_distribution_gap()`; sem ele, essa fonte é ignorada com uma mensagem.
+- Instale o pacote [`sf`](https://r-spatial.github.io/sf/) para incluir a análise de domínio fitogeográfico em `funga_distribution_gap()` (`domains = TRUE`, o padrão); sem ele, essa etapa é ignorada com uma mensagem e `domains`/`records` voltam vazios. Instale também o [`leaflet`](https://rstudio.github.io/leaflet/) para ver o mapa interativo de domínios no relatório HTML.
 - Instale o pacote [`chromote`](https://rstudio.github.io/chromote/) (e tenha uma instalação local do Chrome/Chromium) para incluir a verificação de localidade do MycoBank em `mycobank_gap()`; sem ele, essa etapa (e a filtragem de evidência no Brasil que depende dela) é ignorada com uma mensagem, e todo nome ausente é retornado sem filtro. `spfungorum_gap()` não precisa dessa dependência extra.
 - Combine com [`funga_get_children_taxa()`](/pt/articles/explore_taxonomic_hierarchy.qmd) para montar a lista de gêneros candidatos que você quer verificar com o MycoBank ou o Index Fungorum.
 - `mycobank_gap()`, para gêneros ou ordens maiores, pode levar um tempo quando as verificações de localidade por candidato estão habilitadas — comece com `check_locality = FALSE` para dimensionar quantos candidatos existem antes de rodar a verificação completa de evidência no Brasil. A filtragem de evidência no Brasil de `spfungorum_gap()` é sempre uma única requisição independentemente do tamanho do gênero, mas `fetch_details = TRUE` (o padrão) adiciona uma requisição HTTP simples e rápida por candidato *ausente* para os campos de periódico/citação/basiônimo/LSID — defina `fetch_details = FALSE` para pular isso em conjuntos de resultados muito grandes.

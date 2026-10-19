@@ -18,7 +18,8 @@ Here we present a practical guide to the `funga_records()` function of the `fung
 | `taxonomicStatus` | Character vector. FFB taxonomic status: `"NOME_ACEITO"` (accepted), `"SINONIMO"` (synonym), or `"NOME_DUVIDOSO"` (doubtful). |
 | `state` | Character vector. Brazilian state(s), full name or acronym, diacritics-insensitive (e.g. `"Bahia"` or `"BA"`). |
 | `phytogeographicDomain` | Character vector. Phytogeographic domain(s) (e.g. `"Caatinga"`, `"Mata Atlantica"`). |
-| `endemism` | Logical. `TRUE` keeps only Brazilian endemics; `FALSE` keeps only non-endemics. |
+| `endemism` | `TRUE`, `FALSE`, `"Brazil"`, or `NULL`. See [Endemism](#endemism) below. |
+| `establishmentMeans` | Character vector. The taxon's origin in Brazil: `"native"`/`"nativa"` or `"introduced"`/`"exotic"`/`"exotica"` (English or Portuguese, case- and accent-insensitive). |
 | `lifeForm`, `habitat`, `vegetationType` | Character vectors. Nutritional/ecological mode (e.g. `"Saprobio"`, `"Liquenizado"`), substrate/host (e.g. `"Tronco em decomposicao"`, `"Solo"`, `"Outro fungo"` — this is what `habitat` means for fungi, since FFB has no separate named host-taxon field) and vegetation type (e.g. `"Cerrado (lato sensu)"`). |
 | `version` | Character. FFB dataset version to use. Defaults to `"latest"`. |
 | `rm_funga_database` | Logical. If `TRUE`, deletes the downloaded database after the search. Default `FALSE` keeps it cached for faster repeated queries. |
@@ -35,11 +36,32 @@ Beyond the taxon table columns (`taxonName`, `family`, `genus`, `taxonRank`, `ta
 | `state` | distribution table | Brazilian state(s) with occurrence records |
 | `phytogeographicDomain` | distribution table | Phytogeographic domain(s) |
 | `endemism` | distribution table | Endemism status as recorded by FFB |
+| `establishmentMeans` | distribution table | Origin (native/introduced) as recorded by FFB |
 | `lifeForm` | species profile table | Nutritional/ecological mode(s) |
 | `habitat` | species profile table | Substrate/host record(s) |
 | `vegetationType` | species profile table | Vegetation type(s) |
 
-A single taxon can have several distribution or species-profile records (e.g. occurring in multiple states, or recorded on multiple substrates). Rather than multiplying rows, `funga_records()` concatenates all distinct values for each of these columns with `" | "`, so the result always keeps exactly one row per taxon.
+A single taxon can have several distribution or species-profile records (e.g. occurring in multiple states, or recorded on multiple substrates). Rather than multiplying rows, `funga_records()` concatenates all distinct values for each of these columns with `" | "`, so the result always keeps exactly one row per taxon — this happens regardless of which filters you applied, so even a taxon-only query returns its full distribution and species profile alongside it.
+
+## Endemism
+
+FFB's own `endemism` flag means **endemic to Brazil**. How `endemism` behaves therefore depends on whether you also give an area filter — `state`, `phytogeographicDomain`, or `vegetationType`:
+
+- `endemism = TRUE` **without** an area filter returns every Brazilian endemic.
+- `endemism = TRUE` **with** an area filter narrows further, to endemics *exclusive* to that area — taxa whose entire FFB range lies within it. `state = "Bahia", endemism = TRUE` returns taxa found only in Bahia, not every Brazilian endemic that merely also occurs there. Several values of one filter define a single combined area (`state = c("BA", "PE")`: taxa restricted to Bahia and/or Pernambuco), and combining several area filters requires exclusivity to each one.
+- `endemism = "Brazil"` keeps Brazilian endemics that *occur* in the requested area(s), wherever else in Brazil they also occur — this is the "endemic AND occurring here" behavior you might expect from `TRUE` at first glance.
+- `endemism = FALSE` is the complement of `TRUE`: non-endemics overall, or (with an area filter) taxa occurring there that are *not* exclusive to it.
+
+```r
+# Species endemic to Brazil overall
+brazil_endemics <- funga_records(endemism = TRUE)
+
+# Species endemic to Bahia specifically: found only in Bahia
+bahia_endemics <- funga_records(state = "Bahia", endemism = TRUE)
+
+# Brazilian endemics that occur in Bahia (and possibly elsewhere too)
+brazil_endemics_in_bahia <- funga_records(state = "Bahia", endemism = "Brazil")
+```
 
 ## Browse a whole family
 
@@ -56,6 +78,13 @@ hymeno <- funga_records(taxon = "Hymenochaetaceae",
 bahia_endemics <- funga_records(state = "Bahia",
                                 endemism = TRUE,
                                 taxonomicStatus = "NOME_ACEITO")
+```
+
+## Filter by origin (native or introduced)
+
+```r
+bahia_introduced <- funga_records(state = "Bahia",
+                                  establishmentMeans = "introduced")
 ```
 
 ## Filter by phytogeographic domain and nutritional mode
@@ -83,7 +112,7 @@ funga_records(taxon = "Trichoderma",
 ## Additional Tips
 
 - `taxon` is matched against the `family`, `genus` and `taxonName` columns automatically — a family name ending in `"aceae"`, a single-word genus, or a multi-word species name are all detected and matched appropriately.
-- Combine multiple filters freely: they are always ANDed together, so `funga_records(taxon = "Hymenochaetaceae", state = "Bahia", endemism = TRUE)` returns Hymenochaetaceae species endemic to Bahia.
+- Combine multiple filters freely: they are always ANDed together, so `funga_records(taxon = "Hymenochaetaceae", state = "Bahia", endemism = TRUE)` returns Hymenochaetaceae species endemic to Bahia (found only there — see [Endemism](#endemism) above if you instead want every Brazilian endemic occurring in Bahia).
 - If you already have your own species list to resolve rather than browse the checklist by criteria, use [`funga_search()` or `funga_match()`](/articles/resolve_species_names.qmd) instead.
 
 ## See Also

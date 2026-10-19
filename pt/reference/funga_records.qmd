@@ -28,12 +28,26 @@ exatamente como `funga_search`, e então aplica os filtros solicitados:
 
 - `taxon` é comparado com as colunas `family`, `genus`, e `taxonName` da tabela de táxons da FFB (nomes de família terminados em `"aceae"`, nomes de gênero de uma palavra, e nomes de espécie de múltiplas palavras são detectados automaticamente).
 - `taxonRank` e `taxonomicStatus` são comparados diretamente com a tabela de táxons.
-- `state`, `phytogeographicDomain`, e `endemism` são comparados com a tabela de distribuição da FFB (`distribution.txt`).
+- `state`, `phytogeographicDomain`, `endemism`, e `establishmentMeans` são comparados com a tabela de distribuição da FFB (`distribution.txt`).
 - `lifeForm`, `habitat`, e `vegetationType` são comparados com a tabela de perfil de espécie da FFB (`speciesprofile.txt`).
 
+Filtros de texto são insensíveis a maiúsculas/minúsculas e acentuação
+(`"Mata Atlantica"` corresponde a `"Mata Atlântica"`, `"Liquenizado"`
+corresponde a `"liquenizado"`).
 Todos os filtros são combinados com um E lógico. O resultado sempre tem
 uma linha por táxon correspondente (filtros geográficos/de atributos
 restringem *quais* táxons são retornados, não multiplicam linhas).
+
+### Endemismo
+
+O próprio sinalizador `endemism` da FFB significa *endêmico ao Brasil*. A
+forma como `endemism` é aplicado depende, portanto, de um filtro de área -
+`state`, `phytogeographicDomain`, ou `vegetationType` - também ter sido
+fornecido:
+
+- `endemism = TRUE` sem um filtro de área retorna todos os endêmicos brasileiros. **Com** um filtro de área, retorna os endêmicos *exclusivos* dessas áreas: endêmicos brasileiros cuja distribuição inteira na FFB está contida nelas. Por exemplo, `state = "Bahia", endemism = TRUE` retorna os táxons encontrados apenas na Bahia, não todo endêmico brasileiro que também ocorra lá. Vários valores de um mesmo filtro definem uma única área (`state = c("BA", "PE")`: táxons restritos à Bahia e/ou Pernambuco), e com vários filtros de área o táxon deve ser exclusivo a cada um (`state = "Bahia", phytogeographicDomain = "Caatinga"`: táxons encontrados apenas na Bahia e apenas na Caatinga). Um táxon sem registro para um filtro de área (ex.: sem distribuição em nível de estado) não pode ser demonstrado como exclusivo a ele e não é retornado.
+- `endemism = "Brazil"` mantém os endêmicos brasileiros que *ocorrem* nas áreas solicitadas, onde quer que também ocorram no restante do Brasil (ex.: os endêmicos brasileiros registrados na Bahia).
+- `endemism = FALSE` sem um filtro de área retorna os táxons não endêmicos do Brasil; com um filtro de área, os táxons que ocorrem nessas áreas mas *não* são exclusivos a elas.
 
 ### Argumentos
 
@@ -42,10 +56,11 @@ restringem *quais* táxons são retornados, não multiplicam linhas).
 | taxon | Vetor de caracteres. Um ou mais nomes de família, gênero, ou espécie para filtrar (ex.: `c("Hymenochaetaceae", "Trichoderma", "Xylaria hypoxylon")`). `NULL` (padrão) não filtra por táxon. |
 | taxonRank | Vetor de caracteres. Nível(is) taxonômico(s) a manter (ex.: `"ESPECIE"`, `"VARIEDADE"`, `"SUBESPECIE"`, `"FORMA"`, `"GENERO"`, `"ORDEM"`, `"DIVISAO"` - fungos são classificados na FFB por Divisão/filo em vez de Classe). `NULL` (padrão) mantém todos os níveis. |
 | taxonomicStatus | Vetor de caracteres. Status taxonômico na FFB a manter: `"NOME_ACEITO"` (aceito), `"SINONIMO"` (sinônimo), ou `"NOME_DUVIDOSO"` (duvidoso). `NULL` (padrão) mantém todos os status. |
-| state | Vetor de caracteres. Estado(s) brasileiro(s) - nome completo ou sigla, insensível a acentuação (ex.: `"Bahia"` ou `"BA"`) - para filtrar por ocorrência, baseado na tabela de distribuição da FFB. `NULL` (padrão) não filtra por estado. |
+| state | Vetor de caracteres. Estado(s) brasileiro(s) - nome completo ou sigla, insensível a acentuação (ex.: `"Bahia"` ou `"BA"`) - para filtrar por ocorrência, baseado na tabela de distribuição da FFB (ou, com `endemism = TRUE`, por ocorrência exclusiva; veja a seção Endemismo). `NULL` (padrão) não filtra por estado. |
 | phytogeographicDomain | Vetor de caracteres. Domínio(s) fitogeográfico(s) para filtrar (ex.: `"Caatinga"`, `"Mata Atlantica"`). `NULL` (padrão) não filtra por domínio. |
-| endemism | Lógico. Se `TRUE`, mantém apenas táxons sinalizados como endêmicos do Brasil; se `FALSE`, mantém apenas não endêmicos. `NULL` (padrão) não filtra por endemismo. |
-| lifeForm, habitat, vegetationType | Vetores de caracteres, baseados na tabela de perfil de espécie da FFB. `NULL` (padrão) não filtra. - `lifeForm`: modo nutricional/ecológico, ex.: `"Saprobio"`, `"Parasita"`, `"Liquenizado"`, `"Micorrizico"`, `"Endofitico"`, `"Entomogeno"`. - `habitat`: para fungos, este campo registra o **substrato/hospedeiro** em que o fungo foi coletado, em vez de um hábito de crescimento vegetal, ex.: `"Planta viva - raiz"`, `"Planta viva - folha"`, `"Planta viva - cortex do caule"`, `"Tronco em decomposicao"`, `"Folhedo"`, `"Solo"`, `"Esterco ou Fezes"`, `"Outro fungo"`, `"Animal morto"`. Use este argumento para navegar a lista de espécies por tipo de hospedeiro/substrato (a FFB atualmente não publica um campo de táxon-hospedeiro nomeado separadamente). - `vegetationType`: tipo de vegetação onde o registro foi feito, ex.: `"Floresta Ombrofila (= Floresta Pluvial)"`, `"Cerrado (lato sensu)"`, `"Manguezal"`. |
+| endemism | `TRUE`, `FALSE`, `"Brazil"`, ou `NULL`. `TRUE` mantém endêmicos: endêmicos brasileiros sem filtro de área, ou os endêmicos exclusivos ao `state`, `phytogeographicDomain`, ou `vegetationType` solicitado. `"Brazil"` mantém endêmicos brasileiros que ocorrem nessas áreas. `FALSE` mantém o complemento de `TRUE`. `NULL` (padrão) não filtra por endemismo. Veja a seção Endemismo. |
+| establishmentMeans | Vetor de caracteres. A origem do táxon no Brasil - se é nativo do país ou foi introduzido nele - conforme registrado no campo `establishmentMeans` da FFB: `"native"` (`"Nativa"` na FFB) ou `"introduced"` (`"Exótica"` na FFB). Em inglês ou português, insensível a maiúsculas/minúsculas e acentuação: `"native"`/`"nativa"`, `"introduced"`/`"exotic"`/`"exotica"`. `NULL` (padrão) não filtra por origem; táxons cuja origem a FFB não registra só são retornados nesse caso. |
+| lifeForm, habitat, vegetationType | Vetores de caracteres, baseados na tabela de perfil de espécie da FFB. `NULL` (padrão) não filtra. - `lifeForm`: modo nutricional/ecológico, ex.: `"Saprobio"`, `"Parasita"`, `"Liquenizado"`, `"Micorrizico"`, `"Endofitico"`, `"Entomogeno"`. - `habitat`: para fungos, este campo registra o **substrato/hospedeiro** em que o fungo foi coletado, em vez de um hábito de crescimento vegetal, ex.: `"Planta viva - raiz"`, `"Planta viva - folha"`, `"Planta viva - cortex do caule"`, `"Tronco em decomposicao"`, `"Folhedo"`, `"Solo"`, `"Esterco ou Fezes"`, `"Outro fungo"`, `"Animal morto"`. Use este argumento para navegar a lista de espécies por tipo de hospedeiro/substrato (a FFB não publica atualmente um campo de táxon-hospedeiro nomeado separadamente). - `vegetationType`: tipo de vegetação onde o registro foi feito, ex.: `"Floresta Ombrofila (= Floresta Pluvial)"`, `"Cerrado (lato sensu)"`, `"Manguezal"`. |
 | version | Caractere. Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. Passado para `funga_download` e `funga_parse`. |
 | rm_funga_database | Lógico. Se `TRUE`, a pasta do banco de dados da FFB baixado (`"funga_download"`) é excluída após a busca ser concluída. Se `FALSE` (padrão), o banco de dados é mantido em disco e reutilizado em chamadas subsequentes, o que acelera significativamente consultas repetidas. |
 | verbose | Lógico. Se `TRUE` (padrão), imprime mensagens informativas de progresso durante o download e a análise. Se `FALSE`, executa silenciosamente. |
@@ -56,15 +71,15 @@ restringem *quais* táxons são retornados, não multiplicam linhas).
 ### Valor
 
 Um `data.frame` de registros de táxons da FFB correspondentes aos filtros
-solicitados, com uma linha por táxon, acrescido das informações de
-distribuição e perfil de espécie correspondentes para esse táxon:
-`state`, `phytogeographicDomain`, `endemism`, `lifeForm`,
-`habitat`, e `vegetationType`. Como um mesmo táxon pode ter
-vários registros de distribuição/perfil de espécie (ex.: ocorrendo em
-múltiplos estados, ou registrado em múltiplos substratos), cada uma dessas
-colunas concatena todos os valores distintos para esse táxon com `" | "`
-em vez de multiplicar linhas. Se `save = TRUE`, o resultado também é
-gravado em `<dir>/<filename>.csv`.
+solicitados, com uma linha por táxon. Além dos campos do táxon, cada linha
+carrega a distribuição e o perfil de espécie do táxon, os valores únicos de
+cada campo unidos em uma célula com `" | "` (ex.: `"BA | MG | PE"`):
+`state` (siglas), `phytogeographicDomain`, `endemism`,
+`establishmentMeans`, `lifeForm`, `habitat`, e `vegetationType` - sempre
+descrevendo o registro completo do táxon, independentemente de quais
+filtros foram aplicados. Um campo que a FFB não registra para um táxon é
+`NA`. Se `save = TRUE`, o resultado também é gravado em
+`<dir>/<filename>.csv`.
 
 ### Exemplos
 
@@ -73,10 +88,28 @@ gravado em `<dir>/<filename>.csv`.
 hymeno <- funga_records(taxon = "Hymenochaetaceae",
                         taxonomicStatus = "NOME_ACEITO")
 
-# Espécies aceitas endêmicas da Bahia
+# Todas as espécies aceitas endêmicas do Brasil
+brazil_endemics <- funga_records(endemism = TRUE,
+                                 taxonomicStatus = "NOME_ACEITO")
+
+# Espécies aceitas endêmicas da Bahia: encontradas apenas na Bahia
 bahia_endemics <- funga_records(state = "Bahia",
                                 endemism = TRUE,
                                 taxonomicStatus = "NOME_ACEITO")
+
+# Endêmicos brasileiros aceitos que ocorrem na Bahia (e possivelmente em outros lugares)
+brazil_endemics_in_bahia <- funga_records(state = "Bahia",
+                                          endemism = "Brazil",
+                                          taxonomicStatus = "NOME_ACEITO")
+
+# Espécies endêmicas da Caatinga da Bahia: encontradas apenas na Bahia, apenas na Caatinga
+bahia_caatinga_endemics <- funga_records(state = "Bahia",
+                                         phytogeographicDomain = "Caatinga",
+                                         endemism = TRUE)
+
+# Espécies introduzidas (exóticas) registradas na Bahia
+bahia_introduced <- funga_records(state = "Bahia",
+                                  establishmentMeans = "introduced")
 
 # Fungos liquenizados registrados na Caatinga
 caatinga_lichens <- funga_records(phytogeographicDomain = "Caatinga",

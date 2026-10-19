@@ -12,62 +12,104 @@ fungaR::funga_distribution_gap()
 
 ### Descrição
 
-Dado um gênero ou espécie fúngica, verifica o [GBIF](https://www.gbif.org),
-o [speciesLink](https://specieslink.net), e (opcionalmente) o
-[Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora/) em busca de
-evidência de espécime/ocorrência do táxon em estados brasileiros que *não*
-estão atualmente listados em sua distribuição oficial na Flora e Funga do
-Brasil (FFB). Isso sinaliza candidatos a novos registros estaduais para um
-taxonomista verificar manualmente - ex.: uma espécie listada pela FFB apenas
-para a Bahia, mas com espécimes indexados de Pernambuco.
+Dado um gênero ou espécie fúngica, verifica o [GBIF](https://www.gbif.org) e,
+opcionalmente, o [speciesLink](https://specieslink.net) e o
+[Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora/) em busca de evidência de
+espécime e ocorrência do táxon em estados brasileiros que *não* estão
+atualmente listados em sua distribuição oficial na Flora e Funga do Brasil
+(FFB). Isso sinaliza candidatos a novos registros estaduais para um
+taxonomista verificar - ex.: uma espécie listada pela FFB apenas para a
+Bahia, mas com espécimes indexados de Pernambuco - de modo que as
+distribuições nas monografias da FFB possam ser mantidas completas.
+Registros georreferenciados também são posicionados nos seis domínios
+fitogeográficos brasileiros, para sinalizar candidatos a novos registros de
+domínio da mesma forma.
 
 ### Detalhes
 
-Os próprios estados oficialmente listados pela FFB são recuperados da mesma
-forma que `funga_records` faz internamente, a partir da tabela de
-distribuição da FFB analisada. A evidência de ocorrência além da FFB vem de
-até três fontes independentes (veja `sources`): a API REST pública do GBIF
-(sem necessidade de chave, e a mais confiável das três), o serviço web
-público do speciesLink (best-effort - veja a Nota de `mycobank_gap`
-sobre seus problemas conhecidos de SSL/endpoint), e a função
-`reflora_records` do pacote refloraR para dados de espécimes do
-Reflora (usada apenas se o pacote refloraR estiver instalado).
+**Lado da FFB.** Os estados oficialmente listados vêm das tabelas de táxons
+e de distribuição da FFB analisadas (o mesmo conjunto de dados em cache
+local que `funga_records`). Para um gênero, os estados de todas as suas
+espécies e táxons infraespecíficos são combinados; para uma espécie, os da
+própria espécie e seus táxons infraespecíficos. Se o nome é um sinônimo na
+FFB, a distribuição de seu nome aceito é usada.
+
+**Evidência de ocorrência.** Até três fontes podem ser consultadas (veja
+`sources`):
+
+- `"gbif"` (padrão) — API pública do GBIF. O nome é primeiro resolvido à sua chave no backbone do GBIF restrita ao reino Fungi (de modo que um nome de gênero compartilhado com uma planta, alga, ou animal nunca é confundido com o fúngico), então os registros de seus sinônimos e táxons infraespecíficos são incluídos. Todos os estados são contados em uma única requisição.
+- `"reflora"` — Espécimes do Herbário Virtual Reflora, via `reflora_records` (requer o pacote refloraR). Note que o primeiro uso baixa os arquivos do herbário Reflora - vários gigabytes - que o refloraR então armazena em cache para chamadas futuras.
+- `"speciesLink"` — API do speciesLink, que requer uma chave de API gratuita (`specieslink_key`; crie uma em https://specieslink.net).
+
+Valores de texto livre de estado nessas fontes (ex.: `"Ba"`, `"Est. do Bahia"`,
+`"Paraiba"`) são normalizados para os nomes de estado da FFB antes da
+comparação; valores que não são estados brasileiros são ignorados.
+
+**Domínios fitogeográficos.** Com `domains = TRUE` (padrão), os registros
+do GBIF que têm coordenadas - excluindo aqueles que o GBIF sinaliza com
+problemas geoespaciais, como coordenadas zeradas ou coordenadas fora do
+país declarado - são posicionados nos seis domínios fitogeográficos
+brasileiros (Amazônia, Caatinga, Cerrado, Mata Atlântica, Pampa, Pantanal)
+usando o mapa de biomas do IBGE (2019) empacotado com o fungaR,
+simplificado a uma tolerância de 1 km. Um domínio com registros mas não
+listado para o táxon na FFB é um candidato a novo registro de domínio. Até
+`max_coordinates` registros são lidos (300 por requisição); espécimes do
+Reflora com coordenadas são adicionados quando `"reflora"` está entre
+`sources`. Registros que caem fora dos seis domínios (ex.: apenas na costa)
+são mantidos em `records`, com `Domain = NA`, mas nunca são
+sinalizados nem desenhados no mapa do relatório. Esta análise requer o
+pacote sf, e o mapa no relatório HTML o pacote leaflet; sem eles, são
+ignorados com uma mensagem.
+
+Registros de ocorrência são evidência a revisar, não prova: um registro em
+um novo estado pode ser um espécime cultivado, uma identificação incorreta,
+ou um erro de georreferenciamento, razão pela qual o relatório HTML lista
+os registros individuais por trás de cada estado candidato.
 
 ### Argumentos
 
 | Argumento | Descrição |
 |---|---|
 | taxon | Caractere. Um único nome de gênero ou espécie fúngica (ex.: `"Trichoderma harzianum"` ou `"Trichoderma"`). |
-| state | Vetor de caracteres. Subconjunto opcional de estados brasileiros (nome completo ou sigla) para restringir a verificação. `NULL` (padrão) verifica todos os estados com qualquer evidência das `sources` solicitadas. |
-| sources | Vetor de caracteres. Quais fontes de ocorrência consultar: qualquer uma de `"gbif"`, `"speciesLink"`, `"reflora"`. O padrão é todas as três. |
-| version | Caractere. Versão do conjunto de dados da FFB a comparar. Padrão `"latest"`. Passado para `funga_records`. |
+| state | Vetor de caracteres. Subconjunto opcional de estados brasileiros (nome completo ou sigla) para restringir a verificação. `NULL` (padrão) verifica todos os estados com qualquer evidência. |
+| sources | Vetor de caracteres. Quais fontes de ocorrência consultar: qualquer uma de `"gbif"`, `"reflora"`, `"speciesLink"`. O padrão é `"gbif"`, a mais rápida. Veja Detalhes para os requisitos das outras duas. |
+| specieslink_key | Caractere. Chave de API do speciesLink, usada quando `"speciesLink"` está entre `sources`. O padrão é a variável de ambiente `SPECIESLINK_KEY`. |
+| domains | Lógico. Se `TRUE` (padrão), também posiciona os registros georreferenciados nos domínios fitogeográficos brasileiros e sinaliza candidatos a novos registros de domínio (veja Detalhes). Requer o pacote sf. |
+| max_coordinates | Numérico. Número máximo de registros georreferenciados do GBIF lidos para a análise de domínio. O padrão é `5000`. |
+| version | Caractere. Versão do conjunto de dados da FFB a comparar. Padrão `"latest"`. Passado para `funga_download`. |
 | verbose | Lógico. Se `TRUE` (padrão), imprime mensagens de progresso. |
 | save | Lógico. Se `TRUE` (padrão), o resultado é salvo em disco como uma planilha `.xlsx`. |
 | dir | Caractere. Diretório onde a planilha é salva quando `save = TRUE`. O padrão é `"funga_distribution_gap"`. |
 | filename | Caractere. Nome do arquivo `.xlsx` (sem extensão) a salvar. O padrão é `"funga_distribution_gap_<taxon>"`. |
-| html_report | Lógico. Se `TRUE` (padrão), também grava um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: contagens-chave (KPIs), um detalhamento de evidência por fonte, a tabela completa estado por estado, e os registros de ocorrência individuais (não agregados) encontrados nos estados candidatos a novo registro - cada um linkando para o registro específico em sua base de dados de origem (página de ocorrência do GBIF ou página de espécime do Reflora) - tudo como widgets DT ordenáveis e filtráveis, com botões para copiar ou baixar em CSV/Excel. Requer os pacotes rmarkdown, DT, e htmltools; se algum estiver ausente, o relatório é ignorado com uma mensagem (a planilha `.xlsx` não é afetada). |
-| open_report | Lógico. Se `TRUE` (padrão em sessões interativas), abre o relatório HTML renderizado no navegador padrão. |
+| html_report | Lógico. Se `TRUE` (padrão), também grava um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: contagens-chave (KPIs), um detalhamento de evidência por fonte, a tabela completa estado por estado, a tabela de domínios, um mapa interativo dos registros georreferenciados sobre os domínios fitogeográficos (coloridos por status de candidato), os registros em domínios candidatos, e os registros de ocorrência individuais encontrados nos estados candidatos a novo registro - cada um ligando ao registro em sua base de dados de origem - tudo como widgets DT ordenáveis e filtráveis, com botões para copiar ou baixar em CSV/Excel. Requer os pacotes rmarkdown, DT, e htmltools; se algum estiver ausente, o relatório é ignorado com uma mensagem (a planilha `.xlsx` não é afetada). |
+| open_report | Lógico. Se `TRUE` (padrão em sessões interativas), abre o relatório HTML no navegador assim que renderizado. |
 
 ### Valor
 
-Um `data.frame`, uma linha por estado brasileiro com qualquer evidência de
-ocorrência para `taxon`, com colunas:
+Uma lista de três `data.frame`s:
 
-- **Taxon** — O nome do táxon consultado.
-- **State** — Nome do estado brasileiro.
-- **In_FFB_distribution** — Lógico; se a FFB já lista esse estado para o táxon.
-- **GBIF_records** — Número de registros de ocorrência do GBIF no Brasil nesse estado (quando `"gbif" %in% sources`).
-- **speciesLink_evidence** — Lógico; se o speciesLink reportou esse estado (best-effort, veja Detalhes).
-- **Reflora_records** — Número de registros de espécimes do Reflora nesse estado (quando `"reflora" %in% sources` e o refloraR está instalado).
-- **New_state_record_candidate** — `TRUE` quando o estado tem evidência de pelo menos uma fonte externa mas *não* está em `In_FFB_distribution` - ou seja, um candidato que merece revisão taxonômica manual.
+- **states** — Uma linha por estado brasileiro com qualquer evidência para `taxon` (na FFB ou nas fontes consultadas): `Taxon`, `State`, `In_FFB_distribution` (se a FFB já lista o estado), `GBIF_records`, `Reflora_records`, e `speciesLink_records` (registros no estado, para cada fonte consultada), e `New_state_record_candidate` (`TRUE` quando o estado tem evidência de pelo menos uma fonte mas não está na distribuição da FFB).
+- **domains** — Uma linha por domínio fitogeográfico com evidência (na FFB ou entre os registros georreferenciados): `Taxon`, `Domain`, `In_FFB_distribution`, `Georeferenced_records`, e `New_domain_record_candidate`. Vazia quando `domains = FALSE`.
+- **records** — Uma linha por registro georreferenciado, com suas coordenadas, `State`, `Domain`, coletor, data, instituição, número de catálogo, identificação, um link para o registro, e as colunas lógicas `New_state_record_candidate` e `New_domain_record_candidate`. Vazia quando `domains = FALSE`.
+
+Com `save = TRUE`, cada tabela é salva como uma planilha do arquivo
+`.xlsx`.
 
 ### Exemplos
 
 ```r
+# Candidatos a novos registros estaduais para uma espécie
 gap <- funga_distribution_gap(taxon = "Trichoderma harzianum")
 
-# Restringir a verificação a dois estados, usando apenas o GBIF
-gap_ba_pe <- funga_distribution_gap(taxon = "Trichoderma harzianum",
-                                    state = c("Bahia", "Pernambuco"),
-                                    sources = "gbif")
+# Um gênero inteiro, restrito a dois estados
+gap_ne <- funga_distribution_gap(taxon = "Trichoderma",
+                                 state = c("Pernambuco", "Paraiba"))
+
+# Os candidatos a novos domínios fitogeográficos, e os registros por trás deles
+gap$domains
+gap$records[gap$records$New_domain_record_candidate, ]
+
+# Adicionando espécimes de herbário do Reflora (requer refloraR)
+gap_reflora <- funga_distribution_gap(taxon = "Trichoderma harzianum",
+                                      sources = c("gbif", "reflora"))
 ```

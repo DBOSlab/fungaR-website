@@ -18,7 +18,8 @@ A `funga_records()` baixa e analisa o conjunto de dados da FFB automaticamente (
 | `taxonomicStatus` | Vetor de caracteres. Status taxonômico na FFB: `"NOME_ACEITO"` (aceito), `"SINONIMO"` (sinônimo), ou `"NOME_DUVIDOSO"` (duvidoso). |
 | `state` | Vetor de caracteres. Estado(s) brasileiro(s), nome completo ou sigla, insensível a acentuação (ex.: `"Bahia"` ou `"BA"`). |
 | `phytogeographicDomain` | Vetor de caracteres. Domínio(s) fitogeográfico(s) (ex.: `"Caatinga"`, `"Mata Atlantica"`). |
-| `endemism` | Lógico. `TRUE` mantém apenas endêmicas do Brasil; `FALSE` mantém apenas não endêmicas. |
+| `endemism` | `TRUE`, `FALSE`, `"Brazil"`, ou `NULL`. Veja [Endemismo](#endemismo) abaixo. |
+| `establishmentMeans` | Vetor de caracteres. A origem do táxon no Brasil: `"native"`/`"nativa"` ou `"introduced"`/`"exotic"`/`"exotica"` (inglês ou português, insensível a maiúsculas/minúsculas e acentuação). |
 | `lifeForm`, `habitat`, `vegetationType` | Vetores de caracteres. Modo nutricional/ecológico (ex.: `"Saprobio"`, `"Liquenizado"`), substrato/hospedeiro (ex.: `"Tronco em decomposicao"`, `"Solo"`, `"Outro fungo"` — é isso que `habitat` significa para fungos, já que a FFB não tem um campo de táxon-hospedeiro nomeado separadamente) e tipo de vegetação (ex.: `"Cerrado (lato sensu)"`). |
 | `version` | Caractere. Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. |
 | `rm_funga_database` | Lógico. Se `TRUE`, exclui o banco de dados baixado após a busca. O padrão `FALSE` mantém em cache para buscas repetidas mais rápidas. |
@@ -35,11 +36,32 @@ Além das colunas da tabela de táxons (`taxonName`, `family`, `genus`, `taxonRa
 | `state` | tabela de distribuição | Estado(s) brasileiro(s) com registros de ocorrência |
 | `phytogeographicDomain` | tabela de distribuição | Domínio(s) fitogeográfico(s) |
 | `endemism` | tabela de distribuição | Status de endemismo conforme registrado pela FFB |
+| `establishmentMeans` | tabela de distribuição | Origem (nativa/introduzida) conforme registrado pela FFB |
 | `lifeForm` | tabela de perfil de espécie | Modo(s) nutricional/ecológico |
 | `habitat` | tabela de perfil de espécie | Registro(s) de substrato/hospedeiro |
 | `vegetationType` | tabela de perfil de espécie | Tipo(s) de vegetação |
 
-Um mesmo táxon pode ter vários registros de distribuição ou de perfil de espécie (por exemplo, ocorrendo em múltiplos estados, ou registrado em múltiplos substratos). Em vez de multiplicar linhas, `funga_records()` concatena todos os valores distintos de cada uma dessas colunas com `" | "`, de modo que o resultado sempre mantém exatamente uma linha por táxon.
+Um mesmo táxon pode ter vários registros de distribuição ou de perfil de espécie (por exemplo, ocorrendo em múltiplos estados, ou registrado em múltiplos substratos). Em vez de multiplicar linhas, `funga_records()` concatena todos os valores distintos de cada uma dessas colunas com `" | "`, de modo que o resultado sempre mantém exatamente uma linha por táxon — isso acontece independentemente dos filtros aplicados, então até uma consulta apenas por táxon retorna sua distribuição e perfil de espécie completos junto com ele.
+
+## Endemismo
+
+O próprio sinalizador `endemism` da FFB significa **endêmico ao Brasil**. A forma como `endemism` se comporta depende, portanto, de você também fornecer um filtro de área — `state`, `phytogeographicDomain`, ou `vegetationType`:
+
+- `endemism = TRUE` **sem** um filtro de área retorna todo endêmico brasileiro.
+- `endemism = TRUE` **com** um filtro de área restringe ainda mais, aos endêmicos *exclusivos* dessa área — táxons cuja distribuição inteira na FFB está contida nela. `state = "Bahia", endemism = TRUE` retorna táxons encontrados apenas na Bahia, não todo endêmico brasileiro que também ocorra lá. Vários valores de um mesmo filtro definem uma única área combinada (`state = c("BA", "PE")`: táxons restritos à Bahia e/ou Pernambuco), e combinar vários filtros de área exige exclusividade a cada um deles.
+- `endemism = "Brazil"` mantém endêmicos brasileiros que *ocorrem* na(s) área(s) solicitada(s), onde quer que também ocorram no restante do Brasil — este é o comportamento "endêmico E ocorrendo aqui" que você talvez esperasse de `TRUE` à primeira vista.
+- `endemism = FALSE` é o complemento de `TRUE`: não endêmicos em geral, ou (com um filtro de área) táxons que ocorrem ali mas *não* são exclusivos a ela.
+
+```r
+# Espécies endêmicas do Brasil em geral
+brazil_endemics <- funga_records(endemism = TRUE)
+
+# Espécies endêmicas especificamente da Bahia: encontradas apenas na Bahia
+bahia_endemics <- funga_records(state = "Bahia", endemism = TRUE)
+
+# Endêmicos brasileiros que ocorrem na Bahia (e possivelmente em outros lugares também)
+brazil_endemics_in_bahia <- funga_records(state = "Bahia", endemism = "Brazil")
+```
 
 ## Navegar por uma família inteira
 
@@ -56,6 +78,13 @@ hymeno <- funga_records(taxon = "Hymenochaetaceae",
 bahia_endemics <- funga_records(state = "Bahia",
                                 endemism = TRUE,
                                 taxonomicStatus = "NOME_ACEITO")
+```
+
+## Filtrar por origem (nativa ou introduzida)
+
+```r
+bahia_introduced <- funga_records(state = "Bahia",
+                                  establishmentMeans = "introduced")
 ```
 
 ## Filtrar por domínio fitogeográfico e modo nutricional
@@ -83,7 +112,7 @@ funga_records(taxon = "Trichoderma",
 ## Dicas Adicionais
 
 - `taxon` é comparado automaticamente com as colunas `family`, `genus` e `taxonName` — um nome de família terminado em `"aceae"`, um gênero de uma palavra, ou um nome de espécie de múltiplas palavras são todos detectados e comparados apropriadamente.
-- Combine múltiplos filtros livremente: eles sempre são combinados com E lógico, então `funga_records(taxon = "Hymenochaetaceae", state = "Bahia", endemism = TRUE)` retorna espécies de Hymenochaetaceae endêmicas da Bahia.
+- Combine múltiplos filtros livremente: eles sempre são combinados com E lógico, então `funga_records(taxon = "Hymenochaetaceae", state = "Bahia", endemism = TRUE)` retorna espécies de Hymenochaetaceae endêmicas da Bahia (encontradas apenas ali — veja [Endemismo](#endemismo) acima se você quiser, em vez disso, todo endêmico brasileiro que ocorra na Bahia).
 - Se você já possui sua própria lista de espécies para resolver em vez de navegar a lista de espécies por critérios, use [`funga_search()` ou `funga_match()`](/pt/articles/resolve_species_names.qmd).
 
 ## Veja Também

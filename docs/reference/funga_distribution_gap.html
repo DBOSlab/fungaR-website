@@ -4529,7 +4529,7 @@ height: 400px;
 <main class="content" id="quarto-document-content">
 
 <!-- Google Tag Manager (noscript) -->
- <noscript><iframe role="img" src="data:text/html; charset=UTF-8;charset=utf-8,%3C%21DOCTYPE%20html%3E%0A%0A%0A%3Chtml%20lang%3Den%3E%0A%3Chead%3E%0A%20%20%3Cmeta%20charset%3Dutf%2D8%3E%0A%20%20%3Ctitle%3Ens%3C%2Ftitle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%3C%2Fbody%3E%3C%2Fhtml%3E%0A" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+ <noscript><iframe role="img" src="data:text/html; charset=UTF-8;charset=utf-8,%3C%21DOCTYPE%20html%3E%0A%0A%0A%3Chtml%20lang%3Den%3E%0A%3Chead%3E%0A%20%20%3Cmeta%20charset%3Dutf%2D8%3E%0A%20%20%3Ctitle%3Ens%3C%2Ftitle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%3C%2Fbody%3E%3C%2Fhtml%3E%0A" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -4561,11 +4561,16 @@ height: 400px;
 </div>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Given a fungal genus or species, checks <a href="https://www.gbif.org">GBIF</a>, <a href="https://specieslink.net">speciesLink</a>, and (optionally) the <a href="https://ipt.jbrj.gov.br/reflora/">Reflora Virtual Herbarium</a> for specimen/occurrence evidence of the taxon in Brazilian states that are <em>not</em> currently listed in its official Flora e Funga do Brasil (FFB) distribution. This flags candidate new state records for a taxonomist to manually verify - e.g. a species listed by FFB only for Bahia, but with specimens indexed from Pernambuco.</p>
+<p>Given a fungal genus or species, checks <a href="https://www.gbif.org">GBIF</a> and, optionally, <a href="https://specieslink.net">speciesLink</a> and the <a href="https://ipt.jbrj.gov.br/reflora/">Reflora Virtual Herbarium</a> for specimen and occurrence evidence of the taxon in Brazilian states that are <em>not</em> currently listed in its official Flora e Funga do Brasil (FFB) distribution. This flags candidate new state records for a taxonomist to verify - e.g. a species listed by FFB only for Bahia, but with specimens indexed from Pernambuco - so that the distributions in FFB monographs can be kept complete. Georeferenced records are also placed in the six Brazilian phytogeographic domains, to flag candidate new domain records in the same way.</p>
 </section>
 <section id="details" class="level3">
 <h3 class="anchored" data-anchor-id="details">Details</h3>
-<p>FFB’s own officially-listed states are retrieved the same way <code>funga_records</code> does internally, from the parsed FFB distribution table. Occurrence evidence beyond FFB comes from up to three independent sources (see <code>sources</code>): GBIF’s public REST API (no key required, and the most reliable of the three), speciesLink’s public web service (best-effort - see <code>mycobank_gap</code>’s Note on its known SSL/endpoint issues), and the refloraR package’s <code>reflora_records</code> for Reflora specimen data (used only if the refloraR package is installed).</p>
+<p><strong>FFB side.</strong> The officially listed states come from the parsed FFB taxon and distribution tables (the same locally cached dataset as <code>funga_records</code>). For a genus, the states of all its species and infraspecific taxa are combined; for a species, those of the species and its infraspecific taxa. If the name is a synonym in FFB, the distribution of its accepted name is used.</p>
+<p><strong>Occurrence evidence.</strong> Up to three sources can be queried (see <code>sources</code>):</p>
+<p><code>&quot;gbif&quot;</code> (default)GBIF’s public API. The name is first resolved to its GBIF backbone key within the Fungi kingdom only (so a genus name shared with a plant, alga, or animal is never confused with the fungal one), so the records of its synonyms and infraspecific taxa are included. All states are counted in a single request. <code>&quot;reflora&quot;</code>Reflora Virtual Herbarium specimens, via <code>reflora_records</code> (requires the refloraR package). Note that the first use downloads the Reflora herbarium archives - several gigabytes - which refloraR then caches for later calls. <code>&quot;speciesLink&quot;</code>speciesLink’s API, which requires a free API key (<code>specieslink_key</code>; create one at https://specieslink.net).</p>
+<p>Free-text state values in these sources (e.g. <code>&quot;Ba&quot;</code>, <code>&quot;Est. do Bahia&quot;</code>, <code>&quot;Paraiba&quot;</code>) are normalised to FFB state names before comparison; values that are not Brazilian states are ignored.</p>
+<p><strong>Phytogeographic domains.</strong> With <code>domains = TRUE</code> (default), the GBIF records that have coordinates - excluding those GBIF flags with geospatial issues, such as zero coordinates or coordinates outside the stated country - are placed in the six Brazilian phytogeographic domains (Amazonia, Caatinga, Cerrado, Mata Atlantica, Pampa, Pantanal) using IBGE’s biome map (2019) bundled with fungaR, simplified to a 1 km tolerance. A domain with records but not listed for the taxon in FFB is a candidate new domain record. Up to <code>max_coordinates</code> records are read (300 per request); Reflora specimens with coordinates are added when <code>&quot;reflora&quot;</code> is among <code>sources</code>. Records that fall outside the six domains (e.g. just offshore) are kept in <code>records</code>, with <code>Domain = NA</code>, but are never flagged nor drawn on the report’s map. This analysis requires the sf package, and the map in the HTML report the leaflet package; without them, they are skipped with a message.</p>
+<p>Occurrence records are evidence to review, not proof: a record in a new state may be a cultivated specimen, a misidentification, or a georeferencing error, which is why the HTML report lists the individual records behind each candidate state.</p>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -4587,56 +4592,77 @@ height: 400px;
 </tr>
 <tr class="even">
 <td>state</td>
-<td>Character vector. Optional subset of Brazilian states (full name or acronym) to restrict the check to. <code>NULL</code> (default) checks all states with any evidence from the requested <code>sources</code>.</td>
+<td>Character vector. Optional subset of Brazilian states (full name or acronym) to restrict the check to. <code>NULL</code> (default) checks all states with any evidence.</td>
 </tr>
 <tr class="odd">
 <td>sources</td>
-<td>Character vector. Which occurrence sources to query: any of <code>&quot;gbif&quot;</code>, <code>&quot;speciesLink&quot;</code>, <code>&quot;reflora&quot;</code>. Defaults to all three.</td>
+<td>Character vector. Which occurrence sources to query: any of <code>&quot;gbif&quot;</code>, <code>&quot;reflora&quot;</code>, <code>&quot;speciesLink&quot;</code>. Defaults to <code>&quot;gbif&quot;</code>, the fastest. See Details for the requirements of the other two.</td>
 </tr>
 <tr class="even">
-<td>version</td>
-<td>Character. FFB dataset version to compare against. Defaults to <code>&quot;latest&quot;</code>. Passed to <code>funga_records</code>.</td>
+<td>specieslink_key</td>
+<td>Character. speciesLink API key, used when <code>&quot;speciesLink&quot;</code> is among <code>sources</code>. Defaults to the <code>SPECIESLINK_KEY</code> environment variable.</td>
 </tr>
 <tr class="odd">
+<td>domains</td>
+<td>Logical. If <code>TRUE</code> (default), also place the georeferenced records in the Brazilian phytogeographic domains and flag candidate new domain records (see Details). Requires the sf package.</td>
+</tr>
+<tr class="even">
+<td>max_coordinates</td>
+<td>Numeric. Maximum number of georeferenced GBIF records read for the domain analysis. Defaults to <code>5000</code>.</td>
+</tr>
+<tr class="odd">
+<td>version</td>
+<td>Character. FFB dataset version to compare against. Defaults to <code>&quot;latest&quot;</code>. Passed to <code>funga_download</code>.</td>
+</tr>
+<tr class="even">
 <td>verbose</td>
 <td>Logical. If <code>TRUE</code> (default), prints progress messages.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>save</td>
 <td>Logical. If <code>TRUE</code> (default), the result is saved to disk as an <code>.xlsx</code> spreadsheet.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>dir</td>
 <td>Character. Directory where the spreadsheet is saved when <code>save = TRUE</code>. Defaults to <code>&quot;funga_distribution_gap&quot;</code>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>filename</td>
 <td>Character. Name of the <code>.xlsx</code> file (without extension) to save. Defaults to <code>&quot;funga_distribution_gap_&lt;taxon&gt;&quot;</code>.</td>
 </tr>
-<tr class="odd">
-<td>html_report</td>
-<td>Logical. If <code>TRUE</code> (default), also writes a self-contained HTML report (<code>&lt;dir&gt;/&lt;filename&gt;.html</code>) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, and the individual occurrence records (not aggregated) found in the new-state-record candidate states - each linking out to the specific record in its source database (GBIF occurrence page or Reflora specimen page) - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <code>.xlsx</code> spreadsheet is unaffected).</td>
-</tr>
 <tr class="even">
+<td>html_report</td>
+<td>Logical. If <code>TRUE</code> (default), also writes a self-contained HTML report (<code>&lt;dir&gt;/&lt;filename&gt;.html</code>) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, the domain table, an interactive map of the georeferenced records over the phytogeographic domains (coloured by candidate status), the records in candidate domains, and the individual occurrence records found in the new-state-record candidate states - each linking to the record in its source database - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <code>.xlsx</code> spreadsheet is unaffected).</td>
+</tr>
+<tr class="odd">
 <td>open_report</td>
-<td>Logical. If <code>TRUE</code> (default in interactive sessions), opens the rendered HTML report in the default browser.</td>
+<td>Logical. If <code>TRUE</code> (default in interactive sessions), opens the HTML report in the browser once rendered.</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A <code>data.frame</code>, one row per Brazilian state with any occurrence evidence for <code>taxon</code>, with columns:</p>
-<p>TaxonThe queried taxon name. StateBrazilian state name. In_FFB_distributionLogical; whether FFB already lists this state for the taxon. GBIF_recordsNumber of Brazil GBIF occurrence records in this state (when <code>&quot;gbif&quot; %in% sources</code>). speciesLink_evidenceLogical; whether speciesLink reported this state (best-effort, see Details). Reflora_recordsNumber of Reflora specimen records in this state (when <code>&quot;reflora&quot; %in% sources</code> and refloraR is installed). New_state_record_candidate<code>TRUE</code> when the state has evidence from at least one external source but is <em>not</em> in <code>In_FFB_distribution</code> - i.e. a candidate worth manual taxonomic review.</p>
+<p>A list of three <code>data.frame</code>s:</p>
+<p><code>states</code>One row per Brazilian state with any evidence for <code>taxon</code> (in FFB or in the queried sources): <code>Taxon</code>, <code>State</code>, <code>In_FFB_distribution</code> (whether FFB already lists the state), <code>GBIF_records</code>, <code>Reflora_records</code>, and <code>speciesLink_records</code> (records in the state, for each source queried), and <code>New_state_record_candidate</code> (<code>TRUE</code> when the state has evidence from at least one source but is not in FFB’s distribution). <code>domains</code>One row per phytogeographic domain with evidence (in FFB or among the georeferenced records): <code>Taxon</code>, <code>Domain</code>, <code>In_FFB_distribution</code>, <code>Georeferenced_records</code>, and <code>New_domain_record_candidate</code>. Empty when <code>domains = FALSE</code>. <code>records</code>One row per georeferenced record, with its coordinates, <code>State</code>, <code>Domain</code>, collector, date, institution, catalogue number, identification, a link to the record, and the logical columns <code>New_state_record_candidate</code> and <code>New_domain_record_candidate</code>. Empty when <code>domains = FALSE</code>.</p>
+<p>With <code>save = TRUE</code>, each table is saved as a sheet of the <code>.xlsx</code> spreadsheet.</p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> <span class="fu">funga_distribution_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma harzianum&quot;</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Restrict the check to two states, using only GBIF</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>gap_ba_pe <span class="ot">&lt;-</span> <span class="fu">funga_distribution_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma harzianum&quot;</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">state =</span> <span class="fu">c</span>(<span class="st">&quot;Bahia&quot;</span>, <span class="st">&quot;Pernambuco&quot;</span>),</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">sources =</span> <span class="st">&quot;gbif&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Candidate new state records for a species</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> <span class="fu">funga_distribution_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma harzianum&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># A whole genus, restricted to two states</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>gap_ne <span class="ot">&lt;-</span> <span class="fu">funga_distribution_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">state =</span> <span class="fu">c</span>(<span class="st">&quot;Pernambuco&quot;</span>, <span class="st">&quot;Paraiba&quot;</span>))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># The candidate new phytogeographic domains, and the records behind them</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>gap<span class="sc">$</span>domains</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>gap<span class="sc">$</span>records[gap<span class="sc">$</span>records<span class="sc">$</span>New_domain_record_candidate, ]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Adding Reflora herbarium specimens (requires refloraR)</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>gap_reflora <span class="ot">&lt;-</span> <span class="fu">funga_distribution_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma harzianum&quot;</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">sources =</span> <span class="fu">c</span>(<span class="st">&quot;gbif&quot;</span>, <span class="st">&quot;reflora&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 <!-- -->
@@ -5123,68 +5149,123 @@ height: 400px;
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Description</span></span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Given a fungal genus or species, checks <span class="co">[</span><span class="ot">GBIF</span><span class="co">](https://www.gbif.org)</span>,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">speciesLink</span><span class="co">](https://specieslink.net)</span>, and (optionally) the</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Reflora Virtual Herbarium</span><span class="co">](https://ipt.jbrj.gov.br/reflora/)</span> for specimen/occurrence</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>evidence of the taxon in Brazilian states that are *not* currently listed in its</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>official Flora e Funga do Brasil (FFB) distribution. This flags candidate new state</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>records for a taxonomist to manually verify - e.g. a species listed by FFB only for</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>Bahia, but with specimens indexed from Pernambuco.</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="fu">### Details</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>FFB&#39;s own officially-listed states are retrieved the same way <span class="in">`funga_records`</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>does internally, from the parsed FFB distribution table. Occurrence evidence beyond FFB</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>comes from up to three independent sources (see <span class="in">`sources`</span>): GBIF&#39;s public REST API</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>(no key required, and the most reliable of the three), speciesLink&#39;s public web service</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>(best-effort - see <span class="in">`mycobank_gap`</span>&#39;s Note on its known SSL/endpoint</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>issues), and the refloraR package&#39;s <span class="in">`reflora_records`</span> for</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>Reflora specimen data (used only if the refloraR package is installed).</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxon <span class="pp">|</span> Character. A single fungal genus or species name (e.g. <span class="in">`&quot;Trichoderma harzianum&quot;`</span> or <span class="in">`&quot;Trichoderma&quot;`</span>). <span class="pp">|</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> state <span class="pp">|</span> Character vector. Optional subset of Brazilian states (full name or acronym) to restrict the check to. <span class="in">`NULL`</span> (default) checks all states with any evidence from the requested <span class="in">`sources`</span>. <span class="pp">|</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> sources <span class="pp">|</span> Character vector. Which occurrence sources to query: any of <span class="in">`&quot;gbif&quot;`</span>, <span class="in">`&quot;speciesLink&quot;`</span>, <span class="in">`&quot;reflora&quot;`</span>. Defaults to all three. <span class="pp">|</span></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> version <span class="pp">|</span> Character. FFB dataset version to compare against. Defaults to <span class="in">`&quot;latest&quot;`</span>. Passed to <span class="in">`funga_records`</span>. <span class="pp">|</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), prints progress messages. <span class="pp">|</span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), the result is saved to disk as an <span class="in">`.xlsx`</span> spreadsheet. <span class="pp">|</span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Character. Directory where the spreadsheet is saved when <span class="in">`save = TRUE`</span>. Defaults to <span class="in">`&quot;funga_distribution_gap&quot;`</span>. <span class="pp">|</span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Character. Name of the <span class="in">`.xlsx`</span> file (without extension) to save. Defaults to <span class="in">`&quot;funga_distribution_gap_&lt;taxon&gt;&quot;`</span>. <span class="pp">|</span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> html_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), also writes a self-contained HTML report (<span class="in">`&lt;dir&gt;/&lt;filename&gt;.html`</span>) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, and the individual occurrence records (not aggregated) found in the new-state-record candidate states - each linking out to the specific record in its source database (GBIF occurrence page or Reflora specimen page) - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <span class="in">`.xlsx`</span> spreadsheet is unaffected). <span class="pp">|</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> open_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default in interactive sessions), opens the rendered HTML report in the default browser. <span class="pp">|</span></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>A <span class="in">`data.frame`</span>, one row per Brazilian state with any occurrence evidence</span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>  for <span class="in">`taxon`</span>, with columns:</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Given a fungal genus or species, checks <span class="co">[</span><span class="ot">GBIF</span><span class="co">](https://www.gbif.org)</span> and,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>optionally, <span class="co">[</span><span class="ot">speciesLink</span><span class="co">](https://specieslink.net)</span> and the</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Reflora Virtual Herbarium</span><span class="co">](https://ipt.jbrj.gov.br/reflora/)</span> for specimen and</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>occurrence evidence of the taxon in Brazilian states that are *not* currently</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>listed in its official Flora e Funga do Brasil (FFB) distribution. This flags</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>candidate new state records for a taxonomist to verify - e.g. a species listed by FFB</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>only for Bahia, but with specimens indexed from Pernambuco - so that the</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>distributions in FFB monographs can be kept complete. Georeferenced records are also</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>placed in the six Brazilian phytogeographic domains, to flag candidate new domain</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>records in the same way.</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="fu">### Details</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>**FFB side.** The officially listed states come from the parsed FFB taxon and</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>distribution tables (the same locally cached dataset as <span class="in">`funga_records`</span>).</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>For a genus, the states of all its species and infraspecific taxa are combined; for a</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>species, those of the species and its infraspecific taxa. If the name is a synonym in</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>FFB, the distribution of its accepted name is used.</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>**Occurrence evidence.** Up to three sources can be queried (see</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="in">`sources`</span>):</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  <span class="in">`&quot;gbif&quot;`</span> (default)GBIF&#39;s public API. The name is first resolved to</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    its GBIF backbone key within the Fungi kingdom only (so a genus name shared with</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    a plant, alga, or animal is never confused with the fungal one), so the records</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    of its synonyms and infraspecific taxa are included. All states are counted in a</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    single request.</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>  <span class="in">`&quot;reflora&quot;`</span>Reflora Virtual Herbarium specimens, via</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    <span class="in">`reflora_records`</span> (requires the refloraR package).</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    Note that the first use downloads the Reflora herbarium archives - several</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    gigabytes - which refloraR then caches for later calls.</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>  <span class="in">`&quot;speciesLink&quot;`</span>speciesLink&#39;s API, which requires a free API key</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    (<span class="in">`specieslink_key`</span>; create one at https://specieslink.net).</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>Free-text state values in these sources (e.g. <span class="in">`&quot;Ba&quot;`</span>, <span class="in">`&quot;Est. do Bahia&quot;`</span>,</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="in">`&quot;Paraiba&quot;`</span>) are normalised to FFB state names before comparison; values that are</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>not Brazilian states are ignored.</span>
 <span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>  TaxonThe queried taxon name.</span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>  StateBrazilian state name.</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>  In_FFB_distributionLogical; whether FFB already lists this state for the taxon.</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>  GBIF_recordsNumber of Brazil GBIF occurrence records in this state (when</span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>    <span class="in">`&quot;gbif&quot; %in% sources`</span>).</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>  speciesLink_evidenceLogical; whether speciesLink reported this state</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>    (best-effort, see Details).</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>  Reflora_recordsNumber of Reflora specimen records in this state (when</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>    <span class="in">`&quot;reflora&quot; %in% sources`</span> and refloraR is installed).</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  New_state_record_candidate<span class="in">`TRUE`</span> when the state has evidence from at</span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>    least one external source but is *not* in <span class="in">`In_FFB_distribution`</span> - i.e. a</span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>    candidate worth manual taxonomic review.</span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> <span class="fu">funga_distribution_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma harzianum&quot;</span>)</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>**Phytogeographic domains.** With <span class="in">`domains = TRUE`</span> (default), the GBIF</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>records that have coordinates - excluding those GBIF flags with geospatial issues,</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>such as zero coordinates or coordinates outside the stated country - are placed in</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>the six Brazilian phytogeographic domains (Amazonia, Caatinga, Cerrado, Mata</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>Atlantica, Pampa, Pantanal) using IBGE&#39;s biome map (2019) bundled with fungaR,</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>simplified to a 1 km tolerance. A domain with records but not listed for the taxon</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>in FFB is a candidate new domain record. Up to <span class="in">`max_coordinates`</span> records are</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>read (300 per request); Reflora specimens with coordinates are added when</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="in">`&quot;reflora&quot;`</span> is among <span class="in">`sources`</span>. Records that fall outside the six domains</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>(e.g. just offshore) are kept in <span class="in">`records`</span>, with <span class="in">`Domain = NA`</span>, but</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>are never flagged nor drawn on the report&#39;s map. This</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>analysis requires the sf package, and the map in the HTML report the</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>leaflet package; without them, they are skipped with a message.</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>Occurrence records are evidence to review, not proof: a record in a new state may be</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>a cultivated specimen, a misidentification, or a georeferencing error, which is why</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>the HTML report lists the individual records behind each candidate state.</span>
 <span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="co"># Restrict the check to two states, using only GBIF</span></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>gap_ba_pe <span class="ot">&lt;-</span> <span class="fu">funga_distribution_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma harzianum&quot;</span>,</span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">state =</span> <span class="fu">c</span>(<span class="st">&quot;Bahia&quot;</span>, <span class="st">&quot;Pernambuco&quot;</span>),</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">sources =</span> <span class="st">&quot;gbif&quot;</span>)</span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxon <span class="pp">|</span> Character. A single fungal genus or species name (e.g. <span class="in">`&quot;Trichoderma harzianum&quot;`</span> or <span class="in">`&quot;Trichoderma&quot;`</span>). <span class="pp">|</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> state <span class="pp">|</span> Character vector. Optional subset of Brazilian states (full name or acronym) to restrict the check to. <span class="in">`NULL`</span> (default) checks all states with any evidence. <span class="pp">|</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> sources <span class="pp">|</span> Character vector. Which occurrence sources to query: any of <span class="in">`&quot;gbif&quot;`</span>, <span class="in">`&quot;reflora&quot;`</span>, <span class="in">`&quot;speciesLink&quot;`</span>. Defaults to <span class="in">`&quot;gbif&quot;`</span>, the fastest. See Details for the requirements of the other two. <span class="pp">|</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> specieslink_key <span class="pp">|</span> Character. speciesLink API key, used when <span class="in">`&quot;speciesLink&quot;`</span> is among <span class="in">`sources`</span>. Defaults to the <span class="in">`SPECIESLINK_KEY`</span> environment variable. <span class="pp">|</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> domains <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), also place the georeferenced records in the Brazilian phytogeographic domains and flag candidate new domain records (see Details). Requires the sf package. <span class="pp">|</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> max_coordinates <span class="pp">|</span> Numeric. Maximum number of georeferenced GBIF records read for the domain analysis. Defaults to <span class="in">`5000`</span>. <span class="pp">|</span></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> version <span class="pp">|</span> Character. FFB dataset version to compare against. Defaults to <span class="in">`&quot;latest&quot;`</span>. Passed to <span class="in">`funga_download`</span>. <span class="pp">|</span></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), prints progress messages. <span class="pp">|</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), the result is saved to disk as an <span class="in">`.xlsx`</span> spreadsheet. <span class="pp">|</span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Character. Directory where the spreadsheet is saved when <span class="in">`save = TRUE`</span>. Defaults to <span class="in">`&quot;funga_distribution_gap&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Character. Name of the <span class="in">`.xlsx`</span> file (without extension) to save. Defaults to <span class="in">`&quot;funga_distribution_gap_&lt;taxon&gt;&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> html_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), also writes a self-contained HTML report (<span class="in">`&lt;dir&gt;/&lt;filename&gt;.html`</span>) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, the domain table, an interactive map of the georeferenced records over the phytogeographic domains (coloured by candidate status), the records in candidate domains, and the individual occurrence records found in the new-state-record candidate states - each linking to the record in its source database - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <span class="in">`.xlsx`</span> spreadsheet is unaffected). <span class="pp">|</span></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> open_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default in interactive sessions), opens the HTML report in the browser once rendered. <span class="pp">|</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>A list of three <span class="in">`data.frame`</span>s:</span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>  <span class="in">`states`</span>One row per Brazilian state with any evidence for</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>    <span class="in">`taxon`</span> (in FFB or in the queried sources): <span class="in">`Taxon`</span>, <span class="in">`State`</span>,</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>    <span class="in">`In_FFB_distribution`</span> (whether FFB already lists the state),</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>    <span class="in">`GBIF_records`</span>, <span class="in">`Reflora_records`</span>, and <span class="in">`speciesLink_records`</span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>    (records in the state, for each source queried), and</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>    <span class="in">`New_state_record_candidate`</span> (<span class="in">`TRUE`</span> when the state has evidence from</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>    at least one source but is not in FFB&#39;s distribution).</span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>  <span class="in">`domains`</span>One row per phytogeographic domain with evidence (in FFB or</span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>    among the georeferenced records): <span class="in">`Taxon`</span>, <span class="in">`Domain`</span>,</span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>    <span class="in">`In_FFB_distribution`</span>, <span class="in">`Georeferenced_records`</span>, and</span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a>    <span class="in">`New_domain_record_candidate`</span>. Empty when <span class="in">`domains = FALSE`</span>.</span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>  <span class="in">`records`</span>One row per georeferenced record, with its coordinates,</span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a>    <span class="in">`State`</span>, <span class="in">`Domain`</span>, collector, date, institution, catalogue number,</span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>    identification, a link to the record, and the logical columns</span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a>    <span class="in">`New_state_record_candidate`</span> and <span class="in">`New_domain_record_candidate`</span>. Empty</span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>    when <span class="in">`domains = FALSE`</span>.</span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>With <span class="in">`save = TRUE`</span>, each table is saved as a sheet of the <span class="in">`.xlsx`</span></span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>spreadsheet.</span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a><span class="co"># Candidate new state records for a species</span></span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> <span class="fu">funga_distribution_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma harzianum&quot;</span>)</span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a><span class="co"># A whole genus, restricted to two states</span></span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>gap_ne <span class="ot">&lt;-</span> <span class="fu">funga_distribution_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma&quot;</span>,</span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">state =</span> <span class="fu">c</span>(<span class="st">&quot;Pernambuco&quot;</span>, <span class="st">&quot;Paraiba&quot;</span>))</span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a><span class="co"># The candidate new phytogeographic domains, and the records behind them</span></span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a>gap<span class="sc">$</span>domains</span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a>gap<span class="sc">$</span>records[gap<span class="sc">$</span>records<span class="sc">$</span>New_domain_record_candidate, ]</span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a><span class="co"># Adding Reflora herbarium specimens (requires refloraR)</span></span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>gap_reflora <span class="ot">&lt;-</span> <span class="fu">funga_distribution_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Trichoderma harzianum&quot;</span>,</span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">sources =</span> <span class="fu">c</span>(<span class="st">&quot;gbif&quot;</span>, <span class="st">&quot;reflora&quot;</span>))</span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
